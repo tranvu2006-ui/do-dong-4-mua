@@ -167,6 +167,12 @@ export async function POST(request) {
     const order_code = `OD${dateStr}${randSuffix}`;
 
     // Create Order with status 'CHO_XAC_NHAN' (BR-018)
+        // FR-026 & FR-027: Trạng thái ban đầu theo phương thức thanh toán
+    // - Thanh toán VietQR: 'CHO_THANH_TOAN'
+    // - Thanh toán COD: 'CHO_XAC_NHAN'
+    const isVietQr = (payment_method || '').toUpperCase() === 'VIETQR' || (payment_method || '').toUpperCase() === 'QR';
+    const initialOrderStatus = isVietQr ? 'CHO_THANH_TOAN' : 'CHO_XAC_NHAN';
+
     const orderResult = await query(
       `INSERT INTO orders (order_code, user_id, receiver_name, phone, address, note, subtotal, shipping_fee, total_amount, payment_status, order_status)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -181,7 +187,7 @@ export async function POST(request) {
         shipping_fee,
         total_amount,
         'UNPAID',
-        'CHO_XAC_NHAN'
+        initialOrderStatus
       ]
     );
 

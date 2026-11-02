@@ -86,8 +86,10 @@ function OrderHistoryContent() {
 
   const getStatusBadge = (st) => {
     switch (st) {
+      case 'CHO_THANH_TOAN':
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">Chờ thanh toán (QR)</span>;
       case 'CHO_XAC_NHAN':
-        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Chờ xác nhận</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-yellow-100 text-yellow-800">Chờ xác nhận (COD)</span>;
       case 'DA_XAC_NHAN':
         return <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">Đã tiếp nhận</span>;
       case 'DANG_CHUAN_BI':
@@ -212,7 +214,7 @@ function OrderHistoryContent() {
 
                 <div className="flex items-center gap-2">
                   {/* Cancel button if order is CHO_XAC_NHAN */}
-                  {ord.order_status === 'CHO_XAC_NHAN' && (
+                  {['CHO_THANH_TOAN', 'CHO_XAC_NHAN'].includes(ord.order_status) && (
                     <button
                       onClick={() => setCancelModalOrder(ord)}
                       className="px-3.5 py-1.5 bg-red-50 text-red-600 rounded-xl font-bold text-xs hover:bg-red-100 transition"

@@ -1917,7 +1917,8 @@ export default function AdminDashboardPage() {
                         className="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
                       >
                         <option value="">Tất cả trạng thái</option>
-                        <option value="CHO_XAC_NHAN">Chờ xác nhận</option>
+                        <option value="CHO_THANH_TOAN">Chờ thanh toán (QR)</option>
+                        <option value="CHO_XAC_NHAN">Chờ xác nhận (COD)</option>
                         <option value="DA_XAC_NHAN">Đã duyệt</option>
                         <option value="DANG_CHUAN_BI">Đang chuẩn bị</option>
                         <option value="TAM_DUNG">Tạm dừng</option>
@@ -1994,7 +1995,7 @@ export default function AdminDashboardPage() {
                                             o.order_status === 'DA_HUY' ? 'bg-red-100 text-red-800' :
                                               'bg-amber-100 text-amber-800'
                                   }`}>
-                                  {o.order_status}
+                                  {o.order_status === 'CHO_THANH_TOAN' ? 'CHỜ THANH TOÁN' : o.order_status === 'CHO_XAC_NHAN' ? 'CHỜ XÁC NHẬN' : o.order_status}
                                 </span>
                               </td>
                               <td className="py-3 px-4 text-right space-x-1 whitespace-nowrap">
@@ -2008,8 +2009,8 @@ export default function AdminDashboardPage() {
                                         type: 'success',
                                         onConfirm: () => handleUpdateOrderStatus(
                                           o.order_code, 
-                                          o.order_status === 'CHO_XAC_NHAN' ? 'DA_XAC_NHAN' : null, 
-                                          o.order_status === 'CHO_XAC_NHAN' ? 'DA_TAO_VAN_DON' : null, 
+                                          ['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(o.order_status) ? 'DA_XAC_NHAN' : null, 
+                                          ['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(o.order_status) ? 'DA_TAO_VAN_DON' : null, 
                                           'PAID'
                                         ),
                                       });
@@ -2020,7 +2021,7 @@ export default function AdminDashboardPage() {
                                     ✓ Đã thu tiền
                                   </button>
                                 )}
-                                {o.order_status === 'CHO_XAC_NHAN' && (
+                                {['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(o.order_status) && (
                                   <button
                                     onClick={() => handleUpdateOrderStatus(o.order_code, 'DA_XAC_NHAN', 'DA_TAO_VAN_DON')}
                                     className="px-2.5 py-1 bg-purple-600 text-white rounded-lg text-[10px] font-bold hover:bg-purple-700 cursor-pointer"

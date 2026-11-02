@@ -164,9 +164,14 @@ function OrderDetailContent({ code }) {
     );
   }
 
-  // Progress Steps
+  // Progress Steps - FR-026 & FR-027
+  const isQrOrder = order.order_status === 'CHO_THANH_TOAN' || order.payment_method === 'VIETQR';
   const steps = [
-    { key: 'CHO_XAC_NHAN', label: 'Đặt hàng', desc: 'Chờ tiếp nhận' },
+    { 
+      key: isQrOrder ? 'CHO_THANH_TOAN' : 'CHO_XAC_NHAN', 
+      label: isQrOrder ? 'Chờ thanh toán' : 'Chờ xác nhận', 
+      desc: isQrOrder ? 'Quét mã VietQR' : 'Chờ tiếp nhận' 
+    },
     { key: 'DA_XAC_NHAN', label: 'Đã duyệt', desc: 'Cửa hàng xác nhận' },
     { key: 'DANG_CHUAN_BI', label: 'Đang đóng gói', desc: 'Chọn trái cây tươi' },
     { key: 'DANG_GIAO', label: 'Đang giao GreenSM', desc: 'Tài xế di chuyển' },
@@ -174,7 +179,7 @@ function OrderDetailContent({ code }) {
   ];
 
   const statusHierarchy = {
-    CHO_THANH_TOAN: 0,
+    CHO_THANH_TOAN: 1,
     CHO_XAC_NHAN: 1,
     DA_XAC_NHAN: 2,
     DANG_CHUAN_BI: 3,
@@ -185,9 +190,11 @@ function OrderDetailContent({ code }) {
   };
 
   const currentLevel = statusHierarchy[order.order_status] ?? 1;
+  const isWaitingPayment = order.order_status === 'CHO_THANH_TOAN';
+  const isWaitingConfirm = order.order_status === 'CHO_XAC_NHAN';
   const isCancelled = order.order_status === 'DA_HUY';
   const isPaused = order.order_status === 'TAM_DUNG';
-  const isUnpaidVietQr = !isCancelled && order.payment_method === 'VIETQR' && order.payment_status !== 'PAID';
+  const isUnpaidVietQr = !isCancelled && (order.payment_method === 'VIETQR' || isWaitingPayment) && order.payment_status !== 'PAID';
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
@@ -273,13 +280,17 @@ function OrderDetailContent({ code }) {
                 ? 'Đơn Hàng Đã Bị Hủy' 
                 : isPaused 
                   ? 'Đơn Hàng Đang Tạm Dừng Xử Lý' 
-                  : isUnpaidVietQr 
-                    ? 'Đơn Hàng Chờ Quét Mã VietQR' 
-                    : 'Đơn Hàng Đang Được Xử Lý!'}
+                  : isWaitingPayment || isUnpaidVietQr 
+                    ? 'Đơn Hàng Chờ Thanh Toán VietQR' 
+                    : isWaitingConfirm
+                      ? 'Đơn Hàng Chờ Xác Nhận (COD)'
+                      : 'Đơn Hàng Đang Được Xử Lý!'}
             </h1>
             <p className="text-xs text-white/90 mt-0.5">
-              {isUnpaidVietQr ? (
-                <>Mã đơn hàng: <strong className="text-white font-mono">{order.order_code}</strong> • Vui lòng quét mã QR bên dưới để thanh toán</>
+              {isWaitingPayment || isUnpaidVietQr ? (
+                <>Mã đơn hàng: <strong className="text-white font-mono">{order.order_code}</strong> • Vui lòng quét mã QR bên dưới để hoàn tất thanh toán</>
+              ) : isWaitingConfirm ? (
+                <>Mã đơn hàng: <strong className="text-white font-mono">{order.order_code}</strong> • Cửa hàng đã ghi nhận đơn COD, nhân viên sẽ sớm xác nhận</>
               ) : (
                 <>Mã đơn hàng: <strong className="text-white font-mono">{order.order_code}</strong></>
               )}
@@ -288,7 +299,7 @@ function OrderDetailContent({ code }) {
         </div>
         <div className="flex items-center gap-2">
           {/* Cancel button if order is still CHO_XAC_NHAN */}
-          {order.order_status === 'CHO_XAC_NHAN' && (
+          {['CHO_THANH_TOAN', 'CHO_XAC_NHAN'].includes(order.order_status) && (
             <button
               onClick={() => setShowCancelModal(true)}
               className="px-3.5 py-2 bg-red-700/80 hover:bg-red-800 text-white rounded-xl text-xs font-bold transition border border-red-500 shadow-md cursor-pointer"
@@ -531,6 +542,27 @@ function OrderDetailContent({ code }) {
               <strong className="text-gray-900 w-24 shrink-0">Thanh toán:</strong>
               <span className="font-bold text-gray-800 uppercase">
                 {order.payment_method || 'COD'} ({order.payment_status === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'})
+              </span>
+            </p>
+            <p className="flex items-center gap-2">
+              <strong className="text-gray-900 w-24 shrink-0">Trạng thái:</strong>
+              <span className={`px-2 py-0.5 rounded-lg text-xs font-bold ${
+                order.order_status === 'CHO_THANH_TOAN' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                order.order_status === 'CHO_XAC_NHAN' ? 'bg-yellow-100 text-yellow-900 border border-yellow-300' :
+                order.order_status === 'DA_XAC_NHAN' ? 'bg-purple-100 text-purple-900' :
+                order.order_status === 'DANG_CHUAN_BI' ? 'bg-blue-100 text-blue-900' :
+                order.order_status === 'DANG_GIAO' ? 'bg-teal-100 text-teal-900' :
+                order.order_status === 'DA_GIAO' ? 'bg-emerald-100 text-emerald-900' :
+                order.order_status === 'DA_HUY' ? 'bg-red-100 text-red-900' : 'bg-gray-100 text-gray-800'
+              }`}>
+                {order.order_status === 'CHO_THANH_TOAN' ? 'Chờ thanh toán (VietQR)' :
+                 order.order_status === 'CHO_XAC_NHAN' ? 'Chờ xác nhận (COD)' :
+                 order.order_status === 'DA_XAC_NHAN' ? 'Đã duyệt' :
+                 order.order_status === 'DANG_CHUAN_BI' ? 'Đang đóng gói' :
+                 order.order_status === 'TAM_DUNG' ? 'Tạm dừng xử lý' :
+                 order.order_status === 'DANG_GIAO' ? 'Đang giao GreenSM' :
+                 order.order_status === 'DA_GIAO' ? 'Giao thành công' :
+                 order.order_status === 'DA_HUY' ? 'Đã hủy đơn' : order.order_status}
               </span>
             </p>
             {order.note && (
