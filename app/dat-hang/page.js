@@ -620,17 +620,17 @@ export default function CheckoutPage() {
                 Phương Thức Thanh Toán
               </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* COD */}
                 <label
-                  className={`p-3.5 rounded-2xl border cursor-pointer transition flex flex-col justify-between ${
+                  className={`p-4 rounded-2xl border cursor-pointer transition flex flex-col justify-between ${
                     formData.payment_method === 'COD'
                       ? 'border-brand-600 bg-brand-50/70 text-brand-900 ring-2 ring-brand-600'
                       : 'border-gray-200 hover:bg-gray-50 text-gray-700'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xl">💵</span>
+                    <span className="text-2xl">💵</span>
                     <input
                       type="radio"
                       name="payment_method"
@@ -641,21 +641,21 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <div>
-                    <div className="font-bold text-xs">Thanh toán COD</div>
-                    <div className="text-[10px] text-gray-500">Trả tiền mặt khi nhận hàng</div>
+                    <div className="font-bold text-sm">Thanh toán COD</div>
+                    <div className="text-xs text-gray-500">Trả tiền mặt khi nhận hàng</div>
                   </div>
                 </label>
 
                 {/* VietQR */}
                 <label
-                  className={`p-3.5 rounded-2xl border cursor-pointer transition flex flex-col justify-between ${
+                  className={`p-4 rounded-2xl border cursor-pointer transition flex flex-col justify-between ${
                     formData.payment_method === 'VIETQR'
                       ? 'border-brand-600 bg-brand-50/70 text-brand-900 ring-2 ring-brand-600'
                       : 'border-gray-200 hover:bg-gray-50 text-gray-700'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xl">📲</span>
+                    <span className="text-2xl">📲</span>
                     <input
                       type="radio"
                       name="payment_method"
@@ -666,62 +666,11 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <div>
-                    <div className="font-bold text-xs">Mã VietQR 24/7</div>
-                    <div className="text-[10px] text-gray-500">Quét mã chuyển khoản tức thì</div>
-                  </div>
-                </label>
-
-                {/* MoMo */}
-                <label
-                  className={`p-3.5 rounded-2xl border cursor-pointer transition flex flex-col justify-between ${
-                    formData.payment_method === 'MOMO'
-                      ? 'border-brand-600 bg-brand-50/70 text-brand-900 ring-2 ring-brand-600'
-                      : 'border-gray-200 hover:bg-gray-50 text-gray-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xl">👛</span>
-                    <input
-                      type="radio"
-                      name="payment_method"
-                      value="MOMO"
-                      checked={formData.payment_method === 'MOMO'}
-                      onChange={() => setFormData({ ...formData, payment_method: 'MOMO' })}
-                      className="text-brand-600"
-                    />
-                  </div>
-                  <div>
-                    <div className="font-bold text-xs">Ví MoMo</div>
-                    <div className="text-[10px] text-gray-500">Xác nhận tự động</div>
+                    <div className="font-bold text-sm">Mã VietQR 24/7</div>
+                    <div className="text-xs text-gray-500">Quét mã chuyển khoản tức thì</div>
                   </div>
                 </label>
               </div>
-
-              {/* VietQR Information Notice */}
-              {formData.payment_method === 'VIETQR' && (
-                <div className="bg-emerald-50/80 p-5 rounded-3xl border border-emerald-200 text-xs space-y-3">
-                  <div className="flex items-center gap-2.5 font-bold text-sm text-emerald-900">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm shrink-0">
-                      <QrCode className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div>Thanh toán chuyển khoản qua VietQR 24/7</div>
-                      <div className="text-[11px] font-normal text-emerald-700">Mã QR kèm mã đơn sẽ được tạo ngay sau khi bấm Xác Nhận Đặt Hàng</div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-white/95 p-3.5 rounded-2xl border border-emerald-100 text-emerald-800 space-y-2">
-                    <p className="leading-relaxed">
-                      💡 Quý khách vui lòng bấm nút <strong>&quot;Xác Nhận Đặt Hàng&quot;</strong> bên dưới. Sau khi hệ thống cấp <strong>Mã đơn hàng chính thức</strong>, bạn sẽ được chuyển đến trang <strong>Mã VietQR riêng biệt</strong> (đã điền sẵn số tiền và mã đơn để ngân hàng đối soát tự động).
-                    </p>
-                    <div className="pt-2 border-t border-emerald-100 grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-[11px] text-gray-700">
-                      <div>Ngân hàng: <strong className="text-brand-700">MB Bank</strong></div>
-                      <div>Số tài khoản: <strong className="text-brand-700">0929894248</strong></div>
-                      <div>Chủ TK: <strong className="text-brand-700">TRAN VU</strong></div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
 
             {errorMsg && (
