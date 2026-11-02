@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  TrendingUp, ShoppingCart, Package, Users, AlertTriangle,
+  TrendingUp, ShoppingCart, Package, Users, User, AlertTriangle,
   CheckCircle2, Clock, Truck, Plus, Eye, Edit3, Trash2, RefreshCw,
   ArrowLeft, Filter, Tag, Percent, Image as ImageIcon, MapPin,
   FileText, Play, Pause, XCircle, Search, Upload, Lock, LogOut,
@@ -4657,7 +4657,7 @@ export default function AdminDashboardPage() {
                     <span className="font-mono text-brand-700 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-200/60">{selectedOrder.order_code}</span>
                   </h3>
                   <div className="text-xs text-slate-500 mt-0.5">
-                    Thời gian đặt: {new Date(selectedOrder.created_at).toLocaleString('vi-VN')} • Xử lý: <strong className="text-slate-700">Admin Tổng</strong>
+                    Thời gian đặt: {selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleString('vi-VN') : '—'} • Xử lý: <strong className="text-slate-700">Admin Tổng</strong>
                   </div>
                 </div>
               </div>
@@ -4790,7 +4790,7 @@ export default function AdminDashboardPage() {
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1.5 text-xs">
                 <div className="flex justify-between text-slate-600">
                   <span>Tiền hàng (Tạm tính):</span>
-                  <span className="font-medium">{parseFloat(selectedOrder.subtotal || 0).toLocaleString('vi-VN')} đ</span>
+                  <span className="font-medium">{parseFloat(selectedOrder.subtotal || (parseFloat(selectedOrder.total_amount || 0) - parseFloat(selectedOrder.shipping_fee || 0)) || 0).toLocaleString('vi-VN')} đ</span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Phí vận chuyển (GreenSM):</span>
@@ -4811,7 +4811,7 @@ export default function AdminDashboardPage() {
                     onClick={() => {
                       requestConfirm({
                         title: 'Xác Nhận Đã Thu Tiền (FR-032)',
-                        message: `Xác nhận đã thu đủ ${parseFloat(selectedOrder.total_amount).toLocaleString('vi-VN')} đ cho đơn ${selectedOrder.order_code}?`,
+                        message: `Xác nhận đã thu đủ ${parseFloat(selectedOrder.total_amount || 0).toLocaleString('vi-VN')} đ cho đơn ${selectedOrder.order_code}?`,
                         confirmText: 'Xác nhận thu tiền',
                         type: 'success',
                         onConfirm: () => handleUpdateOrderStatus(
