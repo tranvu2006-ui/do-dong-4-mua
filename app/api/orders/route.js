@@ -7,7 +7,9 @@ export async function GET(request) {
     const status = searchParams.get('status');
     const search = searchParams.get('search');
     const phone = searchParams.get('phone');
-    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const startDate = searchParams.get('startDate') || searchParams.get('from');
+    const endDate = searchParams.get('endDate') || searchParams.get('to');
+    const limit = parseInt(searchParams.get('limit') || '100', 10);
 
     let sql = `
       SELECT o.*, 
@@ -33,6 +35,16 @@ export async function GET(request) {
     if (search) {
       sql += ` AND (o.order_code LIKE ? OR o.receiver_name LIKE ? OR o.phone LIKE ?)`;
       params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+    }
+
+    if (startDate) {
+      sql += ` AND o.created_at >= ?`;
+      params.push(`${startDate} 00:00:00`);
+    }
+
+    if (endDate) {
+      sql += ` AND o.created_at <= ?`;
+      params.push(`${endDate} 23:59:59`);
     }
 
     sql += ` ORDER BY o.id DESC LIMIT ?`;

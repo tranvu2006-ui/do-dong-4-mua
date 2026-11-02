@@ -211,6 +211,8 @@ export default function AdminDashboardPage() {
   // Filter states
   const [orderStatusFilter, setOrderStatusFilter] = useState('');
   const [orderSearch, setOrderSearch] = useState('');
+  const [orderStartDate, setOrderStartDate] = useState('');
+  const [orderEndDate, setOrderEndDate] = useState('');
   const [productSearch, setProductSearch] = useState('');
   const [productCategoryFilter, setProductCategoryFilter] = useState('');
   const [productStatusFilter, setProductStatusFilter] = useState('');
@@ -241,7 +243,7 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     setOrderPage(1);
-  }, [orderStatusFilter, orderSearch]);
+  }, [orderStatusFilter, orderSearch, orderStartDate, orderEndDate]);
 
   // Modals
   const [showAddProductModal, setShowAddProductModal] = useState(false);
@@ -442,7 +444,7 @@ export default function AdminDashboardPage() {
         promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes
       ] = await Promise.all([
         fetch('/api/admin/stats'),
-        fetch(`/api/orders?limit=100${orderStatusFilter ? `&status=${orderStatusFilter}` : ''}${orderSearch ? `&search=${encodeURIComponent(orderSearch)}` : ''}`),
+        fetch(`/api/orders?limit=100${orderStatusFilter ? `&status=${orderStatusFilter}` : ''}${orderSearch ? `&search=${encodeURIComponent(orderSearch)}` : ''}${orderStartDate ? `&startDate=${orderStartDate}` : ''}${orderEndDate ? `&endDate=${orderEndDate}` : ''}`),
         fetch('/api/products?all=1&limit=200'),
         fetch('/api/categories?all=1'),
         fetch('/api/promotions?all=1'),
@@ -482,7 +484,7 @@ export default function AdminDashboardPage() {
     if (currentUser) {
       loadData();
     }
-  }, [currentUser, orderStatusFilter, orderSearch]);
+  }, [currentUser, orderStatusFilter, orderSearch, orderStartDate, orderEndDate]);
 
   // Kiểm tra quyền hạn truy cập tab chức năng (BR-026 & FR-039)
   const hasPermissionForTab = (tabKey) => {
@@ -1926,6 +1928,31 @@ export default function AdminDashboardPage() {
                         <option value="DA_GIAO">Đã giao</option>
                         <option value="DA_HUY">Đã hủy</option>
                       </select>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-50/80 px-2.5 py-1.5 rounded-xl border border-slate-200">
+                        <span className="text-[11px] font-bold text-slate-500">Từ:</span>
+                        <input
+                          type="date"
+                          value={orderStartDate}
+                          onChange={(e) => setOrderStartDate(e.target.value)}
+                          className="bg-transparent text-xs focus:outline-none"
+                        />
+                        <span className="text-[11px] font-bold text-slate-500 ml-1">Đến:</span>
+                        <input
+                          type="date"
+                          value={orderEndDate}
+                          onChange={(e) => setOrderEndDate(e.target.value)}
+                          className="bg-transparent text-xs focus:outline-none"
+                        />
+                        {(orderStartDate || orderEndDate) && (
+                          <button
+                            onClick={() => { setOrderStartDate(''); setOrderEndDate(''); }}
+                            className="text-xs text-rose-500 hover:text-rose-700 font-bold ml-1"
+                            title="Xóa lọc ngày"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -1952,22 +1979,25 @@ export default function AdminDashboardPage() {
                       <table className="w-full text-left text-xs min-w-[900px]">
                         <thead>
                           <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200">
-                            <th className="py-3 px-4 whitespace-nowrap">Mã đơn</th>
+                            <th className="py-3 px-4 whitespace-nowrap">Mã đơn & Ngày đặt</th>
                             <th className="py-3 px-4 whitespace-nowrap">Khách hàng</th>
                             <th className="py-3 px-4 whitespace-nowrap">Tổng tiền</th>
                             <th className="py-3 px-4 whitespace-nowrap">Thanh toán</th>
-                            <th className="py-3 px-4 whitespace-nowrap">Vận đơn GreenSM</th>
-                            <th className="py-3 px-4 whitespace-nowrap">Trạng thái đơn</th>
+                            <th className="py-3 px-4 whitespace-nowrap">Mã vận đơn & ĐVVC</th>
+                            <th className="py-3 px-4 whitespace-nowrap">Trạng thái & Xử lý</th>
                             <th className="py-3 px-4 text-right whitespace-nowrap">Thao tác</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                           {paginatedOrders.map((o) => (
                             <tr key={o.id} className="hover:bg-slate-50/80 transition">
-                              <td className="py-3 px-4 font-mono font-bold text-brand-700 whitespace-nowrap">
-                                <Link href={`/don-hang/${o.order_code}`} className="hover:underline">
+                              <td className="py-3 px-4 whitespace-nowrap">
+                                <Link href={`/don-hang/${o.order_code}`} className="font-mono font-bold text-brand-700 hover:underline block">
                                   {o.order_code}
                                 </Link>
+                                <div className="text-[10px] text-slate-400 font-sans">
+                                  {new Date(o.created_at).toLocaleString('vi-VN')}
+                                </div>
                               </td>
                               <td className="py-3 px-4 whitespace-nowrap">
                                 <div className="font-bold text-slate-900">{o.receiver_name}</div>
@@ -1982,9 +2012,13 @@ export default function AdminDashboardPage() {
                                   {o.payment_method} ({o.payment_status === 'PAID' ? 'Đã thu' : 'Chưa thu'})
                                 </span>
                               </td>
-                              <td className="py-3 px-4 font-mono text-[11px] whitespace-nowrap">
-                                <div>{o.tracking_code || 'Chưa tạo'}</div>
-                                <span className="text-[10px] text-slate-400">GreenSM</span>
+                              <td className="py-3 px-4 whitespace-nowrap">
+                                <div className="font-mono text-[11px] font-bold text-slate-800">
+                                  {o.tracking_code || 'Chưa tạo'}
+                                </div>
+                                <span className="inline-block mt-0.5 px-1.5 py-0.5 text-[10px] text-emerald-700 bg-emerald-50 rounded border border-emerald-200/60 font-semibold">
+                                  {o.shipping_company || 'GreenSM'}
+                                </span>
                               </td>
                               <td className="py-3 px-4 whitespace-nowrap">
                                 <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${o.order_status === 'DA_GIAO' ? 'bg-emerald-100 text-emerald-800' :
@@ -1997,8 +2031,19 @@ export default function AdminDashboardPage() {
                                   }`}>
                                   {o.order_status === 'CHO_THANH_TOAN' ? 'CHỜ THANH TOÁN' : o.order_status === 'CHO_XAC_NHAN' ? 'CHỜ XÁC NHẬN' : o.order_status}
                                 </span>
+                                <div className="text-[10px] text-slate-400 mt-1">
+                                  Xử lý: <span className="font-medium text-slate-600">Admin Tổng</span>
+                                </div>
                               </td>
                               <td className="py-3 px-4 text-right space-x-1 whitespace-nowrap">
+                                <Link
+                                  href={`/don-hang/${o.order_code}`}
+                                  target="_blank"
+                                  className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold transition inline-block align-middle"
+                                  title="Xem chi tiết đơn hàng (FR-030)"
+                                >
+                                  Chi tiết
+                                </Link>
                                 {o.payment_status !== 'PAID' && o.order_status !== 'DA_HUY' && (
                                   <button
                                     onClick={() => {
