@@ -4725,7 +4725,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-500">Mã vận đơn:</span>
-                      <strong className="font-mono text-slate-800">{selectedOrder.tracking_code || 'Chưa tạo'}</strong>
+                      <strong className="font-mono text-slate-800">{selectedOrder.tracking_code && ['DANG_GIAO', 'DA_GIAO'].includes(selectedOrder.order_status) ? selectedOrder.tracking_code : 'Chưa tạo (chờ giao hàng)'}</strong>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-500">Trạng thái đơn:</span>

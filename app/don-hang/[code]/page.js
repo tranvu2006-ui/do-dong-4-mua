@@ -473,9 +473,13 @@ function OrderDetailContent({ code }) {
             <h2 className="font-extrabold text-base text-gray-900 flex items-center gap-2">
               <Truck className="w-5 h-5 text-brand-600" /> Tiến Độ Vận Đơn GreenSM
             </h2>
-            {order.tracking_code && (
+            {order.tracking_code && ['DANG_GIAO', 'DA_GIAO'].includes(order.order_status) ? (
               <span className="text-xs bg-emerald-50 text-emerald-800 font-mono font-bold px-3 py-1 rounded-full border border-emerald-200">
                 Mã vận đơn: {order.tracking_code}
+              </span>
+            ) : (
+              <span className="text-xs text-slate-400 font-medium italic">
+                Chưa tạo mã vận đơn (chờ đóng gói & giao GreenSM)
               </span>
             )}
           </div>

@@ -93,23 +93,30 @@ export async function PATCH(request, { params }) {
       await query('UPDATE payments SET payment_status = ?, status = ? WHERE order_id = ?', [payment_status, payment_status === 'PAID' ? 'PAID' : 'PENDING', orderId]);
     }
 
-    if (shipping_status) {
+    if (shipping_status || order_status === 'DANG_GIAO' || order_status === 'DA_GIAO') {
+      const activeShippingStatus = shipping_status || (order_status === 'DANG_GIAO' ? 'DANG_GIAO' : order_status === 'DA_GIAO' ? 'GIAO_THANH_CONG' : null);
       let shipDate = null;
       let deliveryDate = null;
-      if (shipping_status === 'DA_BAN_GIAO_GREENSM' || shipping_status === 'DANG_GIAO') {
+      let newTrackingCode = null;
+
+      if (activeShippingStatus === 'DA_BAN_GIAO_GREENSM' || activeShippingStatus === 'DANG_GIAO' || order_status === 'DANG_GIAO') {
         shipDate = new Date();
+        const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+        const codeSuffix = currentOrder.order_code.replace(/\D/g, '').slice(-4) || Math.floor(1000 + Math.random() * 9000);
+        newTrackingCode = `GSM-VN-${dateStr}-${codeSuffix}`;
       }
-      if (shipping_status === 'GIAO_THANH_CONG') {
+      if (activeShippingStatus === 'GIAO_THANH_CONG' || order_status === 'DA_GIAO') {
         deliveryDate = new Date();
       }
 
       await query(
         `UPDATE shipments 
-         SET shipping_status = ?,
+         SET shipping_status = COALESCE(?, shipping_status),
+             tracking_code = COALESCE(tracking_code, ?),
              ship_date = COALESCE(?, ship_date),
              delivery_date = COALESCE(?, delivery_date)
          WHERE order_id = ?`,
-        [shipping_status, shipDate, deliveryDate, orderId]
+        [activeShippingStatus, newTrackingCode, shipDate, deliveryDate, orderId]
       );
     }
 

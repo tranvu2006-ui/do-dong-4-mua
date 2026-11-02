@@ -238,11 +238,11 @@ export async function POST(request) {
     );
 
     // Insert Shipment Record (GreenSM) (BR-022, BR-024)
-    const trackingCode = `GSM-VN-${dateStr}-${randSuffix}`;
+    // Đơn mới tạo chưa bàn giao shipper nên tracking_code = NULL, shipping_status = "CHUA_TAO"
     await query(
       `INSERT INTO shipments (order_id, shipping_company, tracking_code, shipping_fee, shipping_status)
-       VALUES (?, 'GreenSM', ?, ?, 'DA_TAO_VAN_DON')`,
-      [order_id, trackingCode, shipping_fee]
+       VALUES (?, 'GreenSM', NULL, ?, 'CHUA_TAO')`,
+      [order_id, shipping_fee]
     );
 
     // Record system log (BR-030)
@@ -258,7 +258,7 @@ export async function POST(request) {
       data: {
         order_id,
         order_code,
-        tracking_code: trackingCode,
+        tracking_code: null,
         total_amount,
         subtotal,
         shipping_fee,
