@@ -43,17 +43,7 @@ export default function CheckoutPage() {
   const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
-  // VietQR Instant Modal State
-  const [createdOrder, setCreatedOrder] = useState(null);
-  const [showVietQrModal, setShowVietQrModal] = useState(false);
-  const [copiedModalField, setCopiedModalField] = useState(null);
-  const [modalQrMode, setModalQrMode] = useState('qr_only'); // 'qr_only' for extra large QR, 'compact2' for VietQR template
-
-  const handleCopyModalText = (text, fieldName) => {
-    navigator.clipboard.writeText(text);
-    setCopiedModalField(fieldName);
-    setTimeout(() => setCopiedModalField(null), 2000);
-  };
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
   // Countdown for resending OTP
   useEffect(() => {
@@ -298,6 +288,7 @@ export default function CheckoutPage() {
           }
         }
 
+        setOrderSuccess(true);
         clearCart();
         try {
           sessionStorage.removeItem('dodong4mua_checkout_draft');
@@ -306,17 +297,8 @@ export default function CheckoutPage() {
         const querySuffix = data.data?.is_new_account ? `?new_account=1&pwd=${pwdParam}` : '';
         const targetUrl = `/don-hang/${data.data.order_code}${querySuffix}`;
 
-        if (formData.payment_method === 'VIETQR') {
-          // Mở Popup quét mã VietQR tức thì ngay tại trang đặt hàng
-          setCreatedOrder({
-            order_code: data.data.order_code,
-            total_amount: data.data.total_amount || totalAmount,
-            redirect_url: targetUrl,
-          });
-          setShowVietQrModal(true);
-        } else {
-          router.push(targetUrl);
-        }
+        // Chuyển hướng trực tiếp tới trang đơn hàng (có mã VietQR MB Bank to bự ở đầu)
+        router.push(targetUrl);
       } else {
         setErrorMsg(data.message || 'Có lỗi xảy ra khi tạo đơn hàng');
       }
@@ -327,6 +309,16 @@ export default function CheckoutPage() {
       setSubmitting(false);
     }
   };
+
+  if (orderSuccess) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-32 text-center space-y-4">
+        <Loader2 className="w-10 h-10 animate-spin mx-auto text-brand-600" />
+        <h2 className="text-base font-bold text-gray-800">Đặt hàng thành công!</h2>
+        <p className="text-xs text-gray-400">Đang chuyển đến trang chi tiết và thanh toán đơn hàng...</p>
+      </div>
+    );
+  }
 
   if (!isLoaded) {
     return (
@@ -832,150 +824,6 @@ export default function CheckoutPage() {
 
       {/* Container ẩn dành cho reCAPTCHA của Firebase */}
       <div id="recaptcha-container"></div>
-
-      {/* MODAL QUÉT MÃ VIETQR TỨC THÌ NGAY SAU KHI BẤM ĐẶT HÀNG */}
-      {showVietQrModal && createdOrder && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100 my-8">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-base text-gray-900">Đặt Hàng Thành Công!</h3>
-                  <p className="text-xs text-gray-500">
-                    Mã đơn hàng: <strong className="font-mono text-brand-700">{createdOrder.order_code}</strong>
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => router.push(createdOrder.redirect_url)}
-                className="text-gray-400 hover:text-gray-600 p-1.5 rounded-xl hover:bg-gray-100 transition cursor-pointer"
-                title="Đóng và đến trang đơn hàng"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Alert */}
-            <div className="bg-amber-50 border border-amber-200 p-3 rounded-2xl text-xs text-amber-900 flex items-start gap-2.5">
-              <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5 animate-pulse" />
-              <div>
-                <p className="font-bold">Quét mã VietQR MB Bank bên dưới để hoàn tất thanh toán</p>
-                <p className="text-[11px] text-amber-800 mt-0.5">
-                  Quản trị viên sẽ kiểm tra biến động số dư và xác nhận đơn hàng ngay khi nhận được tiền!
-                </p>
-              </div>
-            </div>
-
-            {/* QR Card Cỡ Khổ Lớn To Rõ */}
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 sm:p-5 rounded-3xl border border-emerald-200 text-center flex flex-col items-center">
-              <div className="w-full aspect-square max-w-[390px] sm:w-[420px] sm:h-[420px] bg-white p-3 rounded-2xl shadow-md border-2 border-emerald-300 mx-auto flex items-center justify-center">
-                <img
-                  src={`https://img.vietqr.io/image/MB-0929894248-compact2.png?amount=${createdOrder.total_amount}&addInfo=DODONG4MUA%20${createdOrder.order_code}&accountName=TRAN%20VU`}
-                  alt="VietQR MB Bank"
-                  className="w-full h-full object-contain select-none"
-                />
-              </div>
-              <p className="text-sm text-emerald-950 font-black mt-3">
-                Mở ứng dụng ngân hàng hoặc ví điện tử bất kỳ để quét mã
-              </p>
-              <p className="text-xs text-emerald-700 mt-0.5">
-                Số tiền: <strong className="text-emerald-900 font-extrabold">{Number(createdOrder.total_amount).toLocaleString('vi-VN')} đ</strong>
-              </p>
-            </div>
-
-            {/* Chi tiết tài khoản kèm nút Sao chép */}
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 border border-gray-100">
-                <div>
-                  <span className="text-gray-400 text-[10px] block">Ngân hàng thụ hưởng:</span>
-                  <strong className="text-gray-900 font-bold">MB Bank (Ngân hàng Quân Đội)</strong>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 border border-gray-100">
-                <div>
-                  <span className="text-gray-400 text-[10px] block">Số tài khoản:</span>
-                  <strong className="text-brand-700 font-mono text-sm font-black">0929894248</strong>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopyModalText('0929894248', 'Số tài khoản')}
-                  className="px-2.5 py-1 bg-white hover:bg-gray-100 text-gray-700 rounded-lg border border-gray-200 font-bold text-[11px] flex items-center gap-1 transition cursor-pointer shadow-2xs"
-                >
-                  {copiedModalField === 'Số tài khoản' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedModalField === 'Số tài khoản' ? 'Đã chép' : 'Sao chép'}</span>
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 border border-gray-100">
-                <div>
-                  <span className="text-gray-400 text-[10px] block">Chủ tài khoản:</span>
-                  <strong className="text-gray-900 font-bold">TRAN VU</strong>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200">
-                <div>
-                  <span className="text-emerald-700 text-[10px] block font-medium">Số tiền cần thanh toán:</span>
-                  <strong className="text-emerald-800 text-base font-black">
-                    {Number(createdOrder.total_amount).toLocaleString('vi-VN')} đ
-                  </strong>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopyModalText(Number(createdOrder.total_amount).toString(), 'Số tiền')}
-                  className="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 rounded-lg border border-emerald-300 font-bold text-[11px] flex items-center gap-1 transition cursor-pointer shadow-2xs"
-                >
-                  {copiedModalField === 'Số tiền' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedModalField === 'Số tiền' ? 'Đã chép' : 'Sao chép'}</span>
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-amber-50 border border-amber-200">
-                <div>
-                  <span className="text-amber-800 text-[10px] block font-bold">Nội dung chuyển khoản (bắt buộc):</span>
-                  <strong className="text-amber-950 font-mono text-xs font-black">
-                    DODONG4MUA {createdOrder.order_code}
-                  </strong>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopyModalText(`DODONG4MUA ${createdOrder.order_code}`, 'Nội dung chuyển khoản')}
-                  className="px-2.5 py-1 bg-white hover:bg-amber-100 text-amber-900 rounded-lg border border-amber-300 font-bold text-[11px] flex items-center gap-1 transition cursor-pointer shadow-2xs"
-                >
-                  {copiedModalField === 'Nội dung chuyển khoản' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedModalField === 'Nội dung chuyển khoản' ? 'Đã chép' : 'Sao chép'}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="space-y-2 pt-2 border-t border-gray-100">
-              <button
-                type="button"
-                onClick={() => router.push(createdOrder.redirect_url)}
-                className="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-black text-xs shadow-lg shadow-brand-600/25 flex items-center justify-center gap-2 transition cursor-pointer"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Tôi đã chuyển khoản xong → Xem tiến độ đơn hàng</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => router.push(createdOrder.redirect_url)}
-                className="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-xl font-bold text-xs transition cursor-pointer text-center block"
-              >
-                Xem chi tiết đơn hàng sau
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
