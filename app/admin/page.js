@@ -245,6 +245,10 @@ export default function AdminDashboardPage() {
     setOrderPage(1);
   }, [orderStatusFilter, orderSearch, orderStartDate, orderEndDate]);
 
+  // Order Detail Modal (FR-030)
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [loadingOrderDetail, setLoadingOrderDetail] = useState(false);
+
   // Modals
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [editProductModal, setEditProductModal] = useState({
@@ -537,6 +541,22 @@ export default function AdminDashboardPage() {
     }
   }, [currentUser, activeTab]);
 
+  const handleViewOrderDetail = async (orderItem) => {
+    setSelectedOrder(orderItem);
+    setLoadingOrderDetail(true);
+    try {
+      const res = await fetch(`/api/orders/${orderItem.order_code}`);
+      const data = await res.json();
+      if (data.success && data.data) {
+        setSelectedOrder(data.data);
+      }
+    } catch (err) {
+      console.error('Lỗi tải chi tiết đơn hàng:', err);
+    } finally {
+      setLoadingOrderDetail(false);
+    }
+  };
+
   const handleUpdateOrderStatus = async (orderCode, newOrderStatus, newShippingStatus = null, newPaymentStatus = null) => {
     try {
       const body = {};
@@ -554,6 +574,15 @@ export default function AdminDashboardPage() {
       if (data.success) {
         showToast('Cập nhật trạng thái đơn hàng thành công!');
         loadData();
+        setSelectedOrder((prev) => {
+          if (!prev || prev.order_code !== orderCode) return prev;
+          return {
+            ...prev,
+            ...(newOrderStatus ? { order_status: newOrderStatus } : {}),
+            ...(newShippingStatus ? { shipping_status: newShippingStatus } : {}),
+            ...(newPaymentStatus ? { payment_status: newPaymentStatus } : {}),
+          };
+        });
       } else {
         showToast(data.message || 'Cập nhật thất bại', 'error');
       }
@@ -1979,122 +2008,141 @@ export default function AdminDashboardPage() {
                       <table className="w-full text-left text-xs min-w-[900px]">
                         <thead>
                           <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200">
-                            <th className="py-3 px-4 whitespace-nowrap">Mã đơn & Ngày đặt</th>
-                            <th className="py-3 px-4 whitespace-nowrap">Khách hàng</th>
-                            <th className="py-3 px-4 whitespace-nowrap">Tổng tiền</th>
-                            <th className="py-3 px-4 whitespace-nowrap">Thanh toán</th>
-                            <th className="py-3 px-4 whitespace-nowrap">Mã vận đơn & ĐVVC</th>
-                            <th className="py-3 px-4 whitespace-nowrap">Trạng thái & Xử lý</th>
-                            <th className="py-3 px-4 text-right whitespace-nowrap">Thao tác</th>
+                            <th className="py-3 px-3 whitespace-nowrap">Mã đơn</th>
+                            <th className="py-3 px-3 whitespace-nowrap">Thời gian</th>
+                            <th className="py-3 px-3 whitespace-nowrap">Khách hàng</th>
+                            <th className="py-3 px-3 whitespace-nowrap">Số điện thoại</th>
+                            <th className="py-3 px-3 whitespace-nowrap">Thanh toán</th>
+                            <th className="py-3 px-3 whitespace-nowrap">Trạng thái</th>
+                            <th className="py-3 px-3 whitespace-nowrap">Tổng tiền</th>
+                            <th className="py-3 px-3 whitespace-nowrap">Người xử lý</th>
+                            <th className="py-3 px-3 text-right whitespace-nowrap">Thao tác</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                           {paginatedOrders.map((o) => (
                             <tr key={o.id} className="hover:bg-slate-50/80 transition">
-                              <td className="py-3 px-4 whitespace-nowrap">
-                                <Link href={`/don-hang/${o.order_code}`} className="font-mono font-bold text-brand-700 hover:underline block">
-                                  {o.order_code}
-                                </Link>
-                                <div className="text-[10px] text-slate-400 font-sans">
-                                  {new Date(o.created_at).toLocaleString('vi-VN')}
-                                </div>
-                              </td>
-                              <td className="py-3 px-4 whitespace-nowrap">
-                                <div className="font-bold text-slate-900">{o.receiver_name}</div>
-                                <div className="text-[11px] text-slate-400">{o.phone}</div>
-                              </td>
-                              <td className="py-3 px-4 font-bold text-slate-900 whitespace-nowrap">
-                                {parseFloat(o.total_amount).toLocaleString('vi-VN')} đ
-                              </td>
-                              <td className="py-3 px-4 whitespace-nowrap">
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${o.payment_status === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                                  }`}>
-                                  {o.payment_method} ({o.payment_status === 'PAID' ? 'Đã thu' : 'Chưa thu'})
-                                </span>
-                              </td>
-                              <td className="py-3 px-4 whitespace-nowrap">
-                                <div className="font-mono text-[11px] font-bold text-slate-800">
-                                  {o.tracking_code || 'Chưa tạo'}
-                                </div>
-                                <span className="inline-block mt-0.5 px-1.5 py-0.5 text-[10px] text-emerald-700 bg-emerald-50 rounded border border-emerald-200/60 font-semibold">
-                                  {o.shipping_company || 'GreenSM'}
-                                </span>
-                              </td>
-                              <td className="py-3 px-4 whitespace-nowrap">
-                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${o.order_status === 'DA_GIAO' ? 'bg-emerald-100 text-emerald-800' :
-                                    o.order_status === 'DANG_GIAO' ? 'bg-teal-100 text-teal-800' :
-                                      o.order_status === 'DANG_CHUAN_BI' ? 'bg-blue-100 text-blue-800' :
-                                        o.order_status === 'TAM_DUNG' ? 'bg-yellow-100 text-yellow-800' :
-                                          o.order_status === 'DA_XAC_NHAN' ? 'bg-purple-100 text-purple-800' :
-                                            o.order_status === 'DA_HUY' ? 'bg-red-100 text-red-800' :
-                                              'bg-amber-100 text-amber-800'
-                                  }`}>
-                                  {o.order_status === 'CHO_THANH_TOAN' ? 'CHỜ THANH TOÁN' : o.order_status === 'CHO_XAC_NHAN' ? 'CHỜ XÁC NHẬN' : o.order_status}
-                                </span>
-                                <div className="text-[10px] text-slate-400 mt-1">
-                                  Xử lý: <span className="font-medium text-slate-600">Admin Tổng</span>
-                                </div>
-                              </td>
-                              <td className="py-3 px-4 text-right space-x-1 whitespace-nowrap">
-                                <Link
-                                  href={`/don-hang/${o.order_code}`}
-                                  target="_blank"
-                                  className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold transition inline-block align-middle"
-                                  title="Xem chi tiết đơn hàng (FR-030)"
+                              {/* 1. Mã đơn */}
+                              <td className="py-3 px-3 whitespace-nowrap">
+                                <button
+                                  onClick={() => handleViewOrderDetail(o)}
+                                  className="font-mono font-bold text-brand-700 hover:text-brand-800 hover:underline cursor-pointer"
+                                  title="Xem chi tiết đơn này"
                                 >
-                                  Chi tiết
-                                </Link>
-                                {o.payment_status !== 'PAID' && o.order_status !== 'DA_HUY' && (
+                                  {o.order_code}
+                                </button>
+                              </td>
+
+                              {/* 2. Thời gian */}
+                              <td className="py-3 px-3 whitespace-nowrap text-slate-600 font-mono text-[11px]">
+                                {new Date(o.created_at).toLocaleString("vi-VN")}
+                              </td>
+
+                              {/* 3. Tên khách hàng */}
+                              <td className="py-3 px-3 whitespace-nowrap font-bold text-slate-900">
+                                {o.receiver_name}
+                              </td>
+
+                              {/* 4. Số điện thoại */}
+                              <td className="py-3 px-3 whitespace-nowrap text-slate-600 font-mono text-[11px]">
+                                {o.phone}
+                              </td>
+
+                              {/* 5. Thanh toán */}
+                              <td className="py-3 px-3 whitespace-nowrap">
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  o.payment_status === "PAID" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
+                                }`}>
+                                  {o.payment_method} ({o.payment_status === "PAID" ? "Đã thu" : "Chưa thu"})
+                                </span>
+                              </td>
+
+                              {/* 6. Trạng thái */}
+                              <td className="py-3 px-3 whitespace-nowrap">
+                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                                  o.order_status === "DA_GIAO" ? "bg-emerald-100 text-emerald-800" :
+                                  o.order_status === "DANG_GIAO" ? "bg-teal-100 text-teal-800" :
+                                  o.order_status === "DANG_CHUAN_BI" ? "bg-blue-100 text-blue-800" :
+                                  o.order_status === "TAM_DUNG" ? "bg-yellow-100 text-yellow-800" :
+                                  o.order_status === "DA_XAC_NHAN" ? "bg-purple-100 text-purple-800" :
+                                  o.order_status === "CHO_THANH_TOAN" ? "bg-amber-100 text-amber-900 border border-amber-300" :
+                                  o.order_status === "DA_HUY" ? "bg-red-100 text-red-800" :
+                                  "bg-amber-100 text-amber-800"
+                                }`}>
+                                  {o.order_status === "CHO_THANH_TOAN" ? "CHỜ THANH TOÁN" : o.order_status === "CHO_XAC_NHAN" ? "CHỜ XÁC NHẬN" : o.order_status}
+                                </span>
+                              </td>
+
+                              {/* 7. Tổng tiền */}
+                              <td className="py-3 px-3 font-bold text-slate-900 whitespace-nowrap">
+                                {parseFloat(o.total_amount).toLocaleString("vi-VN")} đ
+                              </td>
+
+                              {/* 8. Người xử lý */}
+                              <td className="py-3 px-3 whitespace-nowrap text-slate-600 font-medium text-[11px]">
+                                Admin Tổng
+                              </td>
+
+                              {/* 9. Thao tác */}
+                              <td className="py-3 px-3 text-right space-x-1 whitespace-nowrap">
+                                <button
+                                  onClick={() => handleViewOrderDetail(o)}
+                                  className="px-2.5 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-[10px] font-bold transition inline-flex items-center gap-1 cursor-pointer border border-brand-200/60"
+                                  title="Mở cửa sổ chi tiết đơn hàng (FR-030)"
+                                >
+                                  <Eye className="w-3 h-3" /> Xem chi tiết
+                                </button>
+                                {o.payment_status !== "PAID" && o.order_status !== "DA_HUY" && (
                                   <button
                                     onClick={() => {
                                       requestConfirm({
-                                        title: 'Xác Nhận Đã Thu Tiền (FR-032)',
-                                        message: `Xác nhận đã nhận đủ ${parseFloat(o.total_amount).toLocaleString('vi-VN')} đ cho đơn hàng ${o.order_code}? Trạng thái thanh toán sẽ chuyển sang ĐÃ THU.`,
-                                        confirmText: 'Xác nhận thu tiền',
-                                        type: 'success',
+                                        title: "Xác Nhận Đã Thu Tiền (FR-032)",
+                                        message: `Xác nhận đã nhận đủ ${parseFloat(o.total_amount).toLocaleString("vi-VN")} đ cho đơn hàng ${o.order_code}? Trạng thái thanh toán sẽ chuyển sang ĐÃ THU.`,
+                                        confirmText: "Xác nhận thu tiền",
+                                        type: "success",
                                         onConfirm: () => handleUpdateOrderStatus(
                                           o.order_code, 
-                                          ['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(o.order_status) ? 'DA_XAC_NHAN' : null, 
-                                          ['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(o.order_status) ? 'DA_TAO_VAN_DON' : null, 
-                                          'PAID'
+                                          ["CHO_XAC_NHAN", "CHO_THANH_TOAN"].includes(o.order_status) ? "DA_XAC_NHAN" : null, 
+                                          ["CHO_XAC_NHAN", "CHO_THANH_TOAN"].includes(o.order_status) ? "DA_TAO_VAN_DON" : null, 
+                                          "PAID"
                                         ),
                                       });
                                     }}
                                     className="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold cursor-pointer shadow-sm transition"
                                     title="Xác nhận thanh toán thủ công (FR-032)"
                                   >
-                                    ✓ Đã thu tiền
+                                    ✓ Đã thu
                                   </button>
                                 )}
-                                {['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(o.order_status) && (
+                                {["CHO_XAC_NHAN", "CHO_THANH_TOAN"].includes(o.order_status) && (
                                   <button
-                                    onClick={() => handleUpdateOrderStatus(o.order_code, 'DA_XAC_NHAN', 'DA_TAO_VAN_DON')}
+                                    onClick={() => handleUpdateOrderStatus(o.order_code, "DA_XAC_NHAN", "DA_TAO_VAN_DON")}
                                     className="px-2.5 py-1 bg-purple-600 text-white rounded-lg text-[10px] font-bold hover:bg-purple-700 cursor-pointer"
                                     title="Tiếp nhận đơn hàng"
                                   >
-                                    Duyệt đơn
+                                    Duyệt
                                   </button>
                                 )}
-                                {o.order_status === 'DA_XAC_NHAN' && (
+                                {o.order_status === "DA_XAC_NHAN" && (
                                   <button
-                                    onClick={() => handleUpdateOrderStatus(o.order_code, 'DANG_CHUAN_BI')}
+                                    onClick={() => handleUpdateOrderStatus(o.order_code, "DANG_CHUAN_BI")}
                                     className="px-2.5 py-1 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700 cursor-pointer"
                                     title="Chuẩn bị đơn hàng"
                                   >
                                     Đóng gói
                                   </button>
                                 )}
-                                {o.order_status === 'DANG_CHUAN_BI' && (
+                                {o.order_status === "DANG_CHUAN_BI" && (
                                   <>
                                     <button
-                                      onClick={() => handleUpdateOrderStatus(o.order_code, 'TAM_DUNG')}
+                                      onClick={() => handleUpdateOrderStatus(o.order_code, "TAM_DUNG")}
                                       className="px-2 py-1 bg-yellow-500 text-white rounded-lg text-[10px] font-bold hover:bg-yellow-600 cursor-pointer"
                                       title="Tạm dừng đơn hàng"
                                     >
                                       Tạm dừng
                                     </button>
                                     <button
-                                      onClick={() => handleUpdateOrderStatus(o.order_code, 'DANG_GIAO', 'DANG_GIAO')}
+                                      onClick={() => handleUpdateOrderStatus(o.order_code, "DANG_GIAO", "DANG_GIAO")}
                                       className="px-2.5 py-1 bg-teal-600 text-white rounded-lg text-[10px] font-bold hover:bg-teal-700 cursor-pointer"
                                       title="Bàn giao GreenSM"
                                     >
@@ -2102,30 +2150,24 @@ export default function AdminDashboardPage() {
                                     </button>
                                   </>
                                 )}
-                                {o.order_status === 'TAM_DUNG' && (
+                                {o.order_status === "TAM_DUNG" && (
                                   <button
-                                    onClick={() => handleUpdateOrderStatus(o.order_code, 'DANG_CHUAN_BI')}
+                                    onClick={() => handleUpdateOrderStatus(o.order_code, "DANG_CHUAN_BI")}
                                     className="px-2.5 py-1 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700 cursor-pointer"
                                     title="Tiếp tục xử lý"
                                   >
                                     Tiếp tục
                                   </button>
                                 )}
-                                {o.order_status === 'DANG_GIAO' && (
+                                {o.order_status === "DANG_GIAO" && (
                                   <button
-                                    onClick={() => handleUpdateOrderStatus(o.order_code, 'DA_GIAO', 'GIAO_THANH_CONG')}
+                                    onClick={() => handleUpdateOrderStatus(o.order_code, "DA_GIAO", "GIAO_THANH_CONG")}
                                     className="px-2.5 py-1 bg-emerald-600 text-white rounded-lg text-[10px] font-bold hover:bg-emerald-700 cursor-pointer"
                                     title="Hoàn tất đơn hàng"
                                   >
                                     Hoàn tất
                                   </button>
                                 )}
-                                <Link
-                                  href={`/don-hang/${o.order_code}`}
-                                  className="px-2 py-1 bg-slate-100 text-slate-700 rounded-lg text-[10px] font-medium hover:bg-slate-200 inline-block"
-                                >
-                                  Chi tiết
-                                </Link>
                               </td>
                             </tr>
                           ))}
@@ -4593,6 +4635,241 @@ export default function AdminDashboardPage() {
                   : actionModal.actionType === 'unlock'
                     ? 'Mở khóa tài khoản'
                     : 'Xóa tài khoản'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+            {/* Modal Cửa Sổ Phụ: Chi Tiết Đơn Hàng (FR-030) */}
+      {selectedOrder && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-100 overflow-hidden">
+            {/* Modal Header */}
+            <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-brand-50 text-brand-700 flex items-center justify-center text-lg font-bold">
+                  📦
+                </div>
+                <div>
+                  <h3 className="font-heading font-black text-slate-900 text-base flex items-center gap-2">
+                    <span>Chi Tiết Đơn Hàng</span>
+                    <span className="font-mono text-brand-700 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-200/60">{selectedOrder.order_code}</span>
+                  </h3>
+                  <div className="text-xs text-slate-500 mt-0.5">
+                    Thời gian đặt: {new Date(selectedOrder.created_at).toLocaleString('vi-VN')} • Xử lý: <strong className="text-slate-700">Admin Tổng</strong>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="w-8 h-8 rounded-xl bg-slate-200/60 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition cursor-pointer font-bold text-sm"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-4 text-xs flex-1">
+              {/* 2 Cột thông tin */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Thông tin khách hàng & nhận hàng */}
+                <div className="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/60 space-y-2">
+                  <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs pb-1.5 border-b border-slate-200/60">
+                    <User className="w-4 h-4 text-brand-600" /> Thông Tin Khách Hàng (FR-030)
+                  </div>
+                  <div className="space-y-1.5 text-slate-700">
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Người nhận:</span>
+                      <strong className="text-slate-900 font-bold">{selectedOrder.receiver_name}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Số điện thoại:</span>
+                      <strong className="text-slate-900 font-mono">{selectedOrder.phone}</strong>
+                    </div>
+                    <div className="flex justify-between items-start gap-2">
+                      <span className="text-slate-500 shrink-0">Địa chỉ nhận:</span>
+                      <span className="text-slate-900 text-right font-medium">{selectedOrder.address}</span>
+                    </div>
+                    {selectedOrder.note && (
+                      <div className="mt-1 p-2 bg-yellow-50 text-yellow-900 rounded-xl border border-yellow-200 text-[11px]">
+                        <strong>Ghi chú:</strong> {selectedOrder.note}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Thông tin vận chuyển & thanh toán */}
+                <div className="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/60 space-y-2">
+                  <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs pb-1.5 border-b border-slate-200/60">
+                    <Truck className="w-4 h-4 text-emerald-600" /> Thanh Toán & Vận Chuyển
+                  </div>
+                  <div className="space-y-1.5 text-slate-700">
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-500">Hình thức:</span>
+                      <strong className="text-slate-900">{selectedOrder.payment_method || 'COD'}</strong>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-500">Thanh toán:</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        selectedOrder.payment_status === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                      }`}>
+                        {selectedOrder.payment_status === 'PAID' ? 'ĐÃ THU TIỀN' : 'CHƯA THU'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center pt-1 border-t border-slate-200/40">
+                      <span className="text-slate-500">Đơn vị vận chuyển:</span>
+                      <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[11px]">
+                        {selectedOrder.shipping_company || 'GreenSM'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-500">Mã vận đơn:</span>
+                      <strong className="font-mono text-slate-800">{selectedOrder.tracking_code || 'Chưa tạo'}</strong>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-500">Trạng thái đơn:</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">
+                        {selectedOrder.order_status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bảng danh sách sản phẩm trong đơn */}
+              <div className="border border-slate-200 rounded-2xl overflow-hidden">
+                <div className="bg-slate-50 px-4 py-2 font-bold text-slate-800 text-xs border-b border-slate-200 flex items-center justify-between">
+                  <span>Danh Sách Sản Phẩm Mua</span>
+                  <span className="text-slate-500 font-normal">{selectedOrder.items?.length || 0} sản phẩm</span>
+                </div>
+                {loadingOrderDetail ? (
+                  <div className="p-6 text-center text-slate-400">Đang tải chi tiết các món...</div>
+                ) : (
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50/60 text-slate-500 text-[11px] border-b border-slate-100">
+                      <tr>
+                        <th className="py-2 px-3">Tên trái cây</th>
+                        <th className="py-2 px-3 text-center">ĐVT</th>
+                        <th className="py-2 px-3 text-right">Đơn giá</th>
+                        <th className="py-2 px-3 text-center">Số lượng</th>
+                        <th className="py-2 px-3 text-right">Thành tiền</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {selectedOrder.items?.map((item, idx) => (
+                        <tr key={item.id || idx}>
+                          <td className="py-2 px-3">
+                            <div className="flex items-center gap-2">
+                              {item.thumbnail ? (
+                                <img src={item.thumbnail} alt={item.product_name} className="w-8 h-8 rounded-lg object-cover border" />
+                              ) : (
+                                <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-xs">🍇</div>
+                              )}
+                              <span className="font-bold text-slate-800">{item.product_name}</span>
+                            </div>
+                          </td>
+                          <td className="py-2 px-3 text-center text-slate-500">{item.unit || 'kg'}</td>
+                          <td className="py-2 px-3 text-right text-slate-700">
+                            {parseFloat(item.unit_price || 0).toLocaleString('vi-VN')} đ
+                          </td>
+                          <td className="py-2 px-3 text-center font-bold text-slate-900">
+                            x{item.quantity}
+                          </td>
+                          <td className="py-2 px-3 text-right font-bold text-slate-900">
+                            {parseFloat(item.total_price || (item.unit_price * item.quantity) || 0).toLocaleString('vi-VN')} đ
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+
+              {/* Tóm tắt tổng tiền */}
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1.5 text-xs">
+                <div className="flex justify-between text-slate-600">
+                  <span>Tiền hàng (Tạm tính):</span>
+                  <span className="font-medium">{parseFloat(selectedOrder.subtotal || 0).toLocaleString('vi-VN')} đ</span>
+                </div>
+                <div className="flex justify-between text-slate-600">
+                  <span>Phí vận chuyển (GreenSM):</span>
+                  <span className="font-medium">{parseFloat(selectedOrder.shipping_fee || 0).toLocaleString('vi-VN')} đ</span>
+                </div>
+                <div className="flex justify-between text-sm font-black text-brand-700 pt-2 border-t border-slate-200">
+                  <span>Tổng tiền thanh toán:</span>
+                  <span className="text-base">{parseFloat(selectedOrder.total_amount || 0).toLocaleString('vi-VN')} đ</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer: Nút xử lý & Nút Đóng */}
+            <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 shrink-0">
+              <div className="flex items-center gap-1.5">
+                {selectedOrder.payment_status !== 'PAID' && selectedOrder.order_status !== 'DA_HUY' && (
+                  <button
+                    onClick={() => {
+                      requestConfirm({
+                        title: 'Xác Nhận Đã Thu Tiền (FR-032)',
+                        message: `Xác nhận đã thu đủ ${parseFloat(selectedOrder.total_amount).toLocaleString('vi-VN')} đ cho đơn ${selectedOrder.order_code}?`,
+                        confirmText: 'Xác nhận thu tiền',
+                        type: 'success',
+                        onConfirm: () => handleUpdateOrderStatus(
+                          selectedOrder.order_code,
+                          ['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(selectedOrder.order_status) ? 'DA_XAC_NHAN' : null,
+                          ['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(selectedOrder.order_status) ? 'DA_TAO_VAN_DON' : null,
+                          'PAID'
+                        ),
+                      });
+                    }}
+                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
+                  >
+                    ✓ Đã thu tiền
+                  </button>
+                )}
+
+                {['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(selectedOrder.order_status) && (
+                  <button
+                    onClick={() => handleUpdateOrderStatus(selectedOrder.order_code, 'DA_XAC_NHAN', 'DA_TAO_VAN_DON')}
+                    className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
+                  >
+                    Duyệt đơn
+                  </button>
+                )}
+
+                {selectedOrder.order_status === 'DA_XAC_NHAN' && (
+                  <button
+                    onClick={() => handleUpdateOrderStatus(selectedOrder.order_code, 'DANG_CHUAN_BI')}
+                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
+                  >
+                    Đóng gói
+                  </button>
+                )}
+
+                {selectedOrder.order_status === 'DANG_CHUAN_BI' && (
+                  <button
+                    onClick={() => handleUpdateOrderStatus(selectedOrder.order_code, 'DANG_GIAO', 'DANG_GIAO')}
+                    className="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
+                  >
+                    Bàn giao GreenSM
+                  </button>
+                )}
+
+                {selectedOrder.order_status === 'DANG_GIAO' && (
+                  <button
+                    onClick={() => handleUpdateOrderStatus(selectedOrder.order_code, 'DA_GIAO', 'GIAO_THANH_CONG')}
+                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
+                  >
+                    Hoàn tất giao hàng
+                  </button>
+                )}
+              </div>
+
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer"
+              >
+                Đóng cửa sổ
               </button>
             </div>
           </div>
