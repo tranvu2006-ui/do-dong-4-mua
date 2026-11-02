@@ -1,0 +1,6857 @@
+ 
+TRƯỜNG CAO ĐẲNG CÔNG NGHỆ THỦ ĐỨC
+Khoa Công nghệ thông tin
+🙞🕮🙜
+ĐỔ ĐỐNG 4 MÙA
+Nhóm: 
+Giảng viên: Nguyễn Huy Hoàng
+Thành viên nhóm:
+24211TT2515
+Trần Vũ
+24211TT3786
+Hồ Thị Vân Anh
+QUẢN LÝ THAY ĐỔI
+Ngày
+Phiên bản
+Mô tả thay đổi
+Tác giả
+05/08/2026
+1.0
+Đặc tả yêu cầu cho hệ thống
+Trần Vũ
+MỤC LỤC ________________________________________________________________
+Contents
+Chương 1. Giới thiệu4
+1.1 Mục đích tài liệu4
+1.2 Mục tiêu dự án5
+1.3 Phạm vi hệ thống5
+1.4 Phạm vi không thực hiện7
+1.5 Đối tượng sử dụng7
+1.6 Thuật ngữ và định nghĩa8
+1.7 Công nghệ dự kiến8
+1.8 Môi trường triển khai8
+Chương 2. Khảo sát hiện trạng và phân tích nghiệp vụ9
+2.1 Giới thiệu9
+2.2 Hiện trạng hoạt động9
+2.3 Các vấn đề của hệ thống hiện tại10
+2.3.1 Khó tiếp cận khách hàng10
+2.3.2 Không có hệ thống quản lý sản phẩm10
+2.3.3 Khó quản lý tồn kho10
+2.3.4 Quản lý đơn hàng thủ công10
+2.3.5 Khách hàng không theo dõi được đơn hàng11
+2.3.6 Khó thống kê doanh thu11
+2.3.7 Phân quyền chưa rõ ràng11
+2.4 Nhu cầu của doanh nghiệp11
+2.5 Mục tiêu của hệ thống12
+2.6 Mô hình hoạt động của hệ thống13
+2.7 Đối tượng sử dụng hệ thống14
+2.7.1 Khách truy cập14
+2.7.2 Khách hàng15
+2.7.3 Admin Chi nhánh15
+2.7.4 Admin Tổng15
+2.8 Các quy trình nghiệp vụ chính16
+2.9 Các yêu cầu nghiệp vụ cốt lõi16
+Chương 3. Phân tích yêu cầu chức năng (Functional Requirements)17
+3.1 Phân hệ quản lý tài khoản18
+FR-001 – Đăng nhập hệ thống18
+FR-002 – Đăng xuất hệ thống20
+FR-003 – Quên mật khẩu20
+FR-004 – Thay đổi mật khẩu21
+FR-005 – Quản lý thông tin cá nhân22
+FR-006 – Quản lý tài khoản quản trị23
+3.2 Phân hệ quản lý danh mục và sản phẩm23
+FR-007 – Quản lý danh mục sản phẩm24
+Mục đích24
+Đối tượng sử dụng24
+Chức năng24
+Luồng xử lý chính24
+Luồng ngoại lệ24
+Điều kiện sau khi hoàn thành24
+Quy tắc nghiệp vụ25
+FR-008 – Quản lý sản phẩm25
+Mục đích25
+Đối tượng sử dụng25
+Thông tin sản phẩm25
+Chức năng25
+Luồng xử lý chính25
+Luồng ngoại lệ26
+Điều kiện sau khi hoàn thành26
+Quy tắc nghiệp vụ26
+FR-009 – Quản lý hình ảnh sản phẩm26
+Mục đích26
+Đối tượng sử dụng26
+Chức năng26
+Quy tắc nghiệp vụ26
+FR-010 – Quản lý giá bán27
+Mục đích27
+Đối tượng sử dụng27
+Luồng xử lý27
+Quy tắc nghiệp vụ27
+FR-011 – Quản lý tồn kho27
+Mục đích27
+Đối tượng sử dụng27
+Chức năng27
+Quy tắc nghiệp vụ27
+FR-012 – Hiển thị trạng thái hết hàng28
+Mục đích28
+Đối tượng sử dụng28
+Luồng xử lý28
+Quy tắc nghiệp vụ28
+FR-013 – Quản lý chương trình giảm giá28
+Mục đích28
+Đối tượng sử dụng28
+Thông tin28
+Quy tắc nghiệp vụ28
+FR-014 – Danh sách sản phẩm29
+Mục đích29
+Đối tượng sử dụng29
+Thông tin hiển thị29
+Quy tắc nghiệp vụ29
+FR-015 – Xem chi tiết sản phẩm29
+Mục đích29
+Nội dung hiển thị29
+FR-016 – Tìm kiếm sản phẩm30
+Mục đích30
+Luồng xử lý30
+Quy tắc nghiệp vụ30
+FR-017 – Lọc sản phẩm30
+Mục đích30
+Tiêu chí30
+Điều kiện sau khi hoàn thành30
+FR-018 – Sắp xếp sản phẩm30
+Mục đích30
+Tiêu chí sắp xếp31
+Quy tắc nghiệp vụ31
+3.3 Phân hệ giỏ hàng và đặt hàng31
+FR-019 – Thêm sản phẩm vào giỏ hàng31
+Mục đích31
+Đối tượng sử dụng31
+Luồng xử lý chính31
+Luồng ngoại lệ32
+Điều kiện sau khi hoàn thành32
+Quy tắc nghiệp vụ32
+FR-020 – Xem giỏ hàng32
+Mục đích32
+Thông tin hiển thị32
+Chức năng32
+FR-021 – Cập nhật số lượng sản phẩm trong giỏ hàng32
+Mục đích33
+Luồng xử lý33
+Luồng ngoại lệ33
+FR-022 – Xóa sản phẩm khỏi giỏ hàng33
+Mục đích33
+Luồng xử lý33
+FR-023 – Nhập thông tin nhận hàng33
+Mục đích33
+Thông tin cần nhập33
+Luồng xử lý33
+Quy tắc nghiệp vụ34
+FR-024 – Tạo tài khoản khách hàng tự động34
+Mục đích34
+Điều kiện34
+Luồng xử lý34
+Quy tắc nghiệp vụ34
+FR-025 – Tạo đơn hàng34
+Mục đích34
+Luồng xử lý chính34
+Điều kiện sau khi hoàn thành35
+Quy tắc nghiệp vụ35
+FR-026 – Thanh toán đơn hàng35
+Mục đích35
+Phương thức thanh toán35
+Luồng xử lý35
+Luồng ngoại lệ35
+Điều kiện sau khi hoàn thành35
+Quy tắc nghiệp vụ36
+FR-027 – Theo dõi đơn hàng36
+Mục đích36
+Trạng thái đơn hàng36
+Thông tin hiển thị36
+Quy tắc nghiệp vụ36
+FR-028 – Hủy đơn hàng36
+Mục đích36
+Đối tượng sử dụng37
+Luồng xử lý37
+Luồng ngoại lệ37
+Điều kiện sau khi hoàn thành37
+Quy tắc nghiệp vụ37
+3.4 Phân hệ quản lý đơn hàng37
+FR-029 – Xem danh sách đơn hàng38
+Mục đích38
+Đối tượng sử dụng38
+Thông tin hiển thị38
+Chức năng38
+Quy tắc nghiệp vụ38
+FR-030 – Xem chi tiết đơn hàng38
+Mục đích38
+Nội dung hiển thị38
+Quy tắc nghiệp vụ39
+FR-031 – Tiếp nhận đơn hàng39
+Mục đích39
+Luồng xử lý39
+Điều kiện sau khi hoàn thành39
+FR-032 – Xác nhận thanh toán39
+Mục đích39
+Đối tượng sử dụng40
+Luồng xử lý40
+Luồng ngoại lệ40
+Quy tắc nghiệp vụ40
+FR-033 – Chuẩn bị đơn hàng40
+Mục đích40
+Luồng xử lý40
+Quy tắc nghiệp vụ40
+FR-034 – Tạm dừng xử lý đơn hàng41
+Mục đích41
+Các trường hợp áp dụng41
+Luồng xử lý41
+Điều kiện sau khi hoàn thành41
+Quy tắc nghiệp vụ41
+FR-035 – Tiếp tục xử lý đơn hàng41
+Mục đích41
+Luồng xử lý41
+FR-036 – Bàn giao đơn vị vận chuyển42
+Mục đích42
+Đơn vị vận chuyển42
+Luồng xử lý42
+Quy tắc nghiệp vụ42
+FR-037 – Hoàn thành đơn hàng42
+Mục đích42
+Luồng xử lý42
+Điều kiện sau khi hoàn thành42
+Quy tắc nghiệp vụ42
+FR-038 – Lịch sử xử lý đơn hàng43
+Mục đích43
+Thông tin lưu43
+Quy tắc nghiệp vụ43
+3.5 Phân hệ quản trị hệ thống43
+3.5.1 Giới thiệu43
+FR-039 – Phân quyền người quản trị43
+Mục đích44
+Đối tượng sử dụng44
+Danh sách quyền44
+Luồng xử lý44
+Quy tắc nghiệp vụ44
+FR-040 – Quản lý khách hàng44
+Mục đích44
+Đối tượng sử dụng44
+Thông tin quản lý45
+Chức năng45
+Quy tắc nghiệp vụ45
+FR-041 – Quản lý chi nhánh45
+Mục đích45
+Đối tượng sử dụng45
+Thông tin45
+Chức năng45
+Quy tắc nghiệp vụ46
+FR-042 – Quản lý banner46
+Mục đích46
+Đối tượng sử dụng46
+Chức năng46
+Quy tắc nghiệp vụ46
+FR-043 – Quản lý cấu hình website46
+Mục đích46
+Nội dung cấu hình46
+Quy tắc nghiệp vụ47
+FR-044 – Quản lý phí vận chuyển47
+Mục đích47
+Đối tượng sử dụng47
+Thông tin47
+Quy tắc nghiệp vụ47
+FR-045 – Quản lý nhật ký hệ thống47
+Mục đích47
+Thông tin ghi nhận47
+Quy tắc nghiệp vụ48
+FR-046 – Quản lý thông báo48
+Mục đích48
+Đối tượng sử dụng48
+Nội dung48
+Quy tắc nghiệp vụ48
+FR-047 – Quản lý báo cáo doanh thu48
+Mục đích48
+Điều kiện tìm kiếm48
+Kết quả hiển thị48
+Quy tắc nghiệp vụ49
+FR-048 – Báo cáo khách hàng49
+Mục đích49
+Nội dung49
+Quy tắc nghiệp vụ49
+FR-049 – Báo cáo hàng tồn kho49
+Mục đích49
+Thông tin hiển thị49
+Quy tắc nghiệp vụ49
+FR-050 – Báo cáo đơn hàng50
+Mục đích50
+Điều kiện tìm kiếm50
+Kết quả50
+Quy tắc nghiệp vụ50
+3.6 Tổng hợp yêu cầu chức năng50
+Chương 4. Yêu cầu phi chức năng (Non-Functional Requirements)51
+4.1 Giới thiệu51
+4.2 Yêu cầu về hiệu năng51
+NFR-001 – Thời gian phản hồi51
+NFR-002 – Khả năng chịu tải51
+NFR-003 – Hiệu năng truy vấn52
+4.3 Yêu cầu về bảo mật52
+NFR-004 – Mã hóa mật khẩu52
+NFR-005 – Xác thực người dùng52
+NFR-006 – Quản lý phiên đăng nhập52
+NFR-007 – Phân quyền52
+NFR-008 – Chống tấn công53
+NFR-009 – Giao thức truyền dữ liệu53
+NFR-010 – Nhật ký hệ thống53
+4.4 Yêu cầu về tính sẵn sàng53
+NFR-011 – Thời gian hoạt động53
+NFR-012 – Khả năng phục hồi54
+4.5 Yêu cầu về giao diện54
+NFR-013 – Responsive54
+NFR-014 – Thiết kế54
+NFR-015 – Trải nghiệm người dùng54
+4.6 Yêu cầu về SEO55
+NFR-016 – SEO On-page55
+NFR-017 – Tối ưu tốc độ tải trang55
+4.7 Yêu cầu về khả năng mở rộng55
+NFR-018 – Kiến trúc55
+NFR-019 – Đa ngôn ngữ55
+4.8 Yêu cầu về cơ sở dữ liệu56
+NFR-020 – Toàn vẹn dữ liệu56
+NFR-021 – Sao lưu dữ liệu56
+4.9 Yêu cầu về khả năng bảo trì56
+NFR-022 – Kiến trúc mã nguồn56
+NFR-023 – Tài liệu57
+NFR-024 – Quản lý mã nguồn57
+4.10 Tổng hợp yêu cầu phi chức năng57
+Chương 5. Quy tắc nghiệp vụ (Business Rules)58
+5.1 Giới thiệu58
+5.2 Quy tắc về sản phẩm58
+BR-001 – Mỗi sản phẩm thuộc một danh mục58
+BR-002 – Giá bán59
+BR-003 – Hình ảnh sản phẩm59
+BR-004 – Trạng thái hết hàng59
+BR-005 – Giỏ quà trái cây59
+BR-006 – Combo trái cây59
+5.3 Quy tắc về khách hàng59
+BR-007 – Số điện thoại59
+BR-008 – Tạo tài khoản60
+BR-009 – Thông tin nhận hàng60
+BR-010 – Mật khẩu60
+5.4 Quy tắc về giỏ hàng60
+BR-011 – Số lượng mua60
+BR-012 – Giỏ hàng61
+BR-013 – Giỏ hàng trống61
+5.5 Quy tắc về thanh toán61
+BR-014 – Phương thức thanh toán61
+BR-015 – Xác nhận thanh toán61
+BR-016 – Thanh toán thất bại61
+5.6 Quy tắc về đơn hàng61
+BR-017 – Mã đơn hàng61
+BR-018 – Trạng thái đơn hàng62
+BR-019 – Tạm dừng đơn hàng62
+BR-020 – Hủy đơn hàng62
+BR-021 – Hoàn thành đơn hàng62
+5.7 Quy tắc về giao hàng62
+BR-022 – Đơn vị vận chuyển62
+BR-023 – Phí vận chuyển63
+BR-024 – Theo dõi vận chuyển63
+5.8 Quy tắc về quản trị63
+BR-025 – Quản lý tài khoản63
+BR-026 – Phân quyền63
+BR-027 – Quản lý sản phẩm63
+5.9 Quy tắc về báo cáo64
+BR-028 – Báo cáo doanh thu64
+BR-029 – Báo cáo tồn kho64
+BR-030 – Nhật ký hệ thống64
+5.10 Tổng hợp quy tắc nghiệp vụ64
+Chương 6. Mô hình hóa hệ thống (System Modeling)65
+6.1 Giới thiệu65
+6.2 Xác định tác nhân (Actors)66
+6.2.1 Khách truy cập (Guest)66
+6.2.2 Khách hàng (Customer)66
+6.2.3 Admin Chi nhánh67
+6.2.4 Admin Tổng67
+6.3 Danh sách Use Case68
+6.4 Ma trận Use Case và Functional Requirement70
+6.5 Kế hoạch mô hình hóa73
+6.6 Đặc tả Use Case73
+UC-01 – Đăng nhập hệ thống73
+Bước 174
+Bước 274
+Bước 375
+Bước 475
+Bước 575
+Bước 675
+Bước 775
+A175
+A275
+A376
+A476
+UC-02 – Xem sản phẩm76
+UC-03 – Xem chi tiết sản phẩm78
+Luồng chính78
+UC-04 – Thêm vào giỏ hàng78
+Luồng chính79
+Luồng ngoại lệ79
+UC-05 – Đặt hàng79
+Thông tin79
+Luồng chính79
+Luồng ngoại lệ80
+Điều kiện sau80
+UC-06 – Thanh toán80
+Luồng chính80
+Ngoại lệ81
+UC-07 – Theo dõi đơn hàng81
+Luồng chính81
+UC-08 – Quản lý sản phẩm81
+Chức năng82
+Luồng chính82
+UC-09 – Quản lý đơn hàng82
+Chức năng83
+UC-10 – Quản lý tài khoản Admin83
+Chức năng83
+6.7 Activity Diagram84
+6.7.1 Activity Diagram – Đăng nhập84
+6.7.2 Activity Diagram – Tìm kiếm sản phẩm84
+6.7.3 Activity Diagram – Thêm sản phẩm vào giỏ hàng84
+6.7.4 Activity Diagram – Đặt hàng85
+6.7.5 Activity Diagram – Thanh toán85
+6.7.6 Activity Diagram – Theo dõi đơn hàng85
+6.7.7 Activity Diagram – Quản lý đơn hàng86
+6.7.8 Activity Diagram – Quản lý sản phẩm86
+6.7.9 Activity Diagram – Quản lý khách hàng86
+6.7.10 Activity Diagram – Phân quyền quản trị87
+Chương 7. Ma trận truy vết yêu cầu (Requirement Traceability Matrix – RTM)87
+7.1 Giới thiệu87
+7.2 Danh sách Business Requirement87
+7.3 Ma trận Business Requirement → Functional Requirement88
+7.4 Ma trận Functional Requirement → Use Case90
+7.5 Ma trận Functional Requirement → Business Rule93
+7.6 Ma trận Functional Requirement → Module96
+7.7 Ma trận Functional Requirement → Test Case97
+7.8 Ma trận Module → Database98
+7.9 Ma trận Module → API99
+7.10 Phân tích khả năng truy vết101
+Chương 8. Đặc tả RESTful API (REST API Specification)101
+8.1 Giới thiệu101
+8.2 Kiến trúc API101
+8.3 Quy ước API102
+Base URL102
+Định dạng dữ liệu102
+Định dạng thời gian103
+HTTP Status Code103
+8.4 Chuẩn Response104
+Thành công104
+Thất bại104
+8.5 Xác thực105
+8.6 Authentication API105
+API 01. Đăng nhập105
+Endpoint105
+Mô tả105
+Request105
+Validation105
+Response106
+API 02. Đăng xuất106
+Endpoint106
+API 03. Quên mật khẩu107
+Endpoint107
+Request107
+Response107
+API 04. Xác nhận OTP108
+Endpoint108
+Request108
+Response108
+API 05. Đặt lại mật khẩu108
+Endpoint108
+Request109
+Response109
+8.7 Customer API109
+API 06. Thông tin cá nhân109
+API 07. Cập nhật thông tin110
+API 08. Đổi mật khẩu110
+8.8 Quy tắc Validation111
+Đăng nhập111
+OTP111
+Mật khẩu112
+8.9 Business Rule112
+8.10 Danh sách Authentication API113
+8.11 Tổng kết114
+8.12 Product API114
+API 09. Lấy danh sách sản phẩm114
+Endpoint114
+Authentication114
+Query Parameters114
+Ví dụ Request115
+Response115
+API 10. Chi tiết sản phẩm116
+API 11. Tìm kiếm sản phẩm116
+API 12. Lọc sản phẩm117
+API 13. Thêm sản phẩm117
+API 14. Cập nhật sản phẩm118
+API 15. Xóa sản phẩm118
+API 16. Upload ảnh sản phẩm119
+API 17. Xóa ảnh sản phẩm119
+API 18. Cập nhật tồn kho120
+API 19. Danh sách sản phẩm giảm giá120
+API 20. Danh sách sản phẩm nổi bật120
+8.13 Category API120
+API 21. Danh sách danh mục121
+API 22. Chi tiết danh mục121
+API 23. Thêm danh mục121
+API 24. Cập nhật danh mục121
+API 25. Xóa danh mục121
+8.14 Promotion API122
+API 26. Danh sách chương trình giảm giá122
+API 27. Chi tiết chương trình122
+API 28. Thêm chương trình122
+API 29. Cập nhật chương trình122
+API 30. Xóa chương trình123
+API 31. Gán sản phẩm vào chương trình123
+API 32. Xóa sản phẩm khỏi chương trình123
+Validation Rules124
+Product124
+Category124
+Promotion124
+Business Rules125
+Danh sách API Product126
+8.15 Cart API126
+API 33. Lấy giỏ hàng126
+Endpoint126
+Authentication126
+Response126
+API 34. Thêm sản phẩm vào giỏ hàng127
+Endpoint128
+Request128
+Business Rule128
+API 35. Cập nhật số lượng128
+API 36. Xóa sản phẩm khỏi giỏ128
+API 37. Xóa toàn bộ giỏ hàng129
+8.16 Order API129
+API 38. Tạo đơn hàng129
+API 39. Danh sách đơn hàng của khách130
+API 40. Chi tiết đơn hàng130
+API 41. Hủy đơn hàng130
+API 42. Theo dõi đơn hàng131
+API 43. Danh sách đơn hàng (Admin)131
+API 44. Cập nhật trạng thái đơn hàng131
+API 45. Ghi chú xử lý đơn hàng132
+8.17 Payment API132
+API 46. Tạo thanh toán132
+API 47. Kiểm tra trạng thái thanh toán133
+API 48. Callback từ cổng thanh toán133
+API 49. Lịch sử thanh toán134
+8.18 Shipment API134
+API 50. Tạo vận đơn134
+API 51. Tra cứu vận đơn134
+API 52. Cập nhật trạng thái vận chuyển134
+API 53. Danh sách vận đơn135
+Validation Rules135
+Cart135
+Order135
+Payment136
+Shipment136
+Business Rules136
+Danh sách API137
+8.19 Admin API138
+API 54. Danh sách tài khoản quản trị138
+Endpoint138
+Authentication138
+Response138
+API 55. Thêm tài khoản quản trị139
+Endpoint139
+Request139
+API 56. Cập nhật tài khoản quản trị139
+API 57. Khóa hoặc mở khóa tài khoản140
+API 58. Xóa tài khoản quản trị140
+8.20 Branch API140
+API 59. Danh sách chi nhánh140
+API 60. Chi tiết chi nhánh140
+API 61. Thêm chi nhánh141
+API 62. Cập nhật chi nhánh141
+API 63. Xóa chi nhánh141
+8.21 Banner API142
+API 64. Danh sách Banner142
+API 65. Thêm Banner142
+API 66. Cập nhật Banner142
+API 67. Xóa Banner142
+API 68. Đổi trạng thái Banner142
+8.22 Permission API142
+API 69. Danh sách quyền143
+API 70. Phân quyền tài khoản143
+8.23 Report API143
+API 71. Báo cáo doanh thu144
+API 72. Báo cáo đơn hàng144
+API 73. Báo cáo khách hàng144
+API 74. Báo cáo tồn kho145
+API 75. Xuất Excel145
+API 76. Xuất PDF145
+8.24 System API145
+API 77. Nhật ký hệ thống145
+API 78. Danh sách cấu hình145
+API 79. Cập nhật cấu hình145
+API 80. Thông tin Dashboard146
+8.25 Validation Rules146
+Admin146
+Branch147
+Banner147
+8.26 Business Rules147
+8.27 Tổng hợp API toàn hệ thống148
+8.28 Kết luận chương149
+Chương 9. Thiết kế cơ sở dữ liệu (Database Design)150
+9.1 Giới thiệu150
+9.2 Danh sách bảng dữ liệu150
+9.3 Quy ước đặt tên152
+9.4 Chuẩn hóa dữ liệu152
+Chuẩn 1NF152
+Chuẩn 2NF152
+Chuẩn 3NF152
+9.5 Kiểu dữ liệu sử dụng153
+9.6 Quan hệ giữa các bảng153
+Quan hệ một - nhiều (One to Many)154
+Quan hệ nhiều - nhiều (Many to Many)154
+Quan hệ một - một (One to One)154
+9.7 Quy tắc toàn vẹn dữ liệu154
+9.8 Chỉ mục (Index)154
+9.9 Chính sách xóa dữ liệu155
+9.10 Nguyên tắc bảo mật dữ liệu156
+9.11 Hiệu năng cơ sở dữ liệu156
+9.12 Khả năng mở rộng156
+9.13 Đặc tả bảng users157
+Mục đích157
+Cấu trúc bảng157
+Chỉ mục158
+Ràng buộc158
+Ví dụ dữ liệu158
+9.14 Đặc tả bảng roles159
+Mục đích159
+Cấu trúc159
+Dữ liệu mặc định159
+9.15 Đặc tả bảng permissions160
+Mục đích160
+Cấu trúc160
+Ví dụ dữ liệu160
+9.16 Đặc tả bảng role_permissions161
+Mục đích161
+Cấu trúc161
+Khóa161
+9.17 Đặc tả bảng branches161
+Mục đích161
+Cấu trúc161
+Business Rule162
+9.18 Đặc tả bảng categories162
+Mục đích162
+Cấu trúc162
+Dữ liệu mẫu163
+9.19 Đặc tả bảng products163
+Mục đích163
+Cấu trúc bảng163
+Chỉ mục164
+Business Rules164
+Ví dụ dữ liệu165
+9.20 Đặc tả bảng product_images165
+Mục đích165
+Cấu trúc bảng165
+Chỉ mục166
+Business Rules166
+9.21 Đặc tả bảng promotions166
+Mục đích166
+Cấu trúc bảng166
+Business Rules167
+9.22 Đặc tả bảng promotion_products167
+Mục đích167
+Cấu trúc bảng167
+Khóa168
+Business Rules168
+9.23 Đặc tả bảng carts168
+Mục đích168
+Cấu trúc bảng168
+Business Rules169
+9.24 Đặc tả bảng cart_items169
+Mục đích169
+Cấu trúc bảng169
+Business Rules170
+9.25 Đặc tả bảng orders170
+Mục đích170
+Cấu trúc bảng170
+Trạng thái đơn hàng171
+Business Rules171
+9.26 Đặc tả bảng order_details171
+Mục đích171
+Cấu trúc bảng172
+Business Rules172
+9.27 Quan hệ giữa các bảng172
+9.28 Đặc tả bảng payments173
+Mục đích173
+Cấu trúc bảng174
+Chỉ mục174
+Business Rules175
+Ví dụ dữ liệu175
+9.29 Đặc tả bảng shipments175
+Mục đích175
+Cấu trúc bảng175
+Trạng thái vận chuyển176
+Business Rules177
+9.30 Đặc tả bảng banners177
+Mục đích177
+Cấu trúc bảng177
+Business Rules178
+9.31 Đặc tả bảng system_logs178
+Mục đích178
+Cấu trúc bảng178
+Business Rules179
+9.32 Danh sách khóa ngoại179
+9.33 Quy tắc toàn vẹn tham chiếu180
+9.34 Kế hoạch sao lưu và phục hồi181
+9.35 Tổng kết chương181
+Chương 10. Thiết kế giao diện người dùng (UI/UX Specification)181
+10.1 Giới thiệu181
+10.2 Nguyên tắc thiết kế182
+10.3 Bộ nhận diện giao diện182
+Màu chủ đạo182
+Font chữ183
+Icon183
+10.4 Responsive Design183
+10.5 Danh sách màn hình184
+Khách hàng184
+Quản trị185
+10.6 Luồng điều hướng186
+Khách hàng186
+Quản trị187
+10.7 Wireframe màn hình Trang chủ188
+Mục đích188
+Thành phần giao diện188
+Chức năng188
+10.8 Wireframe màn hình Danh sách sản phẩm188
+Thành phần188
+Bộ lọc189
+Sắp xếp189
+10.9 Wireframe màn hình Chi tiết sản phẩm189
+Thành phần189
+Chức năng189
+10.10 Wireframe màn hình Giỏ hàng190
+Thành phần190
+Chức năng190
+10.11 Wireframe màn hình Đặt hàng190
+Thông tin cần nhập190
+Hiển thị190
+Nút190
+10.12 Wireframe màn hình Thanh toán191
+Thành phần191
+Phương thức191
+10.13 Quy tắc giao diện191
+10.14 Giao diện Dashboard191
+Mục đích191
+Thành phần giao diện191
+Thanh điều hướng191
+Menu chức năng192
+Thẻ thống kê192
+Biểu đồ192
+Danh sách nhanh192
+10.15 Giao diện Quản lý sản phẩm193
+Mục đích193
+Thành phần193
+Bộ lọc193
+Danh sách193
+Nút chức năng194
+10.16 Giao diện Thêm sản phẩm194
+Thông tin nhập194
+Nút195
+Kiểm tra dữ liệu195
+10.17 Giao diện Quản lý danh mục195
+Chức năng195
+Hiển thị195
+10.18 Giao diện Quản lý khuyến mãi196
+Thành phần196
+Hiển thị196
+Chức năng197
+10.19 Giao diện Quản lý đơn hàng197
+Bộ lọc197
+Danh sách197
+Chi tiết đơn hàng198
+Các nút198
+10.20 Giao diện Quản lý khách hàng198
+Thành phần199
+Hiển thị199
+Chức năng199
+10.21 Giao diện Quản lý Banner199
+Hiển thị199
+Chức năng200
+10.22 Giao diện Quản lý tài khoản200
+Hiển thị200
+Chức năng200
+10.23 Giao diện Phân quyền201
+10.24 Giao diện Quản lý chi nhánh201
+Hiển thị201
+Chức năng201
+10.25 Giao diện Báo cáo201
+Bộ lọc201
+Báo cáo202
+Doanh thu202
+Đơn hàng202
+Khách hàng202
+Kho202
+Xuất dữ liệu202
+10.26 Giao diện Cài đặt202
+Thông tin công ty202
+Thanh toán203
+Giao hàng203
+SEO203
+Hệ thống203
+10.27 Phân quyền giao diện203
+10.28 Tiêu chuẩn giao diện204
+10.29 Tổng kết chương205
+Chương 11. Kiểm thử hệ thống (System Testing)205
+11.1 Giới thiệu205
+11.2 Mục tiêu kiểm thử205
+11.3 Phạm vi kiểm thử205
+11.4 Môi trường kiểm thử207
+Phần cứng207
+Phần mềm207
+11.5 Quy trình kiểm thử208
+11.6 Kiểm thử chức năng209
+11.7 Tiêu chí Pass/Fail209
+11.8 Mẫu Test Case210
+11.9 Test Case – Đăng nhập211
+TC_LOGIN_001211
+TC_LOGIN_002211
+TC_LOGIN_003211
+TC_LOGIN_004212
+TC_LOGIN_005212
+11.10 Test Case – Quên mật khẩu212
+TC_FORGOT_001212
+TC_FORGOT_002212
+TC_FORGOT_003213
+TC_FORGOT_004213
+11.11 Test Case – Sản phẩm213
+TC_PRODUCT_001213
+TC_PRODUCT_002213
+TC_PRODUCT_003213
+TC_PRODUCT_004214
+TC_PRODUCT_005214
+11.12 Test Case – Giỏ hàng214
+TC_CART_001214
+TC_CART_002214
+TC_CART_003214
+TC_CART_004215
+11.13 Test Case – Đặt hàng215
+TC_ORDER_001215
+TC_ORDER_002215
+TC_ORDER_003215
+TC_ORDER_004215
+TC_ORDER_005216
+11.14 Test Case – Quản lý đơn hàng216
+TC_ADMIN_ORDER_001216
+TC_ADMIN_ORDER_002216
+TC_ADMIN_ORDER_003216
+TC_ADMIN_ORDER_004216
+TC_ADMIN_ORDER_005216
+11.15 Test Case – Quản lý danh mục217
+TC_CATEGORY_001217
+TC_CATEGORY_002217
+TC_CATEGORY_003217
+TC_CATEGORY_004217
+TC_CATEGORY_005218
+TC_CATEGORY_006218
+11.16 Test Case – Quản lý khuyến mãi218
+TC_PROMOTION_001218
+TC_PROMOTION_002218
+TC_PROMOTION_003218
+TC_PROMOTION_004219
+TC_PROMOTION_005219
+11.17 Test Case – Banner219
+TC_BANNER_001219
+TC_BANNER_002219
+TC_BANNER_003219
+TC_BANNER_004220
+TC_BANNER_005220
+11.18 Test Case – Quản lý tài khoản220
+TC_USER_001220
+TC_USER_002220
+TC_USER_003221
+TC_USER_004221
+TC_USER_005221
+11.19 Test Case – Chi nhánh221
+TC_BRANCH_001221
+TC_BRANCH_002221
+TC_BRANCH_003221
+TC_BRANCH_004222
+TC_BRANCH_005222
+11.20 Test Case – Báo cáo222
+TC_REPORT_001222
+TC_REPORT_002222
+TC_REPORT_003222
+TC_REPORT_004222
+TC_REPORT_005223
+11.21 Test Case – Phân quyền223
+TC_PERMISSION_001223
+TC_PERMISSION_002223
+TC_PERMISSION_003223
+11.22 Test Case – Thanh toán224
+TC_PAYMENT_001224
+TC_PAYMENT_002224
+TC_PAYMENT_003224
+TC_PAYMENT_004224
+TC_PAYMENT_005224
+11.23 Test Case – Giao hàng224
+TC_SHIPMENT_001225
+TC_SHIPMENT_002225
+TC_SHIPMENT_003225
+TC_SHIPMENT_004225
+TC_SHIPMENT_005225
+11.24 Kiểm thử phân quyền225
+11.25 Kiểm thử bảo mật226
+11.26 Kiểm thử hiệu năng227
+11.27 Kiểm thử khả năng tương thích227
+11.28 Kiểm thử chấp nhận người dùng (UAT)228
+11.29 Tổng kết chương228
+Chương 12. Triển khai, vận hành và bảo trì hệ thống228
+12.1 Giới thiệu228
+12.2 Kiến trúc triển khai229
+12.3 Yêu cầu môi trường triển khai230
+Máy chủ ứng dụng230
+Máy chủ cơ sở dữ liệu230
+Phần mềm231
+12.4 Quy trình triển khai231
+Bước 1231
+Bước 2232
+Bước 3232
+Bước 4232
+Bước 5232
+Bước 6232
+Bước 7232
+Bước 8233
+Bước 9233
+12.5 Cấu hình hệ thống233
+12.6 Quy trình vận hành234
+Khách hàng234
+Admin234
+12.7 Nhật ký hệ thống234
+12.8 Sao lưu dữ liệu235
+12.9 Phục hồi dữ liệu235
+12.10 Cập nhật phiên bản236
+12.11 Bảo trì hệ thống236
+Hằng ngày236
+Hằng tuần236
+Hằng tháng236
+12.12 Giám sát hệ thống236
+12.13 Bảo mật hệ thống237
+12.14 Kế hoạch nâng cấp237
+12.15 Rủi ro và phương án xử lý237
+12.16 Hướng dẫn bàn giao238
+Mã nguồn238
+Tài liệu238
+Tài khoản239
+12.17 Hướng dẫn bảo trì239
+12.18 Tiêu chí nghiệm thu dự án239
+12.19 Kết luận dự án239
+12.20 Tổng kết chương240
+Chương 1. Giới thiệu
+1.1 Mục đích tài liệu
+Tài liệu Đặc tả Yêu cầu Phần mềm (Software Requirements Specification – SRS) được xây dựng nhằm mô tả đầy đủ các yêu cầu nghiệp vụ, yêu cầu chức năng và yêu cầu phi chức năng của hệ thống Website Bán Trái Cây. Tài liệu là cơ sở để thống nhất giữa khách hàng và nhóm phát triển phần mềm về phạm vi dự án, các chức năng cần triển khai cũng như các tiêu chuẩn kỹ thuật phải đáp ứng.
+SRS là tài liệu trung tâm trong toàn bộ quá trình phát triển hệ thống. Mọi hoạt động phân tích, thiết kế, lập trình, kiểm thử và nghiệm thu đều dựa trên nội dung của tài liệu này. Việc đặc tả đầy đủ và rõ ràng các yêu cầu giúp giảm thiểu rủi ro phát sinh trong quá trình triển khai, hạn chế việc thay đổi yêu cầu nhiều lần và đảm bảo sản phẩm cuối cùng đáp ứng đúng mong đợi của doanh nghiệp.
+Ngoài mục đích phục vụ nhóm phát triển, tài liệu còn là cơ sở để doanh nghiệp xem xét, góp ý và phê duyệt phạm vi dự án trước khi bước sang giai đoạn thiết kế và lập trình.
+1.2 Mục tiêu dự án
+Trong bối cảnh nhu cầu mua sắm trực tuyến ngày càng gia tăng, đặc biệt đối với các mặt hàng thực phẩm tươi sống, việc xây dựng một hệ thống bán trái cây trực tuyến là cần thiết nhằm nâng cao hiệu quả kinh doanh, mở rộng thị trường và tối ưu quy trình quản lý.
+Mục tiêu của dự án bao gồm:
+Xây dựng website bán trái cây hoạt động trên phạm vi toàn quốc. 
+Cung cấp nền tảng mua hàng trực tuyến dành cho khách hàng cá nhân và doanh nghiệp. 
+Cho phép khách hàng dễ dàng tìm kiếm, lựa chọn và đặt mua các sản phẩm trái cây theo mùa. 
+Hỗ trợ bán các sản phẩm theo nhiều hình thức như trái cây tươi, combo trái cây và giỏ quà trái cây. 
+Quản lý toàn bộ quy trình từ đăng bán sản phẩm, quản lý tồn kho, tiếp nhận đơn hàng, thanh toán đến giao hàng. 
+Hỗ trợ theo dõi trạng thái đơn hàng theo thời gian thực. 
+Cung cấp hệ thống báo cáo phục vụ công tác quản lý doanh thu, khách hàng và hàng tồn kho. 
+Xây dựng nền tảng có khả năng mở rộng trong tương lai như đa ngôn ngữ, tích hợp cổng thanh toán và mở rộng các chức năng kinh doanh. 
+1.3 Phạm vi hệ thống
+Hệ thống được xây dựng nhằm phục vụ hoạt động kinh doanh trực tuyến của doanh nghiệp, bao gồm các chức năng chính sau:
+Đối với khách hàng
+Xem danh sách sản phẩm. 
+Tìm kiếm sản phẩm. 
+Lọc sản phẩm theo giá. 
+Xem chi tiết sản phẩm. 
+Thêm sản phẩm vào giỏ hàng. 
+Đặt hàng trực tuyến. 
+Thanh toán qua MoMo hoặc VietQR. 
+Theo dõi trạng thái đơn hàng. 
+Xem lịch sử mua hàng. 
+Quản lý thông tin cá nhân. 
+Khôi phục mật khẩu bằng OTP. 
+Xem danh sách chi nhánh cửa hàng. 
+Đối với quản trị viên
+Quản lý danh mục sản phẩm. 
+Quản lý sản phẩm. 
+Quản lý tồn kho. 
+Quản lý đơn hàng. 
+Xác nhận thanh toán. 
+Quản lý tài khoản quản trị. 
+Phân quyền quản trị. 
+Theo dõi doanh thu. 
+Thống kê khách hàng. 
+Thống kê tồn kho. 
+Quản lý chương trình giảm giá. 
+1.4 Phạm vi không thực hiện
+Trong phiên bản 1.0 của dự án, các chức năng dưới đây chưa được triển khai:
+Blog chia sẻ kiến thức về trái cây. 
+Đánh giá và bình luận sản phẩm. 
+Chatbot tư vấn khách hàng. 
+Chương trình tích điểm thành viên. 
+Mã giảm giá. 
+Đa ngôn ngữ. 
+Tích hợp mạng xã hội. 
+Livestream bán hàng. 
+Đặt lịch giao hàng định kỳ. 
+Các chức năng trên sẽ được xem xét trong các phiên bản nâng cấp sau khi hệ thống đi vào vận hành ổn định.
+1.5 Đối tượng sử dụng
+Hệ thống được thiết kế phục vụ bốn nhóm người dùng chính.
+Khách truy cập
+Là người dùng chưa đăng nhập vào hệ thống. Đối tượng này có thể xem danh sách sản phẩm, tìm kiếm sản phẩm, xem thông tin cửa hàng và thực hiện đặt hàng.
+Khách hàng
+Sau khi đặt đơn hàng lần đầu, hệ thống sẽ sử dụng số điện thoại của khách để tạo tài khoản. Khách hàng có thể đăng nhập bằng số điện thoại và mật khẩu để theo dõi lịch sử mua hàng, trạng thái đơn hàng và cập nhật thông tin cá nhân.
+Quản trị viên chi nhánh
+Quản trị viên chi nhánh được Admin tổng cấp tài khoản và phân quyền theo từng chức năng. Mỗi tài khoản chỉ được phép thao tác trên các chức năng được cấp quyền, chẳng hạn như quản lý đơn hàng, xác nhận giao hàng hoặc xem báo cáo.
+Quản trị viên tổng
+Là người có quyền cao nhất trong hệ thống. Admin tổng chịu trách nhiệm quản lý toàn bộ dữ liệu, bao gồm sản phẩm, danh mục, tài khoản quản trị, phân quyền, đơn hàng, tồn kho, báo cáo và cấu hình hệ thống.
+1.6 Thuật ngữ và định nghĩa
+Thuật ngữ
+Ý nghĩa
+SRS
+Software Requirements Specification – Đặc tả yêu cầu phần mềm
+Actor
+Đối tượng tương tác với hệ thống
+Admin
+Người quản trị hệ thống
+Admin Tổng
+Quản trị viên có toàn quyền trên hệ thống
+Admin Chi nhánh
+Quản trị viên được phân quyền theo từng chức năng
+OTP
+One-Time Password – Mã xác thực dùng một lần
+VietQR
+Chuẩn thanh toán QR của các ngân hàng Việt Nam
+MoMo
+Ví điện tử hỗ trợ thanh toán trực tuyến
+Combo
+Bộ sản phẩm được ghép từ nhiều loại trái cây
+Giỏ quà
+Bộ quà tặng trái cây được đóng gói theo mẫu cố định
+1.7 Công nghệ dự kiến
+Thành phần
+Công nghệ
+Frontend
+ReactJS
+Backend
+Laravel 12
+Ngôn ngữ lập trình
+PHP 8.3
+API
+RESTful API
+Database
+MySQL 8
+Authentication
+JWT
+Web Server
+Apache hoặc Nginx
+Quản lý mã nguồn
+Git
+IDE
+Visual Studio Code
+Thiết kế giao diện
+Figma
+Quản lý dự án
+GitHub Projects hoặc Trello
+1.8 Môi trường triển khai
+Hệ thống dự kiến được triển khai theo mô hình Client – Server.
+Người dùng truy cập website thông qua trình duyệt trên điện thoại, máy tính bảng hoặc máy tính. 
+Frontend ReactJS giao tiếp với Backend Laravel thông qua REST API. 
+Backend xử lý nghiệp vụ và truy xuất cơ sở dữ liệu MySQL. 
+Dữ liệu được lưu trữ tập trung trên máy chủ của doanh nghiệp hoặc dịch vụ Cloud. 
+Hệ thống ưu tiên tối ưu trải nghiệm trên thiết bị di động, đồng thời vẫn đảm bảo khả năng sử dụng trên máy tính và máy tính bảng.
+Chương 2. Khảo sát hiện trạng và phân tích nghiệp vụ
+2.1 Giới thiệu
+Trước khi tiến hành xây dựng hệ thống Website Bán Trái Cây, cần thực hiện khảo sát hiện trạng hoạt động kinh doanh của doanh nghiệp nhằm xác định những vấn đề đang tồn tại, nhu cầu thực tế và mục tiêu cần đạt được. Kết quả khảo sát là cơ sở để xác định các yêu cầu nghiệp vụ, xây dựng quy trình hoạt động và đề xuất giải pháp phần mềm phù hợp.
+Hệ thống được xây dựng hướng đến mô hình bán lẻ trực tuyến, cho phép khách hàng trên toàn quốc dễ dàng tìm kiếm, lựa chọn và đặt mua các loại trái cây theo mùa thông qua website. Đồng thời, doanh nghiệp có thể quản lý tập trung toàn bộ hoạt động kinh doanh từ một nền tảng duy nhất.
+2.2 Hiện trạng hoạt động
+Qua quá trình khảo sát, doanh nghiệp hiện đang kinh doanh trái cây theo hình thức truyền thống kết hợp với bán hàng thông qua các nền tảng mạng xã hội và liên hệ trực tiếp qua điện thoại.
+Quy trình bán hàng hiện tại chủ yếu bao gồm:
+Đăng sản phẩm lên Facebook hoặc Zalo.
+Khách hàng nhắn tin hoặc gọi điện đặt hàng.
+Nhân viên ghi nhận thông tin đơn hàng thủ công.
+Kiểm tra tình trạng hàng hóa.
+Xác nhận đơn hàng.
+Thông báo số tiền cần thanh toán.
+Khách hàng chuyển khoản.
+Nhân viên kiểm tra giao dịch.
+Chuẩn bị hàng.
+Liên hệ đơn vị vận chuyển.
+Theo dõi quá trình giao hàng bằng phương pháp thủ công.
+Toàn bộ thông tin đơn hàng, khách hàng và doanh thu được quản lý bằng nhiều phương thức khác nhau như sổ ghi chép, bảng tính Excel hoặc tin nhắn trên mạng xã hội. Điều này dẫn đến việc dữ liệu bị phân tán và khó kiểm soát.
+2.3 Các vấn đề của hệ thống hiện tại
+Sau quá trình khảo sát, các vấn đề chính được xác định như sau.
+2.3.1 Khó tiếp cận khách hàng
+Việc bán hàng chủ yếu thông qua mạng xã hội khiến khách hàng khó tìm kiếm sản phẩm theo nhu cầu. Khách phải cuộn nhiều bài đăng để tìm đúng loại trái cây mong muốn, gây mất thời gian và ảnh hưởng đến trải nghiệm mua sắm.
+2.3.2 Không có hệ thống quản lý sản phẩm
+Việc đăng sản phẩm hoàn toàn thủ công dẫn đến nhiều hạn chế:
+Khó cập nhật giá.
+Khó chỉnh sửa thông tin.
+Khó quản lý hình ảnh.
+Không có phân loại sản phẩm.
+Không thể tìm kiếm nhanh.
+2.3.3 Khó quản lý tồn kho
+Nhân viên phải tự kiểm tra số lượng hàng còn lại.
+Trong nhiều trường hợp:
+Khách đã đặt hàng nhưng sản phẩm đã hết.
+Số lượng tồn kho không chính xác.
+Không biết mặt hàng nào sắp hết.
+Điều này làm giảm uy tín của doanh nghiệp.
+2.3.4 Quản lý đơn hàng thủ công
+Thông tin đơn hàng được lưu bằng Excel hoặc ghi chép.
+Các nhược điểm gồm:
+Dễ thất lạc.
+Khó tìm kiếm.
+Khó thống kê.
+Không theo dõi được lịch sử xử lý.
+2.3.5 Khách hàng không theo dõi được đơn hàng
+Sau khi đặt hàng, khách hàng phải:
+Gọi điện.
+Nhắn tin.
+Chờ nhân viên phản hồi.
+Điều này làm tăng khối lượng công việc của nhân viên chăm sóc khách hàng.
+2.3.6 Khó thống kê doanh thu
+Do dữ liệu nằm ở nhiều nguồn khác nhau nên việc thống kê:
+Doanh thu.
+Đơn hàng.
+Khách hàng.
+Tồn kho.
+đều phải thực hiện thủ công.
+2.3.7 Phân quyền chưa rõ ràng
+Hiện tại chưa có cơ chế phân quyền giữa:
+Quản trị viên tổng.
+Quản trị viên chi nhánh.
+Điều này có thể dẫn đến việc nhiều người cùng chỉnh sửa dữ liệu hoặc truy cập vào những chức năng không được phép.
+2.4 Nhu cầu của doanh nghiệp
+Doanh nghiệp mong muốn xây dựng một hệ thống bán hàng trực tuyến đáp ứng các yêu cầu sau.
+Đối với khách hàng
+Xem sản phẩm mọi lúc.
+Tìm kiếm nhanh.
+Xem hình ảnh rõ ràng.
+Đặt hàng đơn giản.
+Thanh toán trực tuyến.
+Theo dõi trạng thái đơn hàng.
+Xem lịch sử mua hàng.
+Đăng nhập bằng số điện thoại.
+Quên mật khẩu bằng OTP.
+Đối với doanh nghiệp
+Quản lý tập trung.
+Dễ dàng cập nhật giá.
+Quản lý tồn kho.
+Quản lý đơn hàng.
+Quản lý doanh thu.
+Quản lý khách hàng.
+Quản lý tài khoản.
+Phân quyền nhân viên.
+2.5 Mục tiêu của hệ thống
+Sau khi hoàn thành, hệ thống phải đáp ứng các mục tiêu sau.
+Tin học hóa toàn bộ quy trình bán hàng.
+Giảm thời gian xử lý đơn hàng.
+Giảm sai sót trong quản lý tồn kho.
+Tăng khả năng tiếp cận khách hàng trên toàn quốc.
+Tăng khả năng quản lý doanh thu.
+Cải thiện trải nghiệm mua sắm.
+Tăng tính chuyên nghiệp của doanh nghiệp.
+Dễ dàng mở rộng trong tương lai.
+2.6 Mô hình hoạt động của hệ thống
+Quy trình hoạt động tổng quát của hệ thống được mô tả như sau:
+Bước 1: Admin tổng đăng nhập vào hệ thống.
+↓
+Bước 2: Thêm danh mục sản phẩm.
+↓
+Bước 3: Thêm sản phẩm.
+↓
+Bước 4: Cập nhật giá bán.
+↓
+Bước 5: Cập nhật tồn kho.
+↓
+Bước 6: Sản phẩm hiển thị trên website.
+↓
+Bước 7: Khách hàng truy cập website.
+↓
+Bước 8: Khách tìm kiếm hoặc duyệt sản phẩm.
+↓
+Bước 9: Xem chi tiết sản phẩm.
+↓
+Bước 10: Thêm vào giỏ hàng.
+↓
+Bước 11: Nhập thông tin nhận hàng.
+↓
+Bước 12: Chọn phương thức thanh toán.
+↓
+Bước 13: Xác nhận đặt hàng.
+↓
+Bước 14: Hệ thống tạo đơn hàng.
+↓
+Bước 15: Admin tiếp nhận đơn.
+↓
+Bước 16: Kiểm tra thanh toán.
+↓
+Bước 17: Chuẩn bị hàng.
+↓
+Bước 18: Bàn giao cho đơn vị vận chuyển GreenSM.
+↓
+Bước 19: Cập nhật trạng thái giao hàng.
+↓
+Bước 20: Khách hàng theo dõi đơn hàng.
+↓
+Bước 21: Đơn hàng hoàn tất.
+2.7 Đối tượng sử dụng hệ thống
+Hệ thống có bốn nhóm người dùng chính.
+2.7.1 Khách truy cập
+Quyền hạn:
+Xem sản phẩm.
+Tìm kiếm.
+Lọc sản phẩm.
+Xem chi tiết.
+Xem cửa hàng.
+Không được phép:
+Theo dõi đơn hàng.
+Xem lịch sử mua hàng.
+Quản lý thông tin cá nhân.
+2.7.2 Khách hàng
+Quyền hạn:
+Đăng nhập.
+Đổi mật khẩu.
+Quên mật khẩu.
+Đặt hàng.
+Theo dõi đơn.
+Xem lịch sử.
+Quản lý thông tin cá nhân.
+2.7.3 Admin Chi nhánh
+Được Admin Tổng cấp quyền theo từng chức năng. Ví dụ:
+Quản lý đơn hàng.
+Xác nhận thanh toán.
+Quản lý tồn kho.
+Cập nhật trạng thái giao hàng.
+Xem báo cáo.
+Không được phép:
+Tạo tài khoản quản trị.
+Phân quyền.
+Quản lý sản phẩm (trừ khi được cấp quyền).
+Xóa dữ liệu hệ thống.
+2.7.4 Admin Tổng
+Có toàn quyền trên hệ thống.
+Bao gồm:
+Quản lý tài khoản.
+Quản lý phân quyền.
+Quản lý sản phẩm.
+Quản lý danh mục.
+Quản lý tồn kho.
+Quản lý đơn hàng.
+Quản lý báo cáo.
+Quản lý chương trình giảm giá.
+Cấu hình hệ thống.
+2.8 Các quy trình nghiệp vụ chính
+Hệ thống bao gồm các quy trình nghiệp vụ sau:
+Quy trình quản lý danh mục.
+Quy trình quản lý sản phẩm.
+Quy trình cập nhật giá bán.
+Quy trình quản lý tồn kho.
+Quy trình tìm kiếm sản phẩm.
+Quy trình đặt hàng.
+Quy trình thanh toán.
+Quy trình xác nhận đơn hàng.
+Quy trình giao hàng.
+Quy trình theo dõi đơn hàng.
+Quy trình hủy đơn hàng.
+Quy trình quản lý tài khoản.
+Quy trình phân quyền.
+Quy trình thống kê và báo cáo.
+2.9 Các yêu cầu nghiệp vụ cốt lõi
+Từ khảo sát hiện trạng, hệ thống cần đáp ứng các yêu cầu nghiệp vụ sau:
+Giá sản phẩm được phép thay đổi theo từng thời điểm.
+Mỗi sản phẩm có thể có một hoặc nhiều hình ảnh.
+Giỏ quà là sản phẩm cố định, không cho phép khách hàng thay đổi thành phần.
+Khi số lượng tồn kho bằng 0, hệ thống tự động hiển thị trạng thái Hết hàng và không cho phép đặt mua.
+Khách hàng không cần đăng ký trước; tài khoản được tạo sau lần đặt hàng đầu tiên dựa trên số điện thoại.
+Đăng nhập bằng số điện thoại và mật khẩu.
+Hỗ trợ quên mật khẩu bằng mã OTP.
+Đơn hàng chỉ được hủy trước khi bàn giao cho đơn vị vận chuyển.
+Hệ thống hỗ trợ thanh toán qua MoMo và VietQR.
+Hệ thống ưu tiên tự động đối soát thanh toán nếu doanh nghiệp cung cấp API; nếu không, Admin xác nhận thủ công.
+Hỗ trợ theo dõi trạng thái đơn hàng với các trạng thái: Chờ xác nhận → Đã xác nhận → Đang chuẩn bị → Tạm dừng → Đang giao → Đã giao → Đã hủy.
+Hệ thống phải tối ưu hiển thị trên điện thoại và máy tính bảng.
+Hệ thống hỗ trợ SEO để tăng khả năng tiếp cận khách hàng thông qua công cụ tìm kiếm.
+Chương 3. Phân tích yêu cầu chức năng (Functional Requirements)
+Chương này mô tả chi tiết toàn bộ các yêu cầu chức năng của hệ thống Website Bán Trái Cây. Mỗi chức năng được đặc tả theo một mã định danh riêng (FR – Functional Requirement) nhằm phục vụ cho quá trình phân tích, thiết kế, lập trình, kiểm thử và nghiệm thu hệ thống. Các yêu cầu chức năng được xây dựng dựa trên nhu cầu thực tế của doanh nghiệp và kết quả khảo sát nghiệp vụ đã trình bày trong các chương trước.
+Mỗi yêu cầu chức năng sẽ bao gồm các nội dung sau:
+Mã yêu cầu (Requirement ID): Định danh duy nhất của chức năng.
+Tên chức năng: Tên mô tả ngắn gọn chức năng.
+Mục đích: Ý nghĩa và mục tiêu của chức năng.
+Đối tượng sử dụng (Actor): Người dùng có quyền sử dụng chức năng.
+Điều kiện tiên quyết (Pre-condition): Điều kiện cần có trước khi thực hiện chức năng.
+Luồng xử lý chính (Main Flow): Các bước thực hiện chức năng trong điều kiện bình thường.
+Luồng ngoại lệ (Alternative/Exception Flow): Các trường hợp ngoại lệ hoặc xử lý lỗi.
+Điều kiện sau khi hoàn thành (Post-condition): Trạng thái của hệ thống sau khi chức năng được thực hiện thành công.
+Quy tắc nghiệp vụ liên quan (Business Rules): Các quy định và ràng buộc áp dụng cho chức năng.
+Để thuận tiện cho việc quản lý, các yêu cầu chức năng được phân nhóm theo từng phân hệ chính của hệ thống, bao gồm:
+Phân hệ quản lý tài khoản.
+Phân hệ quản lý sản phẩm.
+Phân hệ giỏ hàng và đặt hàng.
+Phân hệ thanh toán.
+Phân hệ quản lý đơn hàng.
+Phân hệ giao hàng.
+Phân hệ quản trị hệ thống.
+Phân hệ báo cáo và thống kê.
+3.1 Phân hệ quản lý tài khoản
+Phân hệ quản lý tài khoản là thành phần đầu tiên của hệ thống, chịu trách nhiệm xác thực người dùng, quản lý thông tin cá nhân và kiểm soát quyền truy cập vào các chức năng. Hệ thống hỗ trợ hai nhóm tài khoản chính gồm Khách hàng và Quản trị viên. Đối với quản trị viên, hệ thống áp dụng cơ chế phân quyền linh hoạt, cho phép Admin Tổng cấp hoặc thu hồi quyền đối với từng chức năng cụ thể của Admin Chi nhánh.
+Khách hàng không cần đăng ký tài khoản trước khi mua hàng. Sau lần đặt hàng đầu tiên, hệ thống sẽ tự động tạo tài khoản dựa trên số điện thoại đã cung cấp. Người dùng sử dụng số điện thoại và mật khẩu để đăng nhập, theo dõi đơn hàng và quản lý thông tin cá nhân. Trường hợp quên mật khẩu, hệ thống hỗ trợ xác minh bằng mã OTP gửi đến số điện thoại đăng ký.
+FR-001 – Đăng nhập hệ thống
+Mục đích
+Cho phép khách hàng, Admin Tổng và Admin Chi nhánh đăng nhập vào hệ thống để sử dụng các chức năng phù hợp với quyền hạn được cấp.
+Đối tượng sử dụng
+Khách hàng
+Admin Tổng
+Admin Chi nhánh
+Điều kiện tiên quyết
+Tài khoản đã tồn tại trong hệ thống.
+Tài khoản chưa bị khóa.
+Người dùng có kết nối Internet.
+Luồng xử lý chính
+Bước 1: Người dùng truy cập trang đăng nhập.
+Bước 2: Nhập số điện thoại.
+Bước 3: Nhập mật khẩu.
+Bước 4: Nhấn nút Đăng nhập.
+Bước 5: Hệ thống kiểm tra tính hợp lệ của dữ liệu.
+Bước 6: Hệ thống xác thực tài khoản.
+Bước 7: Nếu thông tin hợp lệ, hệ thống tạo phiên đăng nhập.
+Bước 8: Hệ thống chuyển người dùng đến giao diện phù hợp với vai trò.
+Luồng ngoại lệ
+TH1: Bỏ trống số điện thoại.
+Hệ thống hiển thị thông báo: "Vui lòng nhập số điện thoại."
+TH2: Bỏ trống mật khẩu.
+Hệ thống hiển thị thông báo: "Vui lòng nhập mật khẩu."
+TH3: Sai mật khẩu.
+Hệ thống hiển thị thông báo: "Số điện thoại hoặc mật khẩu không chính xác."
+TH4: Tài khoản bị khóa.
+Hệ thống hiển thị thông báo: "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên."
+Điều kiện sau khi hoàn thành
+Người dùng đăng nhập thành công.
+Hệ thống lưu phiên đăng nhập.
+Ghi nhật ký đăng nhập.
+Quy tắc nghiệp vụ
+Người dùng đăng nhập bằng số điện thoại.
+Mật khẩu được mã hóa trước khi lưu vào cơ sở dữ liệu.
+Sau 5 lần đăng nhập sai liên tiếp, tài khoản tạm khóa trong 15 phút.
+FR-002 – Đăng xuất hệ thống
+Mục đích
+Cho phép người dùng kết thúc phiên làm việc an toàn.
+Đối tượng sử dụng
+Khách hàng
+Admin Tổng
+Admin Chi nhánh
+Luồng xử lý
+Bước 1: Người dùng chọn Đăng xuất.
+Bước 2: Hệ thống hủy phiên đăng nhập.
+Bước 3: Xóa Token xác thực.
+Bước 4: Chuyển về trang chủ.
+Điều kiện sau khi hoàn thành
+Người dùng phải đăng nhập lại nếu muốn tiếp tục sử dụng các chức năng yêu cầu xác thực.
+FR-003 – Quên mật khẩu
+Mục đích
+Cho phép người dùng lấy lại mật khẩu khi quên.
+Đối tượng sử dụng
+Khách hàng
+Admin
+Điều kiện tiên quyết
+Số điện thoại đã được đăng ký.
+Luồng xử lý chính
+Bước 1: Chọn Quên mật khẩu.
+Bước 2: Nhập số điện thoại.
+Bước 3: Hệ thống kiểm tra số điện thoại.
+Bước 4: Gửi mã OTP.
+Bước 5: Người dùng nhập OTP.
+Bước 6: Hệ thống xác thực OTP.
+Bước 7: Người dùng nhập mật khẩu mới.
+Bước 8: Xác nhận mật khẩu.
+Bước 9: Hệ thống cập nhật mật khẩu mới.
+Luồng ngoại lệ
+OTP không đúng.
+OTP hết hạn.
+Số điện thoại chưa tồn tại.
+Hai mật khẩu không trùng nhau.
+Điều kiện sau khi hoàn thành
+Người dùng có thể đăng nhập bằng mật khẩu mới.
+Quy tắc nghiệp vụ
+OTP có hiệu lực trong 5 phút.
+Mỗi OTP chỉ được sử dụng một lần.
+Mật khẩu mới không được trùng với mật khẩu hiện tại.
+FR-004 – Thay đổi mật khẩu
+Mục đích
+Cho phép người dùng thay đổi mật khẩu sau khi đăng nhập.
+Đối tượng sử dụng
+Khách hàng
+Admin
+Luồng xử lý
+Nhập mật khẩu hiện tại.
+Nhập mật khẩu mới.
+Nhập lại mật khẩu mới.
+Hệ thống kiểm tra dữ liệu.
+Cập nhật mật khẩu.
+Luồng ngoại lệ
+Mật khẩu hiện tại sai.
+Hai mật khẩu mới không trùng nhau.
+Mật khẩu mới không đáp ứng yêu cầu bảo mật.
+Điều kiện sau khi hoàn thành
+Hệ thống yêu cầu người dùng đăng nhập lại bằng mật khẩu mới.
+FR-005 – Quản lý thông tin cá nhân
+Mục đích
+Cho phép khách hàng cập nhật thông tin cá nhân phục vụ việc đặt hàng.
+Đối tượng sử dụng
+Khách hàng
+Thông tin được phép chỉnh sửa
+Họ và tên
+Số điện thoại (nếu được doanh nghiệp cho phép)
+Địa chỉ
+Ảnh đại diện (nếu triển khai ở phiên bản sau)
+Luồng xử lý
+Mở trang thông tin cá nhân.
+Chỉnh sửa thông tin.
+Nhấn Lưu.
+Hệ thống kiểm tra dữ liệu.
+Cập nhật vào cơ sở dữ liệu.
+Điều kiện sau khi hoàn thành
+Thông tin mới được sử dụng cho các đơn hàng tiếp theo.
+Quy tắc nghiệp vụ
+Họ tên không được để trống.
+Số điện thoại phải đúng định dạng.
+Địa chỉ nhận hàng không được để trống.
+FR-006 – Quản lý tài khoản quản trị
+Mục đích
+Cho phép Admin Tổng quản lý tài khoản quản trị của hệ thống.
+Đối tượng sử dụng
+Admin Tổng
+Chức năng
+Thêm tài khoản Admin.
+Chỉnh sửa thông tin Admin.
+Khóa hoặc mở khóa tài khoản.
+Đặt lại mật khẩu.
+Xóa tài khoản.
+Gán quyền cho Admin Chi nhánh.
+Luồng xử lý chính
+Admin Tổng mở danh sách tài khoản.
+Chọn chức năng cần thực hiện.
+Nhập hoặc chỉnh sửa thông tin.
+Lưu thay đổi.
+Hệ thống cập nhật dữ liệu.
+Điều kiện sau khi hoàn thành
+Danh sách tài khoản được cập nhật và quyền mới có hiệu lực ngay sau khi lưu.
+Quy tắc nghiệp vụ
+Chỉ Admin Tổng được phép tạo tài khoản quản trị.
+Admin Chi nhánh không được tạo hoặc xóa tài khoản quản trị.
+Mỗi tài khoản quản trị được cấp quyền theo từng chức năng, không cấp quyền mặc định toàn hệ thống.
+3.2 Phân hệ quản lý danh mục và sản phẩm
+Phân hệ quản lý danh mục và sản phẩm là một trong những phân hệ quan trọng nhất của hệ thống Website Bán Trái Cây. Phân hệ này cho phép Admin Tổng quản lý toàn bộ danh mục sản phẩm, thông tin chi tiết, giá bán, số lượng tồn kho, hình ảnh, chương trình giảm giá và trạng thái hiển thị của từng sản phẩm trên website.
+Hệ thống hỗ trợ ba nhóm danh mục chính:
+Trái cây tươi.
+Combo trái cây.
+Giỏ quà trái cây.
+Trong đó, Giỏ quà trái cây là sản phẩm được thiết kế theo mẫu cố định của doanh nghiệp, khách hàng không được thay đổi thành phần trái cây bên trong.
+Giá bán của sản phẩm có thể được điều chỉnh theo từng thời điểm nhằm đáp ứng nhu cầu kinh doanh và biến động của thị trường. Hệ thống sẽ tự động hiển thị trạng thái "Hết hàng" khi số lượng tồn kho bằng 0 và không cho phép khách hàng đặt mua.
+FR-007 – Quản lý danh mục sản phẩm
+Mục đích
+Cho phép Admin Tổng tạo và quản lý các danh mục sản phẩm trên hệ thống.
+Đối tượng sử dụng
+Admin Tổng
+Chức năng
+Thêm danh mục.
+Chỉnh sửa danh mục.
+Khóa/ẩn danh mục.
+Xem danh sách danh mục.
+Luồng xử lý chính
+Admin truy cập chức năng Quản lý danh mục.
+Chọn Thêm danh mục.
+Nhập tên danh mục và mô tả.
+Nhấn Lưu.
+Hệ thống kiểm tra dữ liệu.
+Danh mục được tạo thành công.
+Luồng ngoại lệ
+Tên danh mục để trống.
+Tên danh mục đã tồn tại.
+Điều kiện sau khi hoàn thành
+Danh mục mới hiển thị trong hệ thống và có thể được sử dụng khi tạo sản phẩm.
+Quy tắc nghiệp vụ
+Không cho phép trùng tên danh mục.
+Danh mục đã có sản phẩm không được phép xóa, chỉ được ẩn.
+FR-008 – Quản lý sản phẩm
+Mục đích
+Cho phép Admin Tổng quản lý toàn bộ sản phẩm kinh doanh.
+Đối tượng sử dụng
+Admin Tổng
+Thông tin sản phẩm
+Mã sản phẩm.
+Tên sản phẩm.
+Danh mục.
+Giá bán.
+Mô tả.
+Xuất xứ.
+Đơn vị tính.
+Khối lượng.
+Số lượng tồn.
+Trạng thái.
+Hình ảnh.
+Chức năng
+Thêm sản phẩm.
+Cập nhật sản phẩm.
+Xóa sản phẩm.
+Khóa sản phẩm.
+Hiển thị hoặc ẩn sản phẩm.
+Luồng xử lý chính
+Chọn Thêm sản phẩm.
+Nhập đầy đủ thông tin.
+Tải hình ảnh.
+Chọn danh mục.
+Nhập giá bán.
+Nhập tồn kho.
+Lưu dữ liệu.
+Luồng ngoại lệ
+Thiếu thông tin bắt buộc.
+Giá nhỏ hơn hoặc bằng 0.
+Tồn kho nhỏ hơn 0.
+Điều kiện sau khi hoàn thành
+Sản phẩm được hiển thị trên website.
+Quy tắc nghiệp vụ
+Mỗi sản phẩm thuộc duy nhất một danh mục.
+Giá bán phải lớn hơn 0.
+Tồn kho không được âm.
+FR-009 – Quản lý hình ảnh sản phẩm
+Mục đích
+Cho phép quản lý hình ảnh của từng sản phẩm.
+Đối tượng sử dụng
+Admin Tổng
+Chức năng
+Thêm hình ảnh.
+Xóa hình ảnh.
+Đặt hình đại diện.
+Thay đổi thứ tự hiển thị.
+Quy tắc nghiệp vụ
+Một sản phẩm có ít nhất một hình ảnh.
+Một sản phẩm có thể có nhiều hình ảnh.
+Chỉ chấp nhận định dạng JPG, PNG hoặc WebP.
+FR-010 – Quản lý giá bán
+Mục đích
+Cho phép điều chỉnh giá sản phẩm theo từng thời điểm.
+Đối tượng sử dụng
+Admin Tổng
+Luồng xử lý
+Chọn sản phẩm.
+Chỉnh sửa giá.
+Lưu.
+Hệ thống cập nhật giá mới.
+Quy tắc nghiệp vụ
+Giá mới có hiệu lực ngay sau khi lưu.
+Lưu lịch sử thay đổi giá để phục vụ kiểm tra sau này.
+FR-011 – Quản lý tồn kho
+Mục đích
+Theo dõi và quản lý số lượng tồn của từng sản phẩm.
+Đối tượng sử dụng
+Admin Tổng.
+Admin Chi nhánh (nếu được cấp quyền).
+Chức năng
+Nhập kho.
+Điều chỉnh tồn kho.
+Xem lịch sử nhập.
+Xem lịch sử điều chỉnh.
+Quy tắc nghiệp vụ
+Khi tồn kho bằng 0, sản phẩm chuyển sang trạng thái Hết hàng.
+Không cho phép điều chỉnh khiến tồn kho nhỏ hơn 0.
+FR-012 – Hiển thị trạng thái hết hàng
+Mục đích
+Thông báo cho khách hàng khi sản phẩm không còn để bán.
+Đối tượng sử dụng
+Khách truy cập.
+Khách hàng.
+Luồng xử lý
+Hệ thống kiểm tra tồn kho.
+Nếu tồn kho bằng 0.
+Hiển thị nhãn Hết hàng.
+Vô hiệu hóa nút Thêm vào giỏ hàng.
+Quy tắc nghiệp vụ
+Khách hàng không được phép đặt mua sản phẩm hết hàng.
+FR-013 – Quản lý chương trình giảm giá
+Mục đích
+Cho phép doanh nghiệp triển khai các chương trình khuyến mãi theo từng thời điểm.
+Đối tượng sử dụng
+Admin Tổng
+Thông tin
+Tên chương trình.
+Ngày bắt đầu.
+Ngày kết thúc.
+Mức giảm (% hoặc số tiền).
+Danh sách sản phẩm áp dụng.
+Quy tắc nghiệp vụ
+Không áp dụng nhiều chương trình giảm giá đồng thời trên cùng một sản phẩm.
+Chương trình chỉ có hiệu lực trong khoảng thời gian đã thiết lập.
+FR-014 – Danh sách sản phẩm
+Mục đích
+Hiển thị toàn bộ sản phẩm đang kinh doanh.
+Đối tượng sử dụng
+Tất cả người dùng.
+Thông tin hiển thị
+Hình ảnh.
+Tên sản phẩm.
+Giá bán.
+Giá sau giảm (nếu có).
+Trạng thái còn hàng/hết hàng.
+Quy tắc nghiệp vụ
+Chỉ hiển thị sản phẩm đang được phép kinh doanh.
+Sản phẩm bị ẩn sẽ không xuất hiện trên website.
+FR-015 – Xem chi tiết sản phẩm
+Mục đích
+Hiển thị đầy đủ thông tin của một sản phẩm.
+Nội dung hiển thị
+Tên sản phẩm.
+Hình ảnh.
+Giá bán.
+Mô tả.
+Xuất xứ.
+Khối lượng.
+Danh mục.
+Tình trạng hàng.
+Chương trình giảm giá (nếu có).
+FR-016 – Tìm kiếm sản phẩm
+Mục đích
+Cho phép khách hàng tìm kiếm sản phẩm theo tên.
+Luồng xử lý
+Nhập từ khóa.
+Hệ thống tìm kiếm.
+Hiển thị danh sách phù hợp.
+Quy tắc nghiệp vụ
+Không phân biệt chữ hoa và chữ thường.
+Hỗ trợ tìm kiếm gần đúng theo tên sản phẩm.
+FR-017 – Lọc sản phẩm
+Mục đích
+Cho phép khách hàng lọc sản phẩm theo các tiêu chí.
+Tiêu chí
+Danh mục.
+Khoảng giá.
+Còn hàng.
+Đang giảm giá.
+Điều kiện sau khi hoàn thành
+Danh sách sản phẩm được cập nhật theo bộ lọc đã chọn.
+FR-018 – Sắp xếp sản phẩm
+Mục đích
+Cho phép khách hàng thay đổi thứ tự hiển thị sản phẩm.
+Tiêu chí sắp xếp
+Giá tăng dần.
+Giá giảm dần.
+Mới nhất.
+Tên từ A đến Z.
+Tên từ Z đến A.
+Quy tắc nghiệp vụ
+Thứ tự sắp xếp chỉ ảnh hưởng đến kết quả hiển thị, không làm thay đổi dữ liệu trong cơ sở dữ liệu.
+3.3 Phân hệ giỏ hàng và đặt hàng
+Phân hệ giỏ hàng và đặt hàng đóng vai trò trung tâm trong quy trình bán hàng trực tuyến. Phân hệ này cho phép khách hàng lựa chọn sản phẩm, quản lý giỏ hàng, nhập thông tin nhận hàng, lựa chọn phương thức thanh toán và tạo đơn hàng.
+Hệ thống được thiết kế với tiêu chí đơn giản, trực quan và tối ưu trải nghiệm trên thiết bị di động. Khách hàng không bắt buộc phải tạo tài khoản trước khi mua hàng. Sau khi hoàn tất đơn hàng đầu tiên, hệ thống sẽ tự động tạo tài khoản dựa trên số điện thoại đã cung cấp để phục vụ việc theo dõi đơn hàng và quản lý thông tin cá nhân.
+Đơn hàng chỉ được xác nhận khi thanh toán thành công hoặc được quản trị viên xác nhận trong trường hợp đối soát thanh toán thủ công.
+FR-019 – Thêm sản phẩm vào giỏ hàng
+Mục đích
+Cho phép khách hàng lựa chọn sản phẩm để chuẩn bị đặt hàng.
+Đối tượng sử dụng
+Khách truy cập.
+Khách hàng.
+Luồng xử lý chính
+Khách hàng chọn sản phẩm.
+Chọn số lượng.
+Nhấn Thêm vào giỏ hàng.
+Hệ thống kiểm tra tình trạng sản phẩm.
+Cập nhật giỏ hàng.
+Hiển thị thông báo thêm thành công.
+Luồng ngoại lệ
+Sản phẩm hết hàng.
+Số lượng vượt quá tồn kho.
+Điều kiện sau khi hoàn thành
+Sản phẩm được lưu trong giỏ hàng của khách.
+Quy tắc nghiệp vụ
+Không cho phép thêm sản phẩm có tồn kho bằng 0.
+Số lượng đặt không được vượt quá số lượng tồn kho.
+FR-020 – Xem giỏ hàng
+Mục đích
+Cho phép khách hàng xem toàn bộ sản phẩm đã chọn.
+Thông tin hiển thị
+Hình ảnh sản phẩm.
+Tên sản phẩm.
+Giá bán.
+Số lượng.
+Thành tiền.
+Tổng tiền tạm tính.
+Chức năng
+Thay đổi số lượng.
+Xóa sản phẩm.
+Tiếp tục mua sắm.
+Tiến hành đặt hàng.
+FR-021 – Cập nhật số lượng sản phẩm trong giỏ hàng
+Mục đích
+Cho phép khách hàng thay đổi số lượng sản phẩm trước khi đặt hàng.
+Luồng xử lý
+Thay đổi số lượng.
+Hệ thống kiểm tra tồn kho.
+Cập nhật giỏ hàng.
+Tính lại tổng tiền.
+Luồng ngoại lệ
+Số lượng nhỏ hơn 1.
+Số lượng vượt quá tồn kho.
+FR-022 – Xóa sản phẩm khỏi giỏ hàng
+Mục đích
+Cho phép khách hàng loại bỏ sản phẩm không còn nhu cầu mua.
+Luồng xử lý
+Chọn Xóa.
+Hệ thống yêu cầu xác nhận.
+Xóa sản phẩm khỏi giỏ hàng.
+Cập nhật tổng tiền.
+FR-023 – Nhập thông tin nhận hàng
+Mục đích
+Thu thập thông tin phục vụ giao hàng.
+Thông tin cần nhập
+Họ và tên.
+Số điện thoại.
+Địa chỉ nhận hàng.
+Ghi chú (không bắt buộc).
+Số điện thoại người nhận(khi chọn phần tặng)
+Luồng xử lý
+Khách hàng nhập đầy đủ thông tin.
+Hệ thống kiểm tra tính hợp lệ.
+Lưu thông tin nhận hàng.
+Quy tắc nghiệp vụ
+Họ tên bắt buộc nhập.
+Số điện thoại đúng định dạng.
+Địa chỉ nhận hàng không được để trống.
+FR-024 – Tạo tài khoản khách hàng tự động
+Mục đích
+Tự động tạo tài khoản sau lần đặt hàng đầu tiên.
+Điều kiện
+Khách hàng chưa có tài khoản.
+Đơn hàng được tạo thành công.
+Luồng xử lý
+Hệ thống kiểm tra số điện thoại.
+Nếu chưa tồn tại, tạo tài khoản mới.
+Gửi thông báo thiết lập mật khẩu hoặc mật khẩu tạm thời (theo cấu hình hệ thống).
+Khách hàng có thể đăng nhập để theo dõi đơn hàng.
+Quy tắc nghiệp vụ
+Một số điện thoại chỉ được đăng ký một tài khoản.
+Số điện thoại là định danh duy nhất của khách hàng.
+FR-025 – Tạo đơn hàng
+Mục đích
+Tạo đơn hàng từ giỏ hàng của khách.
+Luồng xử lý chính
+Kiểm tra giỏ hàng.
+Kiểm tra tồn kho.
+Kiểm tra thông tin nhận hàng.
+Tính tổng tiền.
+Tạo mã đơn hàng.
+Lưu đơn hàng.
+Chuyển sang bước thanh toán.
+Điều kiện sau khi hoàn thành
+Đơn hàng được lưu vào hệ thống với trạng thái Chờ xác nhận tùy theo phương thức thanh toán.
+Quy tắc nghiệp vụ
+Mỗi đơn hàng có một mã duy nhất.
+Không cho phép tạo đơn nếu giỏ hàng trống.
+FR-026 – Thanh toán đơn hàng
+Mục đích
+Cho phép khách hàng thanh toán đơn hàng.
+Phương thức thanh toán
+MoMo.
+VietQR.
+Luồng xử lý
+Chọn phương thức thanh toán.
+Hiển thị mã QR.
+Khách hàng thực hiện chuyển khoản.
+Hệ thống kiểm tra kết quả thanh toán.
+Cập nhật trạng thái đơn hàng.
+Luồng ngoại lệ
+Thanh toán thất bại.
+Quá thời gian thanh toán.
+Không nhận được giao dịch.
+Điều kiện sau khi hoàn thành
+Đơn hàng được chuyển sang trạng thái Đã xác nhận nếu thanh toán thành công.
+Quy tắc nghiệp vụ
+Nếu doanh nghiệp có API đối soát, hệ thống xác nhận tự động.
+Nếu không có API, Admin xác nhận thủ công.
+Nếu khách không hoàn tất thanh toán, đơn hàng không được xác nhận.
+FR-027 – Theo dõi đơn hàng
+Mục đích
+Cho phép khách hàng theo dõi tình trạng xử lý đơn hàng.
+Trạng thái đơn hàng
+Chờ thanh toán.
+Chờ xác nhận.
+Đã xác nhận.
+Đang chuẩn bị hàng.
+Tạm dừng.
+Đang giao.
+Đã giao.
+Đã hủy.
+Thông tin hiển thị
+Mã đơn hàng.
+Ngày đặt.
+Người nhận.
+Tổng tiền.
+Phương thức thanh toán.
+Trạng thái hiện tại.
+Lịch sử thay đổi trạng thái.
+Quy tắc nghiệp vụ
+Mỗi lần thay đổi trạng thái đều được ghi nhận thời gian và người thực hiện.
+Khách hàng chỉ được xem các đơn hàng của chính mình.
+FR-028 – Hủy đơn hàng
+Mục đích
+Cho phép khách hàng hủy đơn hàng khi chưa được bàn giao cho đơn vị vận chuyển.
+Đối tượng sử dụng
+Khách hàng.
+Admin.
+Luồng xử lý
+Khách hàng chọn Hủy đơn hàng.
+Hệ thống kiểm tra trạng thái hiện tại.
+Nếu đủ điều kiện, yêu cầu xác nhận.
+Cập nhật trạng thái Đã hủy.
+Hoàn lại tồn kho (nếu đã trừ).
+Luồng ngoại lệ
+Đơn hàng đã bàn giao cho GreenSM.
+Đơn hàng đã giao thành công.
+Điều kiện sau khi hoàn thành
+Đơn hàng chuyển sang trạng thái Đã hủy và không thể khôi phục.
+Quy tắc nghiệp vụ
+Khách hàng chỉ được hủy đơn trước khi đơn vị vận chuyển nhận hàng.
+Nếu đơn hàng đang ở trạng thái Tạm dừng, doanh nghiệp và khách hàng có thể trao đổi để quyết định tiếp tục xử lý hoặc hủy đơn.
+Sau khi đơn hàng chuyển sang trạng thái Đang giao, mọi yêu cầu hủy phải được xử lý thông qua bộ phận chăm sóc khách hàng của doanh nghiệp.
+3.4 Phân hệ quản lý đơn hàng
+Phân hệ quản lý đơn hàng là trung tâm điều phối toàn bộ quy trình xử lý đơn hàng của doanh nghiệp sau khi khách hàng hoàn tất việc đặt mua sản phẩm. Phân hệ này hỗ trợ quản lý vòng đời của đơn hàng từ lúc tiếp nhận, xác nhận thanh toán, chuẩn bị hàng, bàn giao cho đơn vị vận chuyển, theo dõi trạng thái giao hàng đến khi hoàn tất hoặc hủy đơn.
+Hệ thống cho phép Admin Tổng và Admin Chi nhánh (nếu được cấp quyền) theo dõi toàn bộ danh sách đơn hàng, cập nhật trạng thái xử lý và ghi nhận lịch sử thay đổi nhằm đảm bảo tính minh bạch trong quá trình vận hành.
+Toàn bộ quá trình xử lý đơn hàng đều được lưu lại dưới dạng nhật ký (Log) để phục vụ kiểm tra, thống kê và truy vết khi cần thiết.
+FR-029 – Xem danh sách đơn hàng
+Mục đích
+Cho phép quản trị viên theo dõi toàn bộ đơn hàng trong hệ thống.
+Đối tượng sử dụng
+Admin Tổng.
+Admin Chi nhánh (được phân quyền).
+Thông tin hiển thị
+Mã đơn hàng.
+Họ và tên khách hàng.
+Số điện thoại.
+Ngày đặt hàng.
+Tổng tiền.
+Phương thức thanh toán.
+Trạng thái đơn hàng.
+Người xử lý.
+Chức năng
+Tìm kiếm đơn hàng.
+Lọc theo trạng thái.
+Lọc theo khoảng thời gian.
+Xem chi tiết đơn hàng.
+Quy tắc nghiệp vụ
+Đơn hàng được sắp xếp theo thời gian tạo mới nhất.
+Có hỗ trợ phân trang để đảm bảo hiệu năng.
+FR-030 – Xem chi tiết đơn hàng
+Mục đích
+Hiển thị đầy đủ thông tin của một đơn hàng.
+Nội dung hiển thị
+Mã đơn hàng.
+Thông tin khách hàng.
+Địa chỉ giao hàng.
+Danh sách sản phẩm.
+Đơn giá.
+Số lượng.
+Thành tiền.
+Phí vận chuyển.
+Tổng thanh toán.
+Ghi chú.
+Phương thức thanh toán.
+Trạng thái đơn hàng.
+Lịch sử xử lý.
+Quy tắc nghiệp vụ
+Không được chỉnh sửa thông tin sản phẩm sau khi đơn hàng đã được xác nhận.
+FR-031 – Tiếp nhận đơn hàng
+Mục đích
+Cho phép Admin xác nhận đã tiếp nhận đơn hàng mới.
+Luồng xử lý
+Admin mở danh sách đơn hàng mới.
+Chọn đơn hàng cần xử lý.
+Kiểm tra thông tin.
+Nhấn Tiếp nhận đơn hàng.
+Hệ thống cập nhật trạng thái.
+Điều kiện sau khi hoàn thành
+Đơn hàng chuyển sang trạng thái Đã xác nhận hoặc Đang chuẩn bị hàng (tùy quy trình xử lý của doanh nghiệp).
+FR-032 – Xác nhận thanh toán
+Mục đích
+Xác nhận khách hàng đã hoàn tất thanh toán.
+Đối tượng sử dụng
+Admin Tổng.
+Admin Chi nhánh (được cấp quyền).
+Luồng xử lý
+Kiểm tra giao dịch.
+Đối chiếu số tiền.
+Xác nhận thanh toán.
+Hệ thống cập nhật trạng thái.
+Luồng ngoại lệ
+Chưa nhận được giao dịch.
+Sai số tiền thanh toán.
+Giao dịch bị hủy.
+Quy tắc nghiệp vụ
+Nếu tích hợp API đối soát, hệ thống xác nhận tự động.
+Nếu không tích hợp API, quản trị viên xác nhận thủ công.
+FR-033 – Chuẩn bị đơn hàng
+Mục đích
+Quản lý quá trình chuẩn bị hàng trước khi giao.
+Luồng xử lý
+Kiểm tra tồn kho.
+Lấy sản phẩm.
+Kiểm tra chất lượng.
+Đóng gói.
+Chuyển trạng thái Đang chuẩn bị hàng.
+Quy tắc nghiệp vụ
+Chỉ sử dụng sản phẩm còn trong hạn sử dụng.
+Nếu thiếu hàng, Admin có thể chuyển đơn sang trạng thái Tạm dừng.
+FR-034 – Tạm dừng xử lý đơn hàng
+Mục đích
+Cho phép doanh nghiệp tạm dừng xử lý khi phát sinh sự cố.
+Các trường hợp áp dụng
+Thiếu hàng.
+Chưa xác minh được thanh toán.
+Sai thông tin nhận hàng.
+Khách yêu cầu thay đổi thông tin.
+Các sự cố khác.
+Luồng xử lý
+Chọn Tạm dừng.
+Nhập lý do.
+Hệ thống lưu lịch sử.
+Thông báo cho khách hàng.
+Điều kiện sau khi hoàn thành
+Đơn hàng ở trạng thái Tạm dừng cho đến khi được tiếp tục hoặc hủy.
+Quy tắc nghiệp vụ
+Mỗi lần tạm dừng phải có lý do cụ thể.
+Khách hàng có thể xem lý do tạm dừng trên trang theo dõi đơn hàng.
+FR-035 – Tiếp tục xử lý đơn hàng
+Mục đích
+Tiếp tục xử lý đơn hàng sau khi nguyên nhân tạm dừng đã được giải quyết.
+Luồng xử lý
+Chọn đơn hàng đang tạm dừng.
+Kiểm tra điều kiện.
+Nhấn Tiếp tục xử lý.
+Hệ thống cập nhật trạng thái về Đang chuẩn bị hàng hoặc Đang giao tùy giai đoạn.
+FR-036 – Bàn giao đơn vị vận chuyển
+Mục đích
+Ghi nhận việc bàn giao đơn hàng cho GreenSM.
+Đơn vị vận chuyển
+GreenSM.
+Luồng xử lý
+Đóng gói hoàn tất.
+Xác nhận bàn giao.
+Cập nhật trạng thái Đang giao.
+Lưu thời gian bàn giao.
+Quy tắc nghiệp vụ
+Sau khi chuyển sang trạng thái Đang giao, khách hàng không còn được phép tự hủy đơn hàng.
+FR-037 – Hoàn thành đơn hàng
+Mục đích
+Xác nhận giao hàng thành công.
+Luồng xử lý
+Nhận thông tin giao hàng thành công.
+Kiểm tra kết quả.
+Cập nhật trạng thái Đã giao.
+Ghi nhận thời gian hoàn thành.
+Điều kiện sau khi hoàn thành
+Đơn hàng kết thúc.
+Cập nhật doanh thu.
+Cập nhật thống kê khách hàng.
+Quy tắc nghiệp vụ
+Chỉ đơn hàng ở trạng thái Đang giao mới được chuyển sang Đã giao.
+FR-038 – Lịch sử xử lý đơn hàng
+Mục đích
+Lưu toàn bộ quá trình xử lý của từng đơn hàng.
+Thông tin lưu
+Thời gian thực hiện.
+Người thực hiện.
+Trạng thái cũ.
+Trạng thái mới.
+Ghi chú.
+Địa chỉ IP (nếu cần).
+Quy tắc nghiệp vụ
+Không cho phép chỉnh sửa hoặc xóa lịch sử xử lý.
+Lịch sử được sử dụng để kiểm tra, thống kê và giải quyết khiếu nại.
+Mọi thay đổi trạng thái đơn hàng đều phải được ghi nhận tự động.
+3.5 Phân hệ quản trị hệ thống
+3.5.1 Giới thiệu
+Phân hệ quản trị hệ thống cung cấp các chức năng phục vụ công tác quản lý và vận hành website. Đây là phân hệ chỉ dành cho Admin Tổng và Admin Chi nhánh được cấp quyền.
+Admin Tổng là người có quyền cao nhất trong hệ thống, chịu trách nhiệm quản lý tài khoản quản trị, phân quyền, cấu hình hệ thống, báo cáo và toàn bộ dữ liệu.
+Admin Chi nhánh được Admin Tổng cấp quyền theo từng chức năng. Khi tạo tài khoản, Admin Tổng có thể lựa chọn từng quyền cụ thể thông qua danh sách các chức năng của hệ thống. Chỉ những chức năng được cấp quyền mới hiển thị và sử dụng được trên giao diện của Admin Chi nhánh.
+Việc phân quyền theo chức năng giúp đảm bảo tính bảo mật, hạn chế thao tác ngoài phạm vi công việc và giảm thiểu rủi ro trong quá trình vận hành.
+FR-039 – Phân quyền người quản trị
+Mục đích
+Cho phép Admin Tổng cấp hoặc thu hồi quyền của Admin Chi nhánh.
+Đối tượng sử dụng
+Admin Tổng.
+Danh sách quyền
+Quản lý đơn hàng.
+Quản lý tồn kho.
+Quản lý báo cáo.
+Quản lý chương trình giảm giá.
+Quản lý khách hàng.
+Quản lý thanh toán.
+Quản lý giao hàng.
+Quản lý danh mục.
+Quản lý sản phẩm.
+Quản lý cấu hình.
+Luồng xử lý
+Chọn tài khoản Admin.
+Hiển thị danh sách quyền.
+Chọn các quyền cần cấp.
+Nhấn Lưu.
+Hệ thống cập nhật quyền.
+Quy tắc nghiệp vụ
+Chỉ Admin Tổng được phép thay đổi quyền.
+Quyền mới có hiệu lực ngay sau khi lưu.
+Mỗi quyền được cấp độc lập với các quyền khác.
+FR-040 – Quản lý khách hàng
+Mục đích
+Quản lý thông tin khách hàng đã từng phát sinh đơn hàng.
+Đối tượng sử dụng
+Admin Tổng.
+Admin Chi nhánh (nếu được phân quyền).
+Thông tin quản lý
+Họ và tên.
+Số điện thoại.
+Địa chỉ.
+Số đơn hàng.
+Tổng giá trị mua hàng.
+Trạng thái tài khoản.
+Chức năng
+Tìm kiếm khách hàng.
+Xem chi tiết khách hàng.
+Khóa tài khoản.
+Mở khóa tài khoản.
+Quy tắc nghiệp vụ
+Không được xóa khách hàng đã phát sinh đơn hàng.
+Lịch sử mua hàng phải được lưu trữ vĩnh viễn.
+FR-041 – Quản lý chi nhánh
+Mục đích
+Quản lý danh sách các cửa hàng hoặc chi nhánh của doanh nghiệp.
+Đối tượng sử dụng
+Admin Tổng.
+Thông tin
+Tên chi nhánh.
+Địa chỉ.
+Số điện thoại.
+Giờ mở cửa.
+Trạng thái hoạt động.
+Chức năng
+Thêm.
+Sửa.
+Khóa.
+Xóa (nếu chưa phát sinh dữ liệu).
+Quy tắc nghiệp vụ
+Mỗi chi nhánh có một mã định danh duy nhất.
+Chi nhánh ngừng hoạt động chỉ được chuyển sang trạng thái Ngừng hoạt động, không xóa nếu đã phát sinh dữ liệu.
+FR-042 – Quản lý banner
+Mục đích
+Quản lý hình ảnh quảng bá trên trang chủ.
+Đối tượng sử dụng
+Admin Tổng.
+Chức năng
+Thêm banner.
+Chỉnh sửa banner.
+Xóa banner.
+Sắp xếp thứ tự hiển thị.
+Quy tắc nghiệp vụ
+Banner phải có hình ảnh.
+Banner có thể gắn liên kết đến sản phẩm hoặc danh mục.
+FR-043 – Quản lý cấu hình website
+Mục đích
+Thiết lập các thông tin chung của hệ thống.
+Nội dung cấu hình
+Tên website.
+Logo.
+Hotline.
+Email liên hệ.
+Địa chỉ công ty.
+Chính sách giao hàng.
+Chính sách bảo mật.
+Điều khoản sử dụng.
+Chính sách đổi trả.
+Quy tắc nghiệp vụ
+Chỉ Admin Tổng được chỉnh sửa.
+Thay đổi có hiệu lực ngay sau khi lưu.
+FR-044 – Quản lý phí vận chuyển
+Mục đích
+Thiết lập mức phí giao hàng theo quy định của doanh nghiệp.
+Đối tượng sử dụng
+Admin Tổng.
+Thông tin
+Khoảng cách.
+Mức phí.
+Trạng thái áp dụng.
+Quy tắc nghiệp vụ
+Mỗi khoảng cách chỉ có một mức phí.
+Phí vận chuyển được tính tự động khi khách đặt hàng.
+FR-045 – Quản lý nhật ký hệ thống
+Mục đích
+Theo dõi toàn bộ hoạt động của người dùng và quản trị viên.
+Thông tin ghi nhận
+Thời gian.
+Người thực hiện.
+Chức năng.
+Hành động.
+Địa chỉ IP.
+Kết quả.
+Quy tắc nghiệp vụ
+Không cho phép chỉnh sửa.
+Không cho phép xóa.
+Chỉ Admin Tổng được xem toàn bộ nhật ký.
+FR-046 – Quản lý thông báo
+Mục đích
+Cho phép gửi thông báo đến khách hàng hoặc quản trị viên.
+Đối tượng sử dụng
+Admin Tổng.
+Nội dung
+Tiêu đề.
+Nội dung.
+Thời gian gửi.
+Đối tượng nhận.
+Quy tắc nghiệp vụ
+Có thể gửi đến một hoặc nhiều người nhận.
+Lưu lịch sử gửi thông báo.
+FR-047 – Quản lý báo cáo doanh thu
+Mục đích
+Thống kê doanh thu theo khoảng thời gian.
+Điều kiện tìm kiếm
+Ngày bắt đầu.
+Ngày kết thúc.
+Kết quả hiển thị
+Tổng doanh thu.
+Tổng số đơn hàng.
+Giá trị trung bình mỗi đơn.
+Số đơn thành công.
+Số đơn hủy.
+Quy tắc nghiệp vụ
+Chỉ tính các đơn hàng có trạng thái Đã giao.
+FR-048 – Báo cáo khách hàng
+Mục đích
+Thống kê số lượng và hoạt động mua hàng của khách hàng.
+Nội dung
+Tổng số khách hàng.
+Số khách hàng mới.
+Số khách hàng phát sinh đơn hàng.
+Số đơn hàng của từng khách.
+Quy tắc nghiệp vụ
+Một khách hàng được xác định duy nhất bằng số điện thoại.
+FR-049 – Báo cáo hàng tồn kho
+Mục đích
+Theo dõi số lượng tồn kho của từng sản phẩm.
+Thông tin hiển thị
+Mã sản phẩm.
+Tên sản phẩm.
+Danh mục.
+Tồn kho hiện tại.
+Trạng thái.
+Quy tắc nghiệp vụ
+Sản phẩm có tồn kho bằng 0 được đánh dấu Hết hàng.
+FR-050 – Báo cáo đơn hàng
+Mục đích
+Thống kê đơn hàng theo khoảng thời gian.
+Điều kiện tìm kiếm
+Từ ngày.
+Đến ngày.
+Kết quả
+Tổng số đơn hàng.
+Đơn chờ xử lý.
+Đơn đang giao.
+Đơn đã giao.
+Đơn tạm dừng.
+Đơn hủy.
+Quy tắc nghiệp vụ
+Hỗ trợ xuất dữ liệu sang Excel hoặc PDF (định hướng mở rộng trong các phiên bản tiếp theo).
+3.6 Tổng hợp yêu cầu chức năng
+Sau quá trình phân tích, hệ thống Website Bán Trái Cây bao gồm 50 yêu cầu chức năng, được phân thành các nhóm như sau:
+Phân hệ
+Mã yêu cầu
+Số lượng
+Quản lý tài khoản
+FR-001 → FR-006
+6
+Quản lý danh mục và sản phẩm
+FR-007 → FR-018
+12
+Giỏ hàng và đặt hàng
+FR-019 → FR-028
+10
+Quản lý đơn hàng
+FR-029 → FR-038
+10
+Quản trị hệ thống và báo cáo
+FR-039 → FR-050
+12
+Tổng cộng
+FR-001 → FR-050
+50
+Chương 4. Yêu cầu phi chức năng (Non-Functional Requirements)
+4.1 Giới thiệu
+Bên cạnh các yêu cầu chức năng, hệ thống Website Bán Trái Cây cần đáp ứng các yêu cầu phi chức năng nhằm đảm bảo hiệu năng, tính ổn định, khả năng mở rộng, bảo mật và trải nghiệm người dùng. Các yêu cầu này không mô tả chức năng cụ thể mà quy định các tiêu chuẩn chất lượng mà hệ thống phải đáp ứng trong quá trình vận hành.
+Các yêu cầu phi chức năng được đánh số theo mã NFR (Non-Functional Requirement).
+4.2 Yêu cầu về hiệu năng
+NFR-001 – Thời gian phản hồi
+Hệ thống phải phản hồi các thao tác thông thường của người dùng trong thời gian không quá 03 giây đối với 95% số lượng yêu cầu trong điều kiện vận hành bình thường.
+Áp dụng cho:
+Đăng nhập.
+Xem sản phẩm.
+Tìm kiếm.
+Thêm vào giỏ hàng.
+Đặt hàng.
+Theo dõi đơn hàng.
+NFR-002 – Khả năng chịu tải
+Hệ thống phải hỗ trợ tối thiểu:
+500 người dùng truy cập đồng thời.
+100 người dùng thực hiện đặt hàng đồng thời.
+Kiến trúc hệ thống cần cho phép mở rộng khi lượng truy cập tăng trong tương lai.
+NFR-003 – Hiệu năng truy vấn
+Các thao tác tìm kiếm sản phẩm, xem danh sách sản phẩm và xem đơn hàng phải được tối ưu bằng cơ chế phân trang, lập chỉ mục (Index) và tối ưu truy vấn cơ sở dữ liệu.
+4.3 Yêu cầu về bảo mật
+NFR-004 – Mã hóa mật khẩu
+Mật khẩu người dùng không được lưu dưới dạng văn bản thuần (Plain Text).
+Hệ thống phải sử dụng thuật toán mã hóa an toàn như:
+Bcrypt.
+Argon2.
+NFR-005 – Xác thực người dùng
+Người dùng phải được xác thực trước khi truy cập các chức năng yêu cầu đăng nhập.
+Sau khi đăng nhập thành công, hệ thống cấp JWT hoặc Session Token để xác thực các yêu cầu tiếp theo.
+NFR-006 – Quản lý phiên đăng nhập
+Phiên đăng nhập sẽ tự động hết hạn sau 24 giờ không hoạt động hoặc theo cấu hình của hệ thống.
+NFR-007 – Phân quyền
+Mỗi người dùng chỉ được phép truy cập các chức năng tương ứng với vai trò được cấp.
+Hệ thống không được phép cho phép truy cập trực tiếp thông qua URL khi người dùng không có quyền.
+NFR-008 – Chống tấn công
+Hệ thống cần áp dụng các biện pháp phòng chống:
+SQL Injection.
+Cross Site Scripting (XSS).
+Cross Site Request Forgery (CSRF).
+Brute Force Login.
+Session Hijacking.
+NFR-009 – Giao thức truyền dữ liệu
+Toàn bộ hệ thống phải sử dụng giao thức HTTPS nhằm đảm bảo dữ liệu được mã hóa trong quá trình truyền tải.
+NFR-010 – Nhật ký hệ thống
+Các thao tác quan trọng phải được ghi nhận vào nhật ký hệ thống.
+Bao gồm:
+Đăng nhập.
+Đăng xuất.
+Thay đổi mật khẩu.
+Cập nhật đơn hàng.
+Phân quyền.
+Xóa dữ liệu.
+4.4 Yêu cầu về tính sẵn sàng
+NFR-011 – Thời gian hoạt động
+Hệ thống phải đảm bảo thời gian hoạt động tối thiểu 99% trong quá trình vận hành.
+NFR-012 – Khả năng phục hồi
+Khi xảy ra lỗi, hệ thống không được làm mất dữ liệu đã lưu thành công.
+Các giao dịch đang xử lý phải được kiểm soát bằng Transaction để đảm bảo tính toàn vẹn dữ liệu.
+4.5 Yêu cầu về giao diện
+NFR-013 – Responsive
+Website phải hiển thị tốt trên:
+Điện thoại.
+Máy tính bảng.
+Máy tính.
+Giao diện ưu tiên tối ưu cho điện thoại và máy tính bảng.
+NFR-014 – Thiết kế
+Website sử dụng phong cách thiết kế hiện đại với:
+Màu xanh lá cây làm màu chủ đạo.
+Hình ảnh chất lượng cao.
+Bố cục đơn giản.
+Dễ sử dụng.
+NFR-015 – Trải nghiệm người dùng
+Người dùng có thể hoàn thành việc đặt hàng trong không quá 05 bước từ khi thêm sản phẩm vào giỏ hàng.
+4.6 Yêu cầu về SEO
+NFR-016 – SEO On-page
+Website phải hỗ trợ:
+URL thân thiện.
+Meta Title.
+Meta Description.
+Sitemap XML.
+Robots.txt.
+Canonical URL.
+Open Graph.
+NFR-017 – Tối ưu tốc độ tải trang
+Điểm đánh giá trên Google PageSpeed Insights mục tiêu:
+Mobile ≥ 90.
+Desktop ≥ 90.
+4.7 Yêu cầu về khả năng mở rộng
+NFR-018 – Kiến trúc
+Hệ thống được xây dựng theo kiến trúc Client – Server.
+Frontend và Backend hoạt động độc lập thông qua RESTful API.
+Điều này giúp dễ dàng:
+Phát triển ứng dụng di động.
+Mở rộng Microservices trong tương lai.
+Tích hợp với hệ thống bên thứ ba.
+NFR-019 – Đa ngôn ngữ
+Phiên bản hiện tại sử dụng tiếng Việt.
+Kiến trúc dữ liệu phải cho phép mở rộng thêm ngôn ngữ khác mà không cần thay đổi cấu trúc hệ thống.
+4.8 Yêu cầu về cơ sở dữ liệu
+NFR-020 – Toàn vẹn dữ liệu
+Cơ sở dữ liệu phải đảm bảo:
+Khóa chính.
+Khóa ngoại.
+Ràng buộc dữ liệu.
+Chỉ mục.
+Giao dịch (Transaction).
+Không cho phép phát sinh dữ liệu mồ côi hoặc vi phạm tính toàn vẹn tham chiếu.
+NFR-021 – Sao lưu dữ liệu
+Phiên bản 1.0 chưa triển khai chức năng sao lưu tự động.
+Tuy nhiên, hệ thống cần được thiết kế để dễ dàng bổ sung chức năng sao lưu và phục hồi dữ liệu trong các phiên bản tiếp theo.
+4.9 Yêu cầu về khả năng bảo trì
+NFR-022 – Kiến trúc mã nguồn
+Mã nguồn cần tuân thủ các nguyên tắc:
+MVC.
+SOLID.
+DRY.
+KISS.
+Đảm bảo dễ đọc, dễ bảo trì và dễ mở rộng.
+NFR-023 – Tài liệu
+Hệ thống phải có đầy đủ:
+Tài liệu cài đặt.
+Hướng dẫn triển khai.
+Hướng dẫn sử dụng.
+Hướng dẫn bảo trì.
+Hướng dẫn nâng cấp.
+NFR-024 – Quản lý mã nguồn
+Toàn bộ mã nguồn được quản lý thông qua Git.
+Việc phát triển được khuyến nghị áp dụng mô hình Git Flow hoặc GitHub Flow để quản lý nhánh phát triển, kiểm thử và phát hành.
+4.10 Tổng hợp yêu cầu phi chức năng
+Mã
+Nhóm yêu cầu
+Nội dung
+NFR-001 → NFR-003
+Hiệu năng
+Tốc độ xử lý, chịu tải, truy vấn
+NFR-004 → NFR-010
+Bảo mật
+Mã hóa, xác thực, phân quyền, HTTPS
+NFR-011 → NFR-012
+Tính sẵn sàng
+Thời gian hoạt động, phục hồi dữ liệu
+NFR-013 → NFR-015
+Giao diện
+Responsive, trải nghiệm người dùng
+NFR-016 → NFR-017
+SEO
+Tối ưu công cụ tìm kiếm và tốc độ tải trang
+NFR-018 → NFR-021
+Mở rộng và cơ sở dữ liệu
+Kiến trúc, đa ngôn ngữ, toàn vẹn dữ liệu
+NFR-022 → NFR-024
+Bảo trì
+Kiến trúc mã nguồn, tài liệu, quản lý mã nguồn
+Tổng cộng hệ thống có 24 yêu cầu phi chức năng, là cơ sở để nhóm phát triển thiết kế kiến trúc hệ thống, tối ưu hiệu năng và đảm bảo chất lượng phần mềm trong quá trình triển khai và vận hành. 
+Chương 5. Quy tắc nghiệp vụ (Business Rules)
+5.1 Giới thiệu
+Quy tắc nghiệp vụ (Business Rules - BR) là các quy định, ràng buộc và chính sách mà hệ thống Website Bán Trái Cây phải tuân thủ trong quá trình vận hành. Các quy tắc này được xây dựng dựa trên yêu cầu của doanh nghiệp nhằm đảm bảo dữ liệu chính xác, quy trình xử lý thống nhất và giảm thiểu sai sót trong quá trình sử dụng.
+Mỗi quy tắc được định danh bằng mã BR (Business Rule) và được sử dụng xuyên suốt trong quá trình phân tích, thiết kế cơ sở dữ liệu, phát triển phần mềm và kiểm thử hệ thống.
+5.2 Quy tắc về sản phẩm
+BR-001 – Mỗi sản phẩm thuộc một danh mục
+Mỗi sản phẩm chỉ được phép thuộc duy nhất một danh mục.
+Danh mục hiện tại bao gồm:
+Trái cây tươi.
+Combo trái cây.
+Giỏ quà trái cây.
+BR-002 – Giá bán
+Giá bán của sản phẩm phải lớn hơn 0.
+Không cho phép tạo hoặc cập nhật sản phẩm có giá bán nhỏ hơn hoặc bằng 0.
+BR-003 – Hình ảnh sản phẩm
+Mỗi sản phẩm phải có ít nhất một hình ảnh.
+Một sản phẩm có thể có nhiều hình ảnh.
+BR-004 – Trạng thái hết hàng
+Khi số lượng tồn kho bằng 0, hệ thống tự động chuyển sản phẩm sang trạng thái Hết hàng.
+Khách hàng vẫn được xem sản phẩm nhưng không thể đặt mua.
+BR-005 – Giỏ quà trái cây
+Giỏ quà là sản phẩm cố định.
+Khách hàng không được thay đổi thành phần trái cây trong giỏ.
+BR-006 – Combo trái cây
+Combo trái cây được doanh nghiệp cấu hình sẵn.
+Khách hàng không được thêm hoặc bớt sản phẩm trong combo.
+5.3 Quy tắc về khách hàng
+BR-007 – Số điện thoại
+Số điện thoại là định danh duy nhất của khách hàng.
+Không cho phép tồn tại hai tài khoản sử dụng cùng một số điện thoại.
+BR-008 – Tạo tài khoản
+Khách hàng không cần đăng ký tài khoản trước.
+Sau lần đặt hàng đầu tiên, hệ thống tự động tạo tài khoản dựa trên số điện thoại.
+BR-009 – Thông tin nhận hàng
+Thông tin bắt buộc gồm:
+Họ và tên.
+Số điện thoại.
+Địa chỉ nhận hàng.
+Trường ghi chú là không bắt buộc.
+BR-010 – Mật khẩu
+Mật khẩu phải có tối thiểu:
+8 ký tự.
+Ít nhất một chữ hoa.
+Ít nhất một chữ thường.
+Ít nhất một chữ số.
+Khuyến nghị bổ sung ít nhất một ký tự đặc biệt để tăng cường bảo mật.
+5.4 Quy tắc về giỏ hàng
+BR-011 – Số lượng mua
+Khách hàng không được đặt số lượng lớn hơn số lượng tồn kho.
+BR-012 – Giỏ hàng
+Một khách hàng chỉ có một giỏ hàng đang hoạt động.
+BR-013 – Giỏ hàng trống
+Không được phép tạo đơn hàng nếu giỏ hàng không có sản phẩm.
+5.5 Quy tắc về thanh toán
+BR-014 – Phương thức thanh toán
+Phiên bản 1.0 hỗ trợ:
+MoMo.
+VietQR.
+Các phương thức khác sẽ được xem xét trong các phiên bản tiếp theo.
+BR-015 – Xác nhận thanh toán
+Nếu hệ thống tích hợp API đối soát thanh toán thì đơn hàng được xác nhận tự động.
+Nếu chưa tích hợp API, quản trị viên xác nhận thủ công sau khi đối chiếu giao dịch.
+BR-016 – Thanh toán thất bại
+Nếu khách hàng không hoàn tất thanh toán, đơn hàng không được xác nhận và sản phẩm vẫn được giữ trong giỏ hàng để khách có thể tiếp tục thanh toán sau.
+5.6 Quy tắc về đơn hàng
+BR-017 – Mã đơn hàng
+Mỗi đơn hàng phải có một mã duy nhất.
+Mã đơn hàng không được phép trùng lặp.
+BR-018 – Trạng thái đơn hàng
+Hệ thống sử dụng các trạng thái:
+Chờ thanh toán.
+Chờ xác nhận.
+Đã xác nhận.
+Đang chuẩn bị hàng.
+Tạm dừng.
+Đang giao.
+Đã giao.
+Đã hủy.
+BR-019 – Tạm dừng đơn hàng
+Trạng thái Tạm dừng chỉ được sử dụng khi có phát sinh vấn đề cần xử lý giữa doanh nghiệp và khách hàng.
+BR-020 – Hủy đơn hàng
+Khách hàng chỉ được phép hủy đơn hàng trước khi đơn được bàn giao cho đơn vị vận chuyển.
+Sau thời điểm này, việc hủy đơn phải được xử lý thông qua doanh nghiệp.
+BR-021 – Hoàn thành đơn hàng
+Chỉ đơn hàng ở trạng thái Đang giao mới được chuyển sang trạng thái Đã giao.
+5.7 Quy tắc về giao hàng
+BR-022 – Đơn vị vận chuyển
+Đơn vị vận chuyển mặc định của hệ thống là GreenSM.
+Trong tương lai, hệ thống có thể mở rộng tích hợp thêm các đơn vị vận chuyển khác.
+BR-023 – Phí vận chuyển
+Phí vận chuyển được tính theo quy định của doanh nghiệp dựa trên khoảng cách giao hàng.
+BR-024 – Theo dõi vận chuyển
+Khách hàng được phép theo dõi trạng thái giao hàng của đơn hàng thông qua website sau khi đơn được bàn giao cho đơn vị vận chuyển.
+5.8 Quy tắc về quản trị
+BR-025 – Quản lý tài khoản
+Chỉ Admin Tổng được phép:
+Tạo tài khoản quản trị.
+Xóa tài khoản quản trị.
+Khóa hoặc mở khóa tài khoản quản trị.
+Phân quyền cho Admin Chi nhánh.
+BR-026 – Phân quyền
+Admin Chi nhánh chỉ được sử dụng các chức năng đã được Admin Tổng cấp quyền.
+Các chức năng không được cấp quyền sẽ không hiển thị trên giao diện quản trị.
+BR-027 – Quản lý sản phẩm
+Chỉ Admin Tổng được phép:
+Thêm sản phẩm.
+Xóa sản phẩm.
+Chỉnh sửa thông tin sản phẩm.
+Admin Chi nhánh chỉ được thao tác với sản phẩm nếu được cấp quyền tương ứng.
+5.9 Quy tắc về báo cáo
+BR-028 – Báo cáo doanh thu
+Doanh thu chỉ được tính từ các đơn hàng có trạng thái Đã giao.
+Các đơn hàng bị hủy hoặc đang xử lý không được tính vào doanh thu.
+BR-029 – Báo cáo tồn kho
+Số lượng tồn kho được cập nhật ngay sau khi phát sinh các nghiệp vụ nhập kho, điều chỉnh kho hoặc hoàn tất đơn hàng theo quy trình của doanh nghiệp.
+BR-030 – Nhật ký hệ thống
+Mọi thao tác quan trọng như đăng nhập, phân quyền, chỉnh sửa dữ liệu, thay đổi trạng thái đơn hàng và cập nhật cấu hình hệ thống phải được ghi nhận vào nhật ký để phục vụ việc kiểm tra, giám sát và truy vết khi cần thiết.
+5.10 Tổng hợp quy tắc nghiệp vụ
+Nhóm quy tắc
+Mã
+Số lượng
+Sản phẩm
+BR-001 → BR-006
+6
+Khách hàng
+BR-007 → BR-010
+4
+Giỏ hàng
+BR-011 → BR-013
+3
+Thanh toán
+BR-014 → BR-016
+3
+Đơn hàng
+BR-017 → BR-021
+5
+Giao hàng
+BR-022 → BR-024
+3
+Quản trị
+BR-025 → BR-027
+3
+Báo cáo và nhật ký
+BR-028 → BR-030
+3
+Tổng cộng
+BR-001 → BR-030
+30
+Các quy tắc nghiệp vụ trên là cơ sở để triển khai các ràng buộc trong cơ sở dữ liệu, kiểm tra dữ liệu đầu vào, xây dựng các quy trình xử lý của hệ thống và thiết kế các trường hợp kiểm thử nhằm đảm bảo phần mềm hoạt động đúng với yêu cầu của doanh nghiệp.
+Chương 6. Mô hình hóa hệ thống (System Modeling)
+6.1 Giới thiệu
+Sau khi hoàn thành việc thu thập và phân tích yêu cầu, bước tiếp theo là mô hình hóa hệ thống nhằm mô tả trực quan cách thức hệ thống hoạt động. Việc mô hình hóa giúp nhóm phát triển, kiểm thử và khách hàng có cùng cách hiểu về quy trình nghiệp vụ, các chức năng của hệ thống cũng như mối quan hệ giữa các thành phần.
+Trong tài liệu này, hệ thống được mô hình hóa theo chuẩn UML (Unified Modeling Language), bao gồm các mô hình sau:
+Use Case Diagram.
+Activity Diagram.
+Sequence Diagram.
+Class Diagram.
+Entity Relationship Diagram (ERD).
+Các mô hình này là cơ sở để thiết kế cơ sở dữ liệu, xây dựng RESTful API, phát triển giao diện người dùng và lập trình các chức năng của hệ thống.
+6.2 Xác định tác nhân (Actors)
+Hệ thống Website Bán Trái Cây có bốn tác nhân chính tham gia vào quá trình sử dụng hệ thống.
+6.2.1 Khách truy cập (Guest)
+Khách truy cập là người chưa đăng nhập vào hệ thống nhưng vẫn có thể sử dụng các chức năng cơ bản như xem sản phẩm, tìm kiếm, xem chi tiết sản phẩm và thêm sản phẩm vào giỏ hàng. Khi tiến hành đặt hàng, khách truy cập sẽ nhập thông tin nhận hàng và hệ thống sẽ tự động tạo tài khoản dựa trên số điện thoại nếu tài khoản chưa tồn tại.
+Các chức năng của Khách truy cập:
+Xem danh sách sản phẩm.
+Xem chi tiết sản phẩm.
+Tìm kiếm sản phẩm.
+Lọc sản phẩm.
+Thêm sản phẩm vào giỏ hàng.
+Cập nhật giỏ hàng.
+Đặt hàng.
+Thanh toán.
+Theo dõi đơn hàng.
+Đăng nhập.
+6.2.2 Khách hàng (Customer)
+Khách hàng là người đã có tài khoản trong hệ thống và đăng nhập bằng số điện thoại cùng mật khẩu. Ngoài các chức năng của khách truy cập, khách hàng còn có thể quản lý thông tin cá nhân, theo dõi lịch sử đơn hàng và thay đổi mật khẩu.
+Các chức năng của Khách hàng:
+Đăng nhập.
+Đăng xuất.
+Quên mật khẩu.
+Thay đổi mật khẩu.
+Quản lý thông tin cá nhân.
+Xem lịch sử đơn hàng.
+Theo dõi trạng thái đơn hàng.
+Hủy đơn hàng (khi đủ điều kiện).
+Thanh toán đơn hàng.
+6.2.3 Admin Chi nhánh
+Admin Chi nhánh là người được Admin Tổng tạo tài khoản và cấp quyền sử dụng một hoặc nhiều chức năng của hệ thống. Quyền hạn của Admin Chi nhánh phụ thuộc hoàn toàn vào cấu hình phân quyền.
+Các quyền có thể được cấp bao gồm:
+Quản lý đơn hàng.
+Quản lý khách hàng.
+Quản lý tồn kho.
+Quản lý thanh toán.
+Quản lý giao hàng.
+Quản lý báo cáo.
+Quản lý chương trình giảm giá.
+Admin Chi nhánh không được phép tạo tài khoản quản trị, phân quyền hoặc quản lý sản phẩm nếu không được Admin Tổng cấp quyền.
+6.2.4 Admin Tổng
+Admin Tổng là người có quyền cao nhất trong hệ thống và chịu trách nhiệm quản lý toàn bộ hoạt động của website.
+Các chức năng của Admin Tổng:
+Quản lý tài khoản quản trị.
+Phân quyền.
+Quản lý danh mục.
+Quản lý sản phẩm.
+Quản lý giá bán.
+Quản lý tồn kho.
+Quản lý đơn hàng.
+Quản lý thanh toán.
+Quản lý khách hàng.
+Quản lý banner.
+Quản lý chi nhánh.
+Quản lý chương trình giảm giá.
+Quản lý báo cáo.
+Quản lý cấu hình hệ thống.
+Theo dõi nhật ký hệ thống.
+6.3 Danh sách Use Case
+Dựa trên yêu cầu chức năng đã phân tích, hệ thống bao gồm các Use Case chính như sau.
+Mã UC
+Tên Use Case
+Tác nhân
+UC-01
+Đăng nhập
+Khách hàng, Admin
+UC-02
+Đăng xuất
+Khách hàng, Admin
+UC-03
+Quên mật khẩu
+Khách hàng, Admin
+UC-04
+Quản lý thông tin cá nhân
+Khách hàng
+UC-05
+Xem danh sách sản phẩm
+Guest, Customer
+UC-06
+Xem chi tiết sản phẩm
+Guest, Customer
+UC-07
+Tìm kiếm sản phẩm
+Guest, Customer
+UC-08
+Lọc sản phẩm
+Guest, Customer
+UC-09
+Thêm vào giỏ hàng
+Guest, Customer
+UC-10
+Quản lý giỏ hàng
+Guest, Customer
+UC-11
+Đặt hàng
+Guest, Customer
+UC-12
+Thanh toán
+Customer
+UC-13
+Theo dõi đơn hàng
+Customer
+UC-14
+Hủy đơn hàng
+Customer
+UC-15
+Quản lý sản phẩm
+Admin Tổng
+UC-16
+Quản lý danh mục
+Admin Tổng
+UC-17
+Quản lý đơn hàng
+Admin
+UC-18
+Quản lý khách hàng
+Admin
+UC-19
+Quản lý tồn kho
+Admin
+UC-20
+Quản lý giảm giá
+Admin
+UC-21
+Quản lý banner
+Admin Tổng
+UC-22
+Quản lý chi nhánh
+Admin Tổng
+UC-23
+Quản lý tài khoản Admin
+Admin Tổng
+UC-24
+Phân quyền
+Admin Tổng
+UC-25
+Báo cáo doanh thu
+Admin
+UC-26
+Báo cáo đơn hàng
+Admin
+UC-27
+Báo cáo khách hàng
+Admin
+UC-28
+Báo cáo tồn kho
+Admin
+UC-29
+Quản lý cấu hình hệ thống
+Admin Tổng
+UC-30
+Xem nhật ký hệ thống
+Admin Tổng
+6.4 Ma trận Use Case và Functional Requirement
+Để đảm bảo khả năng truy vết (Requirement Traceability), mỗi Use Case được liên kết với các yêu cầu chức năng tương ứng.
+Use Case
+Functional Requirement
+UC-01
+FR-001
+UC-02
+FR-002
+UC-03
+FR-003
+UC-04
+FR-004, FR-005
+UC-05
+FR-014
+UC-06
+FR-015
+UC-07
+FR-016
+UC-08
+FR-017, FR-018
+UC-09
+FR-019
+UC-10
+FR-020, FR-021, FR-022
+UC-11
+FR-023, FR-024, FR-025
+UC-12
+FR-026
+UC-13
+FR-027
+UC-14
+FR-028
+UC-15
+FR-008, FR-009, FR-010
+UC-16
+FR-007
+UC-17
+FR-029 → FR-038
+UC-18
+FR-040
+UC-19
+FR-011
+UC-20
+FR-013
+UC-21
+FR-042
+UC-22
+FR-041
+UC-23
+FR-006
+UC-24
+FR-039
+UC-25
+FR-047
+UC-26
+FR-050
+UC-27
+FR-048
+UC-28
+FR-049
+UC-29
+FR-043, FR-044
+UC-30
+FR-045
+6.5 Kế hoạch mô hình hóa
+Sau khi xác định đầy đủ các Use Case, nhóm phát triển sẽ xây dựng các sơ đồ UML theo thứ tự sau:
+Use Case Diagram tổng thể, thể hiện mối quan hệ giữa các tác nhân và các chức năng của hệ thống.
+Use Case Specification, mô tả chi tiết từng Use Case bao gồm mục tiêu, điều kiện tiên quyết, luồng chính, luồng thay thế và điều kiện sau khi hoàn thành.
+Activity Diagram, mô tả quy trình xử lý của các nghiệp vụ chính như đặt hàng, thanh toán, quản lý đơn hàng và quản lý sản phẩm.
+Sequence Diagram, mô tả trình tự tương tác giữa người dùng, giao diện, hệ thống và cơ sở dữ liệu trong từng nghiệp vụ.
+Class Diagram, mô tả các lớp, thuộc tính, phương thức và mối quan hệ giữa các lớp trong hệ thống.
+Entity Relationship Diagram (ERD), mô tả cấu trúc cơ sở dữ liệu và mối quan hệ giữa các bảng.
+Các mô hình trên sẽ là nền tảng để xây dựng cơ sở dữ liệu, API, giao diện người dùng và triển khai lập trình hệ thống Website Bán Trái Cây.
+6.6 Đặc tả Use Case
+Use Case Specification mô tả chi tiết từng chức năng của hệ thống dưới góc nhìn của người sử dụng. Mỗi Use Case thể hiện mục tiêu của tác nhân, điều kiện thực hiện, các bước xử lý, luồng ngoại lệ và kết quả sau khi hoàn thành.
+Các đặc tả Use Case trong tài liệu này sẽ là cơ sở để:
+Thiết kế giao diện người dùng.
+Thiết kế cơ sở dữ liệu.
+Thiết kế RESTful API.
+Viết Test Case.
+Kiểm thử hệ thống.
+Xây dựng Sequence Diagram và Activity Diagram.
+UC-01 – Đăng nhập hệ thống
+1. Thông tin chung
+Thuộc tính
+Nội dung
+Mã Use Case
+UC-01
+Tên Use Case
+Đăng nhập hệ thống
+Tác nhân
+Khách hàng, Admin Tổng, Admin Chi nhánh
+Mức ưu tiên
+Cao
+Liên quan FR
+FR-001
+2. Mục đích
+Cho phép người dùng xác thực tài khoản để truy cập các chức năng theo quyền được cấp.
+3. Điều kiện tiên quyết
+Tài khoản đã tồn tại.
+Tài khoản chưa bị khóa.
+Có kết nối Internet.
+4. Luồng chính
+Bước 1
+Người dùng truy cập trang đăng nhập.
+Bước 2
+Nhập:
+Số điện thoại.
+Mật khẩu.
+Bước 3
+Nhấn nút Đăng nhập.
+Bước 4
+Hệ thống kiểm tra dữ liệu.
+Bước 5
+Hệ thống xác thực tài khoản.
+Bước 6
+Đăng nhập thành công.
+Bước 7
+Điều hướng đến giao diện phù hợp theo quyền.
+5. Luồng thay thế
+A1
+Bỏ trống số điện thoại.
+Kết quả
+Hiển thị:
+Vui lòng nhập số điện thoại.
+A2
+Bỏ trống mật khẩu.
+Kết quả
+Hiển thị:
+Vui lòng nhập mật khẩu.
+A3
+Sai tài khoản.
+Kết quả
+Hiển thị:
+Số điện thoại hoặc mật khẩu không chính xác.
+A4
+Tài khoản bị khóa.
+Kết quả
+Hiển thị:
+Tài khoản đã bị khóa.
+6. Điều kiện sau
+Phiên đăng nhập được tạo.
+Nhật ký đăng nhập được lưu.
+7. Quy tắc nghiệp vụ
+Đăng nhập bằng số điện thoại.
+Mật khẩu được mã hóa.
+Khóa tạm thời sau 5 lần đăng nhập sai.
+UC-02 – Xem sản phẩm
+1. Thông tin chung
+Thuộc tính
+Nội dung
+Mã Use Case
+UC-02
+Tên Use Case
+Xem danh sách sản phẩm
+Tác nhân
+Guest, Customer
+Liên quan FR
+FR-014
+2. Mục đích
+Cho phép người dùng xem toàn bộ sản phẩm đang kinh doanh.
+3. Luồng chính
+Truy cập trang chủ.
+Hệ thống tải danh sách sản phẩm.
+Hiển thị:
+Hình ảnh.
+Giá.
+Tên.
+Trạng thái.
+Người dùng chọn sản phẩm.
+4. Điều kiện sau
+Danh sách sản phẩm được hiển thị.
+5. Quy tắc
+Chỉ hiển thị sản phẩm đang hoạt động.
+UC-03 – Xem chi tiết sản phẩm
+Thuộc tính
+Nội dung
+Mã
+UC-03
+Tác nhân
+Guest, Customer
+Liên quan
+FR-015
+Luồng chính
+Chọn sản phẩm.
+Hệ thống hiển thị:
+Hình ảnh.
+Giá.
+Mô tả.
+Xuất xứ.
+Khối lượng.
+Danh mục.
+Trạng thái.
+Giảm giá (nếu có).
+UC-04 – Thêm vào giỏ hàng
+Thuộc tính
+Nội dung
+Mã
+UC-04
+Tác nhân
+Guest, Customer
+Liên quan
+FR-019
+Luồng chính
+Chọn sản phẩm.
+Nhập số lượng.
+Nhấn Thêm vào giỏ hàng.
+Hệ thống:
+Kiểm tra tồn kho.
+Kiểm tra trạng thái.
+Thêm thành công.
+Luồng ngoại lệ
+Hết hàng.
+Vượt số lượng tồn.
+UC-05 – Đặt hàng
+Thông tin
+Thuộc tính
+Nội dung
+Mã
+UC-05
+Liên quan
+FR-023 → FR-026
+Luồng chính
+Mở giỏ hàng.
+Kiểm tra sản phẩm.
+Nhập:
+Họ tên.
+SĐT.
+Địa chỉ.
+Ghi chú.
+Chọn thanh toán.
+Hệ thống:
+Kiểm tra dữ liệu.
+Tính tổng tiền.
+Sinh mã đơn hàng.
+Chuyển sang màn hình thanh toán.
+Luồng ngoại lệ
+Thiếu địa chỉ.
+Thiếu họ tên.
+Giỏ hàng trống.
+Hết hàng.
+Điều kiện sau
+Đơn hàng được tạo.
+UC-06 – Thanh toán
+Thuộc tính
+Nội dung
+Mã
+UC-06
+Liên quan
+FR-026
+Luồng chính
+Chọn:
+MoMo.
+hoặc
+VietQR.
+Hệ thống sinh QR.
+Người dùng chuyển khoản.
+Hệ thống kiểm tra giao dịch.
+Thành công.
+Cập nhật trạng thái.
+Ngoại lệ
+Không thanh toán.
+Sai số tiền.
+Hết thời gian.
+UC-07 – Theo dõi đơn hàng
+Thuộc tính
+Nội dung
+Mã
+UC-07
+Liên quan
+FR-027
+Luồng chính
+Đăng nhập.
+Chọn Đơn hàng của tôi.
+Hệ thống hiển thị:
+Mã đơn.
+Trạng thái.
+Lịch sử.
+Phí vận chuyển.
+Tổng tiền.
+UC-08 – Quản lý sản phẩm
+Thuộc tính
+Nội dung
+Mã
+UC-08
+Tác nhân
+Admin Tổng
+Liên quan
+FR-007 → FR-013
+Chức năng
+Thêm.
+Sửa.
+Xóa.
+Khóa.
+Thêm hình.
+Điều chỉnh giá.
+Điều chỉnh tồn.
+Luồng chính
+Chọn sản phẩm.
+Chỉnh sửa.
+Lưu.
+Cập nhật CSDL.
+UC-09 – Quản lý đơn hàng
+Thuộc tính
+Nội dung
+Mã
+UC-09
+Liên quan
+FR-029 → FR-038
+Chức năng
+Xác nhận.
+Tạm dừng.
+Chuẩn bị hàng.
+Bàn giao GreenSM.
+Hoàn thành.
+Hủy.
+UC-10 – Quản lý tài khoản Admin
+Thuộc tính
+Nội dung
+Mã
+UC-10
+Tác nhân
+Admin Tổng
+Liên quan
+FR-006, FR-039
+Chức năng
+Tạo Admin.
+Khóa.
+Mở khóa.
+Phân quyền.
+Đặt lại mật khẩu.
+6.7 Activity Diagram
+Activity Diagram được sử dụng để mô tả luồng xử lý của các nghiệp vụ trong hệ thống Website Bán Trái Cây. Các sơ đồ này thể hiện trình tự thực hiện công việc từ khi người dùng bắt đầu thao tác đến khi hệ thống hoàn tất xử lý. Activity Diagram giúp nhóm phát triển hiểu rõ quy trình nghiệp vụ, xác định các nhánh xử lý, điều kiện rẽ nhánh và các bước cần thực hiện trong từng chức năng.
+Trong hệ thống, các quy trình nghiệp vụ chính cần được mô hình hóa bằng Activity Diagram bao gồm: đăng nhập, tìm kiếm sản phẩm, đặt hàng, thanh toán, quản lý đơn hàng, quản lý sản phẩm, quản lý khách hàng và phân quyền quản trị.
+6.7.1 Activity Diagram – Đăng nhập
+Quy trình đăng nhập bắt đầu khi người dùng truy cập vào trang đăng nhập của hệ thống. Người dùng nhập số điện thoại và mật khẩu, sau đó nhấn nút Đăng nhập. Hệ thống tiến hành kiểm tra dữ liệu đầu vào, xác thực thông tin tài khoản và phân quyền người dùng.
+Nếu thông tin đăng nhập hợp lệ, hệ thống tạo phiên đăng nhập (Session hoặc JWT Token), ghi nhận nhật ký đăng nhập và chuyển người dùng đến giao diện tương ứng với vai trò của họ. Nếu thông tin không hợp lệ, hệ thống hiển thị thông báo lỗi và yêu cầu người dùng nhập lại.
+6.7.2 Activity Diagram – Tìm kiếm sản phẩm
+Người dùng nhập từ khóa vào ô tìm kiếm hoặc lựa chọn bộ lọc theo danh mục, khoảng giá và trạng thái giảm giá. Hệ thống tiếp nhận yêu cầu, thực hiện truy vấn cơ sở dữ liệu và trả về danh sách sản phẩm phù hợp.
+Nếu không có sản phẩm thỏa mãn điều kiện tìm kiếm, hệ thống hiển thị thông báo "Không tìm thấy sản phẩm phù hợp". Người dùng có thể tiếp tục thay đổi từ khóa hoặc bộ lọc để thực hiện tìm kiếm mới.
+6.7.3 Activity Diagram – Thêm sản phẩm vào giỏ hàng
+Quy trình bắt đầu khi người dùng chọn một sản phẩm và nhập số lượng mong muốn. Hệ thống kiểm tra tình trạng hoạt động của sản phẩm cũng như số lượng tồn kho.
+Nếu sản phẩm còn hàng và số lượng yêu cầu không vượt quá tồn kho, hệ thống thêm sản phẩm vào giỏ hàng, cập nhật tổng số lượng và tổng giá trị đơn hàng. Nếu sản phẩm hết hàng hoặc số lượng yêu cầu vượt quá số lượng tồn kho, hệ thống hiển thị thông báo lỗi và không thực hiện thêm sản phẩm vào giỏ hàng.
+6.7.4 Activity Diagram – Đặt hàng
+Sau khi hoàn tất việc lựa chọn sản phẩm, người dùng mở giỏ hàng và kiểm tra lại thông tin. Hệ thống hiển thị danh sách sản phẩm, số lượng, đơn giá, phí vận chuyển dự kiến và tổng giá trị đơn hàng.
+Người dùng nhập thông tin nhận hàng gồm họ và tên, số điện thoại, địa chỉ giao hàng và ghi chú (nếu có). Hệ thống kiểm tra tính hợp lệ của dữ liệu, tính toán tổng số tiền thanh toán, tạo mã đơn hàng và chuyển sang bước thanh toán.
+Nếu dữ liệu không hợp lệ hoặc giỏ hàng không có sản phẩm, hệ thống sẽ thông báo lỗi và yêu cầu người dùng chỉnh sửa trước khi tiếp tục.
+6.7.5 Activity Diagram – Thanh toán
+Người dùng lựa chọn phương thức thanh toán gồm MoMo hoặc VietQR. Hệ thống sinh mã QR tương ứng và hiển thị trên giao diện.
+Người dùng thực hiện chuyển khoản theo thông tin được cung cấp. Hệ thống tiến hành kiểm tra kết quả giao dịch thông qua API đối soát (nếu được tích hợp) hoặc chờ quản trị viên xác nhận thủ công.
+Nếu thanh toán thành công, hệ thống cập nhật trạng thái đơn hàng sang Đã xác nhận và gửi thông báo đến khách hàng. Nếu giao dịch thất bại hoặc quá thời gian thanh toán, đơn hàng vẫn ở trạng thái Chờ thanh toán và khách hàng có thể tiếp tục thực hiện thanh toán sau.
+6.7.6 Activity Diagram – Theo dõi đơn hàng
+Sau khi đăng nhập, khách hàng truy cập mục Đơn hàng của tôi để xem danh sách các đơn hàng đã đặt.
+Người dùng chọn một đơn hàng để xem chi tiết. Hệ thống hiển thị toàn bộ thông tin bao gồm mã đơn hàng, trạng thái hiện tại, lịch sử thay đổi trạng thái, danh sách sản phẩm, phí vận chuyển, phương thức thanh toán và tổng giá trị đơn hàng.
+Nếu đơn hàng đang ở trạng thái Tạm dừng, hệ thống đồng thời hiển thị lý do tạm dừng để khách hàng nắm được nguyên nhân và phối hợp với doanh nghiệp xử lý.
+6.7.7 Activity Diagram – Quản lý đơn hàng
+Quản trị viên truy cập chức năng quản lý đơn hàng để xem danh sách các đơn hàng đang chờ xử lý.
+Sau khi lựa chọn một đơn hàng, quản trị viên kiểm tra thông tin khách hàng, trạng thái thanh toán và tình trạng hàng hóa. Dựa trên kết quả kiểm tra, quản trị viên có thể xác nhận đơn hàng, chuyển sang trạng thái chuẩn bị hàng, tạm dừng xử lý, bàn giao cho đơn vị vận chuyển GreenSM hoặc hủy đơn hàng nếu phát sinh sự cố.
+Mọi thay đổi trạng thái đều được ghi nhận vào nhật ký xử lý của đơn hàng nhằm phục vụ công tác theo dõi và kiểm tra sau này.
+6.7.8 Activity Diagram – Quản lý sản phẩm
+Admin Tổng truy cập chức năng quản lý sản phẩm để thêm mới, chỉnh sửa hoặc xóa sản phẩm.
+Khi thêm mới sản phẩm, quản trị viên nhập đầy đủ thông tin như tên sản phẩm, danh mục, đơn giá, mô tả, tồn kho và hình ảnh minh họa. Hệ thống kiểm tra tính hợp lệ của dữ liệu trước khi lưu vào cơ sở dữ liệu.
+Đối với chức năng chỉnh sửa, hệ thống cập nhật thông tin sản phẩm và ghi nhận thời điểm thay đổi. Khi tồn kho của sản phẩm giảm xuống bằng 0, hệ thống tự động chuyển trạng thái sang Hết hàng để ngăn khách hàng tiếp tục đặt mua.
+6.7.9 Activity Diagram – Quản lý khách hàng
+Quản trị viên có quyền truy cập danh sách khách hàng để tìm kiếm và xem thông tin chi tiết của từng khách hàng.
+Hệ thống hiển thị các thông tin gồm họ tên, số điện thoại, địa chỉ, số lượng đơn hàng và tổng giá trị mua hàng. Quản trị viên có thể khóa hoặc mở khóa tài khoản khi cần thiết, tuy nhiên không được phép xóa khách hàng đã phát sinh đơn hàng nhằm đảm bảo tính toàn vẹn dữ liệu.
+6.7.10 Activity Diagram – Phân quyền quản trị
+Admin Tổng truy cập chức năng quản lý tài khoản quản trị và lựa chọn một Admin Chi nhánh cần phân quyền.
+Hệ thống hiển thị danh sách toàn bộ các chức năng có thể cấp quyền. Admin Tổng lựa chọn các quyền phù hợp, lưu thay đổi và hệ thống cập nhật quyền truy cập ngay lập tức.
+Khi Admin Chi nhánh đăng nhập, hệ thống chỉ hiển thị các chức năng đã được cấp quyền. Các chức năng không được cấp quyền sẽ không xuất hiện trên giao diện và cũng không thể truy cập trực tiếp thông qua đường dẫn URL.
+Chương 7. Ma trận truy vết yêu cầu (Requirement Traceability Matrix – RTM)
+7.1 Giới thiệu
+Ma trận truy vết yêu cầu (Requirement Traceability Matrix – RTM) là tài liệu dùng để theo dõi mối liên kết giữa các yêu cầu nghiệp vụ, yêu cầu chức năng, quy tắc nghiệp vụ, Use Case, thiết kế, kiểm thử và triển khai hệ thống.
+Việc xây dựng RTM giúp nhóm phát triển và khách hàng:
+Kiểm tra tất cả yêu cầu đều được triển khai.
+Đảm bảo không bỏ sót chức năng trong quá trình lập trình.
+Hỗ trợ đánh giá tác động khi thay đổi yêu cầu.
+Thuận tiện cho kiểm thử và nghiệm thu hệ thống.
+Hỗ trợ bảo trì và mở rộng phần mềm trong tương lai.
+Trong dự án Website Bán Trái Cây, RTM được xây dựng theo mô hình:
+Business Requirement → Functional Requirement → Business Rule → Use Case → Module → Test Case
+7.2 Danh sách Business Requirement
+Mã
+Yêu cầu nghiệp vụ
+BRQ-01
+Quản lý tài khoản người dùng
+BRQ-02
+Quản lý danh mục sản phẩm
+BRQ-03
+Quản lý sản phẩm
+BRQ-04
+Quản lý giỏ hàng
+BRQ-05
+Quản lý đơn hàng
+BRQ-06
+Quản lý thanh toán
+BRQ-07
+Quản lý giao hàng
+BRQ-08
+Quản lý khách hàng
+BRQ-09
+Quản lý khuyến mãi
+BRQ-10
+Quản lý báo cáo
+BRQ-11
+Quản lý chi nhánh
+BRQ-12
+Quản lý hệ thống
+7.3 Ma trận Business Requirement → Functional Requirement
+Business Requirement
+Functional Requirement
+BRQ-01
+FR-001 → FR-006
+BRQ-02
+FR-007
+BRQ-03
+FR-008 → FR-018
+BRQ-04
+FR-019 → FR-022
+BRQ-05
+FR-023 → FR-038
+BRQ-06
+FR-026
+BRQ-07
+FR-034 → FR-038
+BRQ-08
+FR-040
+BRQ-09
+FR-013
+BRQ-10
+FR-046 → FR-050
+BRQ-11
+FR-041
+BRQ-12
+FR-042 → FR-045
+7.4 Ma trận Functional Requirement → Use Case
+Functional Requirement
+Use Case
+FR-001
+UC-01
+FR-002
+UC-02
+FR-003
+UC-03
+FR-004
+UC-04
+FR-005
+UC-04
+FR-006
+UC-10
+FR-007
+UC-08
+FR-008
+UC-08
+FR-009
+UC-08
+FR-010
+UC-08
+FR-011
+UC-08
+FR-012
+UC-08
+FR-013
+UC-08
+FR-014
+UC-02
+FR-015
+UC-03
+FR-016
+UC-02
+FR-017
+UC-02
+FR-018
+UC-02
+FR-019
+UC-04
+FR-020
+UC-04
+FR-021
+UC-04
+FR-022
+UC-04
+FR-023
+UC-05
+FR-024
+UC-05
+FR-025
+UC-05
+FR-026
+UC-06
+FR-027
+UC-07
+FR-028
+UC-07
+FR-029 → FR-038
+UC-09
+FR-039
+UC-10
+FR-040
+UC-09
+FR-041
+UC-10
+FR-042
+UC-10
+FR-043
+UC-10
+FR-044
+UC-10
+FR-045
+UC-10
+FR-046
+UC-09
+FR-047
+UC-09
+FR-048
+UC-09
+FR-049
+UC-09
+FR-050
+UC-09
+7.5 Ma trận Functional Requirement → Business Rule
+Functional Requirement
+Business Rule
+FR-001
+BR-007, BR-010
+FR-002
+BR-007
+FR-003
+BR-010
+FR-004
+BR-008
+FR-005
+BR-009
+FR-006
+BR-025
+FR-007
+BR-001
+FR-008
+BR-002
+FR-009
+BR-003
+FR-010
+BR-004
+FR-011
+BR-004
+FR-012
+BR-006
+FR-013
+BR-014
+FR-014
+BR-001
+FR-015
+BR-003
+FR-016
+BR-001
+FR-017
+BR-001
+FR-018
+BR-002
+FR-019
+BR-011
+FR-020
+BR-012
+FR-021
+BR-013
+FR-022
+BR-011
+FR-023
+BR-017
+FR-024
+BR-018
+FR-025
+BR-020
+FR-026
+BR-014, BR-015, BR-016
+FR-027
+BR-024
+FR-028
+BR-020
+FR-029
+BR-018
+FR-030
+BR-018
+FR-031
+BR-019
+FR-032
+BR-021
+FR-033
+BR-020
+FR-034
+BR-022
+FR-035
+BR-023
+FR-036
+BR-024
+FR-037
+BR-028
+FR-038
+BR-030
+FR-039
+BR-026
+FR-040
+BR-027
+FR-041
+BR-025
+FR-042
+BR-026
+FR-043
+BR-026
+FR-044
+BR-026
+FR-045
+BR-030
+FR-046
+BR-028
+FR-047
+BR-028
+FR-048
+BR-028
+FR-049
+BR-029
+FR-050
+BR-030
+7.6 Ma trận Functional Requirement → Module
+Functional Requirement
+Module
+FR-001 → FR-006
+Authentication
+FR-007 → FR-013
+Product Management
+FR-014 → FR-018
+Product Catalog
+FR-019 → FR-022
+Shopping Cart
+FR-023 → FR-028
+Order Management
+FR-029 → FR-038
+Admin Order
+FR-039 → FR-045
+Administration
+FR-046 → FR-050
+Reporting
+7.7 Ma trận Functional Requirement → Test Case
+Functional Requirement
+Test Case
+FR-001
+TC-001 → TC-005
+FR-002
+TC-006 → TC-008
+FR-003
+TC-009 → TC-013
+FR-004
+TC-014 → TC-018
+FR-005
+TC-019 → TC-022
+FR-006
+TC-023 → TC-028
+FR-007 → FR-013
+TC-029 → TC-070
+FR-014 → FR-018
+TC-071 → TC-100
+FR-019 → FR-022
+TC-101 → TC-125
+FR-023 → FR-028
+TC-126 → TC-165
+FR-029 → FR-038
+TC-166 → TC-225
+FR-039 → FR-045
+TC-226 → TC-260
+FR-046 → FR-050
+TC-261 → TC-300
+7.8 Ma trận Module → Database
+Module
+Bảng dữ liệu
+Authentication
+users, roles, permissions
+Product
+products, categories, product_images
+Promotion
+promotions, promotion_product
+Cart
+carts, cart_items
+Order
+orders, order_details
+Payment
+payments
+Shipping
+shipments
+Branch
+branches
+Banner
+banners
+Report
+orders, products, users
+Log
+system_logs
+7.9 Ma trận Module → API
+Module
+API chính
+Authentication
+/login, /logout, /forgot-password
+Product
+/products
+Category
+/categories
+Cart
+/cart
+Order
+/orders
+Payment
+/payments
+Shipping
+/shipments
+Customer
+/customers
+Promotion
+/promotions
+Banner
+/banners
+Branch
+/branches
+Report
+/reports
+Admin
+/admins
+Permission
+/permissions
+7.10 Phân tích khả năng truy vết
+Việc xây dựng RTM cho phép kiểm soát toàn bộ vòng đời của yêu cầu phần mềm. Mỗi yêu cầu nghiệp vụ đều được liên kết đến các yêu cầu chức năng tương ứng, sau đó được ánh xạ sang Use Case, quy tắc nghiệp vụ, module phần mềm, cơ sở dữ liệu, API và các trường hợp kiểm thử.
+Nhờ đó, khi có thay đổi yêu cầu từ phía khách hàng, nhóm phát triển có thể nhanh chóng xác định các thành phần bị ảnh hưởng để cập nhật thiết kế, mã nguồn và kế hoạch kiểm thử. Điều này giúp giảm thiểu rủi ro, hạn chế sai sót và nâng cao khả năng bảo trì hệ thống trong tương lai.
+Đối với Website Bán Trái Cây, toàn bộ 50 Functional Requirement, 30 Business Rule, 30 Use Case, 22 sơ đồ UML và hệ thống API đều được liên kết trong RTM, đảm bảo không có yêu cầu nào bị bỏ sót trong quá trình phân tích, thiết kế và triển khai.
+Chương 8. Đặc tả RESTful API (REST API Specification)
+8.1 Giới thiệu
+RESTful API là cầu nối giao tiếp giữa ứng dụng Frontend (ReactJS) và Backend (Laravel). Toàn bộ dữ liệu của hệ thống Website Bán Trái Cây đều được trao đổi thông qua API theo chuẩn REST, sử dụng định dạng JSON.
+Việc xây dựng tài liệu API nhằm thống nhất cách giao tiếp giữa các thành viên trong nhóm phát triển, giảm sai sót trong quá trình lập trình và hỗ trợ tích hợp giữa các hệ thống trong tương lai.
+8.2 Kiến trúc API
+ReactJS
+     │
+ HTTPS/JSON
+     │
+Laravel REST API
+     │
+Business Service
+     │
+Repository
+     │
+MySQL
+8.3 Quy ước API
+Base URL
+Development
+http://localhost:8000/api
+Production
+https://fruitshop.vn/api
+Định dạng dữ liệu
+Toàn bộ dữ liệu trao đổi sử dụng:
+Content-Type: application/json
+Định dạng thời gian
+YYYY-MM-DD HH:mm:ss
+Ví dụ
+2026-08-15 14:35:20
+HTTP Status Code
+Code
+Ý nghĩa
+200
+Thành công
+201
+Tạo dữ liệu thành công
+400
+Dữ liệu không hợp lệ
+401
+Chưa đăng nhập
+403
+Không có quyền
+404
+Không tìm thấy dữ liệu
+409
+Dữ liệu bị trùng
+422
+Validation Error
+500
+Lỗi hệ thống
+8.4 Chuẩn Response
+Thành công
+{
+    "success": true,
+    "message": "Thành công",
+    "data": {}
+}
+Thất bại
+{
+    "success": false,
+    "message": "Có lỗi xảy ra",
+    "errors": {}
+}
+8.5 Xác thực
+Website sử dụng
+JWT Authentication
+Header
+Authorization: Bearer {token}
+Token được sinh sau khi đăng nhập thành công.
+8.6 Authentication API
+API 01. Đăng nhập
+Endpoint
+POST /login
+Mô tả
+Đăng nhập bằng số điện thoại và mật khẩu.
+Request
+{
+    "phone":"0912345678",
+    "password":"123456"
+}
+Validation
+Trường
+Điều kiện
+phone
+Bắt buộc
+password
+Bắt buộc
+Response
+{
+"success":true,
+"message":"Đăng nhập thành công",
+"data":{
+    "token":"JWT_TOKEN",
+    "user":{
+        "id":1,
+        "name":"Nguyễn Văn A",
+        "role":"Customer"
+    }
+}
+}
+API 02. Đăng xuất
+Endpoint
+POST /logout
+Authentication
+Bearer Token
+Response
+{
+"success":true,
+"message":"Đăng xuất thành công"
+}
+API 03. Quên mật khẩu
+Endpoint
+POST /forgot-password
+Request
+{
+"phone":"0912345678"
+}
+Hệ thống
+kiểm tra số điện thoại
+sinh OTP
+gửi OTP
+Response
+{
+"success":true,
+"message":"OTP đã được gửi."
+}
+API 04. Xác nhận OTP
+Endpoint
+POST /verify-otp
+Request
+{
+"phone":"0912345678",
+"otp":"845612"
+}
+Response
+{
+"success":true,
+"message":"OTP hợp lệ."
+}
+API 05. Đặt lại mật khẩu
+Endpoint
+POST /reset-password
+Request
+{
+"phone":"0912345678",
+"password":"123456",
+"confirm_password":"123456"
+}
+Response
+{
+"success":true,
+"message":"Đổi mật khẩu thành công."
+}
+8.7 Customer API
+API 06. Thông tin cá nhân
+GET /profile
+Response
+{
+"id":1,
+"name":"Nguyễn Văn A",
+"phone":"0912345678",
+"address":"TP.HCM"
+}
+API 07. Cập nhật thông tin
+PUT /profile
+Request
+{
+"name":"Nguyễn Văn A",
+"phone":"0912345678",
+"address":"Quận Bình Thạnh"
+}
+Response
+{
+"success":true,
+"message":"Cập nhật thành công."
+}
+API 08. Đổi mật khẩu
+PUT /change-password
+Request
+{
+"old_password":"123456",
+"new_password":"654321",
+"confirm_password":"654321"
+}
+Response
+{
+"success":true,
+"message":"Đổi mật khẩu thành công."
+}
+8.8 Quy tắc Validation
+Đăng nhập
+Trường
+Điều kiện
+Phone
+10 số
+Password
+6–50 ký tự
+OTP
+Trường
+Điều kiện
+OTP
+6 số
+Thời gian
+5 phút
+Mật khẩu
+Điều kiện
+Ít nhất 6 ký tự
+Có chữ và số
+Không chứa khoảng trắng
+8.9 Business Rule
+BR-001
+Số điện thoại phải là duy nhất.
+BR-002
+OTP chỉ có hiệu lực trong 5 phút.
+BR-003
+Sai OTP quá 5 lần sẽ khóa yêu cầu đặt lại mật khẩu trong 15 phút.
+BR-004
+JWT Token hết hạn sau 24 giờ.
+BR-005
+Người chưa đăng nhập không được truy cập API yêu cầu xác thực.
+8.10 Danh sách Authentication API
+STT
+API
+Method
+1
+/login
+POST
+2
+/logout
+POST
+3
+/forgot-password
+POST
+4
+/verify-otp
+POST
+5
+/reset-password
+POST
+6
+/profile
+GET
+7
+/profile
+PUT
+8
+/change-password
+PUT
+8.11 Tổng kết
+Nhóm API Authentication chịu trách nhiệm xác thực người dùng, quản lý phiên đăng nhập và thông tin tài khoản. Tất cả các API đều sử dụng chuẩn REST, trao đổi dữ liệu dưới dạng JSON và áp dụng cơ chế JWT để bảo vệ các tài nguyên của hệ thống.
+Đây là nhóm API nền tảng, được sử dụng trước khi truy cập các chức năng khác như quản lý giỏ hàng, đặt hàng, thanh toán và quản trị hệ thống.
+8.12 Product API
+Module Product chịu trách nhiệm quản lý toàn bộ thông tin sản phẩm được hiển thị trên website. Các API trong nhóm này phục vụ cả khách hàng và quản trị viên.
+API 09. Lấy danh sách sản phẩm
+Endpoint
+GET /products
+Authentication
+Không yêu cầu.
+Query Parameters
+Tên
+Kiểu
+Mô tả
+page
+Integer
+Trang hiện tại
+limit
+Integer
+Số bản ghi
+keyword
+String
+Tên sản phẩm
+category_id
+Long
+Danh mục
+min_price
+Decimal
+Giá nhỏ nhất
+max_price
+Decimal
+Giá lớn nhất
+sort
+String
+Sắp xếp
+Ví dụ Request
+GET /products?page=1&limit=12
+Response
+{
+    "success": true,
+    "data": [
+        {
+            "id":1,
+            "name":"Xoài Cát Hòa Lộc",
+            "price":85000,
+            "discount_price":79000,
+            "stock":120,
+            "thumbnail":"xoai.jpg"
+        }
+    ]
+}
+API 10. Chi tiết sản phẩm
+GET /products/{id}
+Response
+{
+    "id":1,
+    "name":"Xoài Cát Hòa Lộc",
+    "category":"Trái cây tươi",
+    "description":"...",
+    "price":85000,
+    "discount_price":79000,
+    "stock":120,
+    "images":[]
+}
+API 11. Tìm kiếm sản phẩm
+GET /products/search
+Query
+keyword=xoài
+Response
+Danh sách sản phẩm phù hợp.
+API 12. Lọc sản phẩm
+GET /products/filter
+Query
+category_id
+min_price
+max_price
+sort
+Ví dụ
+GET /products/filter?category_id=2&min_price=50000&max_price=200000
+API 13. Thêm sản phẩm
+POST /admin/products
+Authentication
+Admin Tổng
+Request
+{
+"name":"Táo New Zealand",
+"category_id":1,
+"description":"...",
+"price":120000,
+"discount_price":110000,
+"stock":200
+}
+Response
+{
+"success":true,
+"message":"Thêm sản phẩm thành công."
+}
+API 14. Cập nhật sản phẩm
+PUT /admin/products/{id}
+Request
+{
+"name":"Táo New Zealand",
+"price":125000,
+"stock":250
+}
+API 15. Xóa sản phẩm
+DELETE /admin/products/{id}
+Business Rule
+Không được xóa sản phẩm đã phát sinh đơn hàng.
+Chỉ chuyển trạng thái sang Ngừng kinh doanh.
+API 16. Upload ảnh sản phẩm
+POST /admin/products/upload-image
+Request
+Multipart Form Data
+product_id
+image
+Response
+{
+"success":true,
+"image":"products/apple01.jpg"
+}
+API 17. Xóa ảnh sản phẩm
+DELETE /admin/products/image/{id}
+API 18. Cập nhật tồn kho
+PUT /admin/products/stock/{id}
+Request
+{
+"stock":500
+}
+Business Rule
+Stock >=0
+Khi stock =0
+Hệ thống tự động
+Hết hàng
+API 19. Danh sách sản phẩm giảm giá
+GET /products/promotion
+API 20. Danh sách sản phẩm nổi bật
+GET /products/featured
+8.13 Category API
+API 21. Danh sách danh mục
+GET /categories
+API 22. Chi tiết danh mục
+GET /categories/{id}
+API 23. Thêm danh mục
+POST /admin/categories
+API 24. Cập nhật danh mục
+PUT /admin/categories/{id}
+API 25. Xóa danh mục
+DELETE /admin/categories/{id}
+Business Rule
+Không được xóa nếu danh mục còn sản phẩm.
+8.14 Promotion API
+API 26. Danh sách chương trình giảm giá
+GET /promotions
+API 27. Chi tiết chương trình
+GET /promotions/{id}
+API 28. Thêm chương trình
+POST /admin/promotions
+Request
+{
+"title":"Lễ Quốc Khánh",
+"discount_percent":15,
+"start_date":"2026-09-01",
+"end_date":"2026-09-05"
+}
+API 29. Cập nhật chương trình
+PUT /admin/promotions/{id}
+API 30. Xóa chương trình
+DELETE /admin/promotions/{id}
+API 31. Gán sản phẩm vào chương trình
+POST /admin/promotions/products
+Request
+{
+"promotion_id":2,
+"products":[
+1,
+3,
+5,
+8
+]
+}
+API 32. Xóa sản phẩm khỏi chương trình
+DELETE /admin/promotions/products/{id}
+Validation Rules
+Product
+Thuộc tính
+Điều kiện
+Tên
+Bắt buộc
+Giá
+>0
+Giá KM
+≤ Giá bán
+Tồn kho
+≥0
+Category
+Thuộc tính
+Điều kiện
+Tên
+Không trùng
+Promotion
+Thuộc tính
+Điều kiện
+Ngày bắt đầu
+< Ngày kết thúc
+Giảm giá
+1-100%
+Business Rules
+BR-006
+Một sản phẩm thuộc đúng một danh mục.
+BR-007
+Một sản phẩm có nhiều hình ảnh.
+BR-008
+Sản phẩm hết hàng không được đặt mua.
+BR-009
+Giá khuyến mãi không được lớn hơn giá bán.
+BR-010
+Không được xóa sản phẩm đã phát sinh đơn hàng.
+BR-011
+Danh mục còn sản phẩm không được phép xóa.
+BR-012
+Một chương trình có thể áp dụng cho nhiều sản phẩm.
+Danh sách API Product
+Module
+Số API
+Product
+12
+Category
+5
+Promotion
+7
+Tổng 24 API
+8.15 Cart API
+Module Cart chịu trách nhiệm quản lý giỏ hàng của khách hàng trước khi tạo đơn hàng.
+API 33. Lấy giỏ hàng
+Endpoint
+GET /cart
+Authentication
+Yêu cầu đăng nhập.
+Response
+{
+  "success": true,
+  "data": {
+    "total_quantity": 3,
+    "total_amount": 275000,
+    "items": [
+      {
+        "product_id": 1,
+        "product_name": "Xoài Cát Hòa Lộc",
+        "quantity": 2,
+        "price": 85000,
+        "subtotal": 170000
+      },
+      {
+        "product_id": 5,
+        "product_name": "Táo New Zealand",
+        "quantity": 1,
+        "price": 105000,
+        "subtotal": 105000
+      }
+    ]
+  }
+}
+API 34. Thêm sản phẩm vào giỏ hàng
+Endpoint
+POST /cart/items
+Request
+{
+  "product_id": 5,
+  "quantity": 2
+}
+Business Rule
+Sản phẩm phải đang hoạt động.
+Tồn kho phải đủ.
+Nếu sản phẩm đã có trong giỏ hàng thì tăng số lượng.
+API 35. Cập nhật số lượng
+PUT /cart/items/{id}
+Request
+{
+    "quantity":3
+}
+API 36. Xóa sản phẩm khỏi giỏ
+DELETE /cart/items/{id}
+API 37. Xóa toàn bộ giỏ hàng
+DELETE /cart
+8.16 Order API
+Module Order quản lý toàn bộ vòng đời của đơn hàng từ lúc tạo đến khi hoàn tất.
+API 38. Tạo đơn hàng
+POST /orders
+Request
+{
+    "receiver_name":"Nguyễn Văn A",
+    "phone":"0912345678",
+    "address":"12 Nguyễn Huệ, TP.HCM",
+    "note":"Giao trong giờ hành chính"
+}
+Response
+{
+    "success":true,
+    "order_code":"OD202608050001",
+    "payment_amount":285000
+}
+API 39. Danh sách đơn hàng của khách
+GET /orders
+API 40. Chi tiết đơn hàng
+GET /orders/{id}
+Response
+{
+    "order_code":"OD202608050001",
+    "status":"Đang xử lý",
+    "shipping_fee":30000,
+    "total_amount":285000,
+    "payment_status":"Đã thanh toán",
+    "items":[]
+}
+API 41. Hủy đơn hàng
+PUT /orders/{id}/cancel
+Business Rule
+Chỉ được hủy trước khi giao cho GreenSM.
+Nếu đã bàn giao vận chuyển thì khách phải liên hệ công ty.
+API 42. Theo dõi đơn hàng
+GET /orders/{id}/tracking
+Response
+{
+    "order_code":"OD202608050001",
+    "status":"Đang giao",
+    "timeline":[]
+}
+API 43. Danh sách đơn hàng (Admin)
+GET /admin/orders
+API 44. Cập nhật trạng thái đơn hàng
+PUT /admin/orders/{id}/status
+Request
+{
+    "status":"Đang giao"
+}
+Các trạng thái hợp lệ:
+Chờ thanh toán
+Đã xác nhận
+Chuẩn bị hàng
+Tạm dừng
+Đang giao
+Đã giao
+Đã hủy
+API 45. Ghi chú xử lý đơn hàng
+POST /admin/orders/{id}/note
+Request
+{
+    "note":"Khách yêu cầu đổi địa chỉ giao hàng."
+}
+8.17 Payment API
+Module Payment chịu trách nhiệm xử lý thanh toán trực tuyến.
+API 46. Tạo thanh toán
+POST /payments
+Request
+{
+    "order_id":25,
+    "method":"MOMO"
+}
+Response
+{
+    "payment_url":"https://...",
+    "qr_code":"base64..."
+}
+API 47. Kiểm tra trạng thái thanh toán
+GET /payments/{id}
+Response
+{
+    "status":"PAID",
+    "transaction_code":"MOMO123456"
+}
+API 48. Callback từ cổng thanh toán
+POST /payments/callback
+Chỉ MoMo/VietQR gọi API này.
+API 49. Lịch sử thanh toán
+GET /payments/history
+8.18 Shipment API
+Module Shipment quản lý thông tin giao hàng.
+API 50. Tạo vận đơn
+POST /shipments
+Chỉ Admin.
+API 51. Tra cứu vận đơn
+GET /shipments/{tracking_code}
+API 52. Cập nhật trạng thái vận chuyển
+PUT /shipments/{id}
+Request
+{
+    "shipping_status":"Đang giao"
+}
+API 53. Danh sách vận đơn
+GET /shipments
+Validation Rules
+Cart
+Thuộc tính
+Điều kiện
+Quantity
+>0
+Quantity
+≤ Stock
+Order
+Thuộc tính
+Điều kiện
+Họ tên
+Bắt buộc
+SĐT
+10 số
+Địa chỉ
+Bắt buộc
+Payment
+Thuộc tính
+Điều kiện
+Method
+MoMo hoặc VietQR
+Shipment
+Thuộc tính
+Điều kiện
+Tracking Code
+Không trùng
+Business Rules
+BR-013
+Khách chỉ được đặt hàng khi giỏ hàng có sản phẩm.
+BR-014
+Tổng tiền = Tiền hàng + Phí vận chuyển.
+BR-015
+Đơn hàng chưa thanh toán không chuyển sang trạng thái "Đã xác nhận".
+BR-016
+Nếu thanh toán thất bại, đơn hàng vẫn ở trạng thái "Chờ thanh toán".
+BR-017
+Khách chỉ được hủy đơn trước khi bàn giao cho đơn vị vận chuyển.
+BR-018
+Đơn hàng có trạng thái "Tạm dừng" phải có ghi chú lý do.
+BR-019
+Mỗi đơn hàng chỉ có một giao dịch thanh toán thành công.
+BR-020
+Mỗi đơn hàng chỉ có một vận đơn chính.
+Danh sách API
+Module
+Số API
+Cart
+5
+Order
+8
+Payment
+4
+Shipment
+4
+Tổng cộng: 21 API
+8.19 Admin API
+Nhóm API này được sử dụng bởi Admin Tổng và Admin Chi nhánh để quản lý hệ thống theo phạm vi quyền hạn được cấp.
+API 54. Danh sách tài khoản quản trị
+Endpoint
+GET /admin/users
+Authentication
+JWT Token
+Quyền: admin.view
+Response
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "full_name": "Nguyễn Văn A",
+            "phone": "0912345678",
+            "role": "Admin Tổng",
+            "branch": "Chi nhánh Quận 1",
+            "status": true
+        }
+    ]
+}
+API 55. Thêm tài khoản quản trị
+Endpoint
+POST /admin/users
+Request
+{
+    "full_name": "Trần Văn B",
+    "phone": "0988888888",
+    "password": "123456",
+    "role_id": 2,
+    "branch_id": 1
+}
+API 56. Cập nhật tài khoản quản trị
+PUT /admin/users/{id}
+API 57. Khóa hoặc mở khóa tài khoản
+PUT /admin/users/{id}/status
+Request
+{
+    "status": false
+}
+API 58. Xóa tài khoản quản trị
+DELETE /admin/users/{id}
+Business Rule
+Không được xóa Admin Tổng cuối cùng của hệ thống.
+Chỉ được vô hiệu hóa tài khoản nếu đã phát sinh dữ liệu.
+8.20 Branch API
+Module Branch quản lý các chi nhánh trực thuộc công ty.
+API 59. Danh sách chi nhánh
+GET /branches
+API 60. Chi tiết chi nhánh
+GET /branches/{id}
+API 61. Thêm chi nhánh
+POST /branches
+Request
+{
+    "name":"Chi nhánh Bình Thạnh",
+    "phone":"0909000000",
+    "address":"123 Điện Biên Phủ"
+}
+API 62. Cập nhật chi nhánh
+PUT /branches/{id}
+API 63. Xóa chi nhánh
+DELETE /branches/{id}
+Business Rule
+Không được xóa nếu còn Admin đang thuộc chi nhánh.
+8.21 Banner API
+API 64. Danh sách Banner
+GET /banners
+API 65. Thêm Banner
+POST /admin/banners
+API 66. Cập nhật Banner
+PUT /admin/banners/{id}
+API 67. Xóa Banner
+DELETE /admin/banners/{id}
+API 68. Đổi trạng thái Banner
+PUT /admin/banners/{id}/status
+8.22 Permission API
+Module này chỉ dành cho Admin Tổng.
+API 69. Danh sách quyền
+GET /permissions
+API 70. Phân quyền tài khoản
+POST /permissions/assign
+Request
+{
+    "user_id": 5,
+    "permissions": [
+        "product.view",
+        "order.update",
+        "report.view"
+    ]
+}
+Business Rule
+Admin Chi nhánh chỉ được sử dụng các chức năng đã được Admin Tổng cấp quyền.
+Khi thay đổi quyền, hệ thống áp dụng ngay sau lần đăng nhập tiếp theo.
+8.23 Report API
+Module Report phục vụ thống kê và báo cáo.
+API 71. Báo cáo doanh thu
+GET /reports/revenue
+Query Parameters
+Tên
+Mô tả
+from_date
+Ngày bắt đầu
+to_date
+Ngày kết thúc
+Response
+{
+    "total_orders":150,
+    "revenue":85000000
+}
+API 72. Báo cáo đơn hàng
+GET /reports/orders
+API 73. Báo cáo khách hàng
+GET /reports/customers
+API 74. Báo cáo tồn kho
+GET /reports/inventory
+API 75. Xuất Excel
+GET /reports/export/excel
+API 76. Xuất PDF
+GET /reports/export/pdf
+8.24 System API
+API 77. Nhật ký hệ thống
+GET /system/logs
+API 78. Danh sách cấu hình
+GET /system/settings
+API 79. Cập nhật cấu hình
+PUT /system/settings
+API 80. Thông tin Dashboard
+GET /dashboard
+Response
+{
+    "today_orders":25,
+    "today_revenue":15800000,
+    "waiting_orders":12,
+    "shipping_orders":18,
+    "total_products":320,
+    "low_stock":8
+}
+8.25 Validation Rules
+Admin
+Thuộc tính
+Điều kiện
+Số điện thoại
+Không trùng
+Mật khẩu
+Tối thiểu 6 ký tự
+Branch
+Thuộc tính
+Điều kiện
+Tên chi nhánh
+Không trùng
+Số điện thoại
+Đúng định dạng
+Banner
+Thuộc tính
+Điều kiện
+Hình ảnh
+JPG, PNG, WEBP
+Dung lượng
+≤ 5 MB
+8.26 Business Rules
+BR-021
+Chỉ Admin Tổng được quản lý tài khoản quản trị.
+BR-022
+Admin Chi nhánh không được tạo hoặc xóa tài khoản quản trị.
+BR-023
+Một tài khoản quản trị chỉ thuộc một chi nhánh.
+BR-024
+Một Banner chỉ có một ảnh đại diện.
+BR-025
+Báo cáo được thống kê theo khoảng thời gian người dùng lựa chọn.
+BR-026
+Mọi thao tác thêm, sửa, xóa dữ liệu đều phải ghi vào nhật ký hệ thống.
+BR-027
+Mỗi API yêu cầu xác thực phải kiểm tra JWT Token trước khi xử lý.
+BR-028
+Mọi API trả dữ liệu đều sử dụng định dạng JSON thống nhất.
+8.27 Tổng hợp API toàn hệ thống
+Module
+Số API
+Authentication
+8
+Customer
+3
+Product
+12
+Category
+5
+Promotion
+7
+Cart
+5
+Order
+8
+Payment
+4
+Shipment
+4
+Admin
+5
+Branch
+5
+Banner
+5
+Permission
+2
+Report
+6
+System
+4
+|Tổng cộng|83 API|
+8.28 Kết luận chương
+Chương này đã đặc tả toàn bộ 83 RESTful API của hệ thống Website Bán Trái Cây, bao phủ tất cả các nghiệp vụ từ xác thực người dùng, quản lý sản phẩm, giỏ hàng, đơn hàng, thanh toán, vận chuyển, báo cáo đến quản trị hệ thống.
+Các API được thiết kế theo chuẩn REST, sử dụng định dạng JSON, áp dụng cơ chế xác thực JWT và các quy tắc kiểm tra dữ liệu đầu vào nhằm đảm bảo tính bảo mật, nhất quán và khả năng mở rộng của hệ thống.
+Tài liệu này là cơ sở để nhóm phát triển Backend (Laravel), Frontend (React) và nhóm kiểm thử triển khai, tích hợp và xác minh các chức năng của hệ thống trong suốt vòng đời dự án.
+Chương 9. Thiết kế cơ sở dữ liệu (Database Design)
+9.1 Giới thiệu
+Cơ sở dữ liệu đóng vai trò là thành phần trung tâm của hệ thống Website Bán Trái Cây, chịu trách nhiệm lưu trữ toàn bộ dữ liệu liên quan đến người dùng, sản phẩm, đơn hàng, thanh toán, vận chuyển và các thông tin phục vụ quản trị.
+Hệ thống sử dụng MySQL 8.x làm hệ quản trị cơ sở dữ liệu quan hệ (RDBMS), kết hợp với Laravel Eloquent ORM để thao tác dữ liệu. Việc thiết kế cơ sở dữ liệu tuân thủ các nguyên tắc chuẩn hóa nhằm hạn chế dư thừa dữ liệu, đảm bảo tính toàn vẹn và hỗ trợ mở rộng trong tương lai.
+Các mục tiêu chính của thiết kế cơ sở dữ liệu bao gồm:
+Đảm bảo tính nhất quán và chính xác của dữ liệu.
+Hỗ trợ truy vấn nhanh và hiệu quả.
+Dễ dàng mở rộng khi bổ sung chức năng mới.
+Đáp ứng yêu cầu về bảo mật và phân quyền truy cập.
+Phù hợp với kiến trúc Laravel MVC và ReactJS.
+9.2 Danh sách bảng dữ liệu
+STT
+Tên bảng
+Mô tả
+1
+users
+Thông tin người dùng
+2
+roles
+Vai trò người dùng
+3
+permissions
+Danh sách quyền
+4
+role_permissions
+Liên kết vai trò và quyền
+5
+branches
+Thông tin chi nhánh
+6
+categories
+Danh mục sản phẩm
+7
+products
+Thông tin sản phẩm
+8
+product_images
+Hình ảnh sản phẩm
+9
+promotions
+Chương trình khuyến mãi
+10
+promotion_products
+Liên kết sản phẩm và khuyến mãi
+11
+carts
+Giỏ hàng
+12
+cart_items
+Chi tiết giỏ hàng
+13
+orders
+Đơn hàng
+14
+order_details
+Chi tiết đơn hàng
+15
+payments
+Thanh toán
+16
+shipments
+Vận chuyển
+17
+banners
+Banner trang chủ
+18
+system_logs
+Nhật ký hệ thống
+9.3 Quy ước đặt tên
+Để đảm bảo tính thống nhất trong toàn bộ hệ thống, cơ sở dữ liệu sử dụng các quy ước sau:
+Tên bảng sử dụng chữ thường và dạng số nhiều (ví dụ: products, orders).
+Khóa chính sử dụng trường id.
+Khóa ngoại đặt theo mẫu <table>_id (ví dụ: category_id, user_id).
+Các trường thời gian sử dụng created_at và updated_at.
+Các trường trạng thái sử dụng kiểu dữ liệu TINYINT hoặc ENUM tùy trường hợp.
+9.4 Chuẩn hóa dữ liệu
+Hệ thống được thiết kế đạt chuẩn Third Normal Form (3NF).
+Chuẩn 1NF
+Mỗi bảng có khóa chính.
+Không chứa nhóm dữ liệu lặp.
+Các cột chứa giá trị nguyên tử.
+Chuẩn 2NF
+Mọi thuộc tính không khóa phụ thuộc hoàn toàn vào khóa chính.
+Không tồn tại phụ thuộc từng phần.
+Chuẩn 3NF
+Không tồn tại phụ thuộc bắc cầu.
+Các thông tin được tách thành các bảng độc lập và liên kết thông qua khóa ngoại.
+Việc chuẩn hóa giúp giảm thiểu dữ liệu dư thừa, tăng khả năng bảo trì và đảm bảo tính toàn vẹn của hệ thống.
+9.5 Kiểu dữ liệu sử dụng
+Kiểu dữ liệu
+Mục đích
+BIGINT
+Khóa chính, khóa ngoại
+VARCHAR
+Chuỗi ký tự ngắn
+TEXT
+Mô tả, ghi chú
+DECIMAL
+Giá tiền
+INT
+Số lượng
+BOOLEAN/TINYINT
+Trạng thái
+DATETIME
+Ngày giờ
+ENUM
+Các trạng thái cố định
+9.6 Quan hệ giữa các bảng
+Hệ thống sử dụng ba loại quan hệ chính:
+Quan hệ một - nhiều (One to Many)
+Ví dụ:
+Một danh mục có nhiều sản phẩm.
+Một khách hàng có nhiều đơn hàng.
+Một đơn hàng có nhiều chi tiết đơn hàng.
+Quan hệ nhiều - nhiều (Many to Many)
+Ví dụ:
+Một chương trình khuyến mãi áp dụng cho nhiều sản phẩm.
+Một sản phẩm có thể tham gia nhiều chương trình khuyến mãi.
+Các quan hệ nhiều - nhiều được cài đặt thông qua bảng trung gian như promotion_products.
+Quan hệ một - một (One to One)
+Ví dụ:
+Một đơn hàng có một bản ghi thanh toán.
+Một đơn hàng có một bản ghi vận chuyển.
+9.7 Quy tắc toàn vẹn dữ liệu
+Để đảm bảo dữ liệu luôn chính xác và nhất quán, hệ thống áp dụng các ràng buộc sau:
+Mọi bảng đều có khóa chính.
+Tất cả khóa ngoại phải tham chiếu đến bản ghi hợp lệ.
+Không cho phép xóa dữ liệu khi đang được tham chiếu, trừ khi có quy định cụ thể.
+Các giao dịch cập nhật nhiều bảng được thực hiện trong Transaction của MySQL.
+Dữ liệu đầu vào được kiểm tra tại cả Frontend và Backend.
+9.8 Chỉ mục (Index)
+Các trường thường xuyên được tìm kiếm sẽ được tạo chỉ mục để tăng tốc độ truy vấn.
+Bảng
+Trường
+users
+phone
+products
+name
+products
+slug
+orders
+order_code
+payments
+transaction_code
+shipments
+tracking_code
+categories
+name
+Ngoài ra, các khóa ngoại cũng được tạo Index nhằm tối ưu hiệu năng JOIN giữa các bảng.
+9.9 Chính sách xóa dữ liệu
+Hệ thống ưu tiên sử dụng Soft Delete đối với các bảng quan trọng.
+Bảng
+Chính sách
+products
+Soft Delete
+users
+Soft Delete
+orders
+Không cho phép xóa
+payments
+Không cho phép xóa
+shipments
+Không cho phép xóa
+Việc sử dụng Soft Delete giúp bảo toàn dữ liệu lịch sử và thuận tiện cho công tác kiểm tra, đối soát.
+9.10 Nguyên tắc bảo mật dữ liệu
+Để đảm bảo an toàn cho dữ liệu, hệ thống áp dụng các biện pháp sau:
+Mật khẩu người dùng được mã hóa bằng thuật toán bcrypt.
+Xác thực bằng JWT Token.
+Chống SQL Injection thông qua Laravel Eloquent ORM và Query Builder.
+Kiểm tra quyền truy cập trước khi thực hiện các thao tác thay đổi dữ liệu.
+Ghi nhận nhật ký hệ thống đối với các thao tác thêm, sửa, xóa.
+9.11 Hiệu năng cơ sở dữ liệu
+Để đáp ứng số lượng lớn người dùng và dữ liệu trong tương lai, cơ sở dữ liệu được thiết kế theo các nguyên tắc:
+Tối ưu chỉ mục.
+Hạn chế truy vấn lặp (N+1 Query).
+Sử dụng Eager Loading của Laravel.
+Phân trang dữ liệu đối với các danh sách lớn.
+Tối ưu truy vấn thông qua Query Builder khi cần thiết.
+9.12 Khả năng mở rộng
+Thiết kế cơ sở dữ liệu đã dự phòng khả năng mở rộng cho các phiên bản tiếp theo, bao gồm:
+Hỗ trợ nhiều ngôn ngữ.
+Tích hợp nhiều cổng thanh toán.
+Tích hợp nhiều đơn vị vận chuyển.
+Quản lý nhiều kho hàng.
+Chương trình khách hàng thân thiết.
+Đánh giá và bình luận sản phẩm.
+Phiếu giảm giá (Coupon).
+Danh sách yêu thích (Wishlist).
+Nhờ đó, hệ thống có thể phát triển thêm nhiều chức năng mà không cần thay đổi cấu trúc dữ liệu hiện tại.
+9.13 Đặc tả bảng users
+Mục đích
+Lưu trữ thông tin đăng nhập và thông tin cá nhân của khách hàng, Admin Tổng và Admin Chi nhánh.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+Độ dài
+NULL
+PK
+FK
+Mặc định
+Mô tả
+id
+BIGINT
+-
+No
+✔
+AUTO_INCREMENT
+Khóa chính
+role_id
+BIGINT
+-
+No
+✔
+Vai trò
+branch_id
+BIGINT
+-
+Yes
+✔
+NULL
+Chi nhánh
+full_name
+VARCHAR
+100
+No
+Họ tên
+phone
+VARCHAR
+15
+No
+UNIQUE
+Số điện thoại
+password
+VARCHAR
+255
+No
+Mật khẩu đã mã hóa
+address
+VARCHAR
+255
+Yes
+NULL
+Địa chỉ
+status
+BOOLEAN
+-
+No
+1
+Hoạt động
+remember_token
+VARCHAR
+100
+Yes
+NULL
+Laravel Remember Token
+created_at
+TIMESTAMP
+-
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+-
+No
+Ngày cập nhật
+Chỉ mục
+PRIMARY KEY (id)
+UNIQUE(phone)
+INDEX(role_id)
+INDEX(branch_id)
+Ràng buộc
+Số điện thoại là duy nhất.
+Password được mã hóa bằng bcrypt.
+Admin Tổng không bắt buộc thuộc chi nhánh.
+Ví dụ dữ liệu
+id
+Tên
+Vai trò
+1
+Admin Tổng
+Admin
+2
+Nguyễn Văn A
+Customer
+9.14 Đặc tả bảng roles
+Mục đích
+Lưu danh sách vai trò của hệ thống.
+Cấu trúc
+Tên trường
+Kiểu
+NULL
+PK
+Mô tả
+id
+BIGINT
+No
+✔
+Khóa chính
+role_name
+VARCHAR(50)
+No
+Tên vai trò
+description
+TEXT
+Yes
+Mô tả
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Dữ liệu mặc định
+ID
+Role
+1
+Admin Tổng
+2
+Admin Chi nhánh
+3
+Khách hàng
+9.15 Đặc tả bảng permissions
+Mục đích
+Lưu các quyền chức năng.
+Cấu trúc
+Tên trường
+Kiểu dữ liệu
+PK
+Mô tả
+id
+BIGINT
+✔
+Khóa chính
+permission_name
+VARCHAR(100)
+Tên quyền
+description
+TEXT
+Mô tả
+created_at
+TIMESTAMP
+Ngày tạo
+updated_at
+TIMESTAMP
+Ngày cập nhật
+Ví dụ dữ liệu
+product.view
+product.create
+product.update
+product.delete
+order.view
+order.update
+report.view
+banner.manage
+9.16 Đặc tả bảng role_permissions
+Mục đích
+Liên kết nhiều - nhiều giữa Role và Permission.
+Cấu trúc
+Tên trường
+Kiểu
+PK
+FK
+role_id
+BIGINT
+✔
+permission_id
+BIGINT
+✔
+Khóa
+PRIMARY KEY
+(role_id, permission_id)
+9.17 Đặc tả bảng branches
+Mục đích
+Lưu thông tin chi nhánh.
+Cấu trúc
+Tên trường
+Kiểu
+NULL
+Mô tả
+id
+BIGINT
+No
+Khóa chính
+branch_name
+VARCHAR(150)
+No
+Tên chi nhánh
+phone
+VARCHAR(15)
+No
+SĐT
+address
+VARCHAR(255)
+No
+Địa chỉ
+status
+BOOLEAN
+No
+Hoạt động
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Business Rule
+Không được xóa nếu còn Admin đang làm việc.
+9.18 Đặc tả bảng categories
+Mục đích
+Quản lý danh mục sản phẩm.
+Cấu trúc
+Tên trường
+Kiểu
+NULL
+Mô tả
+id
+BIGINT
+No
+PK
+name
+VARCHAR(150)
+No
+Tên danh mục
+slug
+VARCHAR(150)
+No
+Đường dẫn SEO
+description
+TEXT
+Yes
+Mô tả
+status
+BOOLEAN
+No
+Hoạt động
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Dữ liệu mẫu
+Trái cây tươi
+Combo trái cây
+Giỏ quà trái cây
+9.19 Đặc tả bảng products
+Mục đích
+Lưu toàn bộ sản phẩm được bán trên website.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+Độ dài
+NULL
+PK
+FK
+Mô tả
+id
+BIGINT
+-
+No
+✔
+Khóa chính
+category_id
+BIGINT
+-
+No
+✔
+Danh mục
+name
+VARCHAR
+200
+No
+Tên sản phẩm
+slug
+VARCHAR
+200
+No
+SEO URL
+description
+TEXT
+-
+Yes
+Mô tả
+price
+DECIMAL
+15,2
+No
+Giá bán
+discount_price
+DECIMAL
+15,2
+Yes
+Giá giảm
+unit
+VARCHAR
+30
+No
+kg, giỏ, combo
+stock
+INT
+-
+No
+Tồn kho
+thumbnail
+VARCHAR
+255
+Yes
+Ảnh đại diện
+is_featured
+BOOLEAN
+-
+No
+Sản phẩm nổi bật
+status
+BOOLEAN
+-
+No
+Đang bán
+created_at
+TIMESTAMP
+-
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+-
+No
+Ngày cập nhật
+Chỉ mục
+PK(id)
+INDEX(category_id)
+INDEX(name)
+INDEX(slug)
+INDEX(status)
+Business Rules
+Giá bán > 0.
+Giá khuyến mãi ≤ Giá bán.
+Tồn kho ≥ 0.
+Khi tồn kho = 0, hệ thống tự chuyển trạng thái hiển thị Hết hàng trên website.
+Không được xóa sản phẩm đã phát sinh đơn hàng.
+Ví dụ dữ liệu
+Tên
+Đơn vị
+Giá
+Xoài Cát Hòa Lộc
+kg
+85.000
+Táo New Zealand
+kg
+120.000
+Giỏ quà Cao Cấp A
+Giỏ
+850.000
+9.20 Đặc tả bảng product_images
+Mục đích
+Bảng product_images lưu danh sách hình ảnh của từng sản phẩm. Mỗi sản phẩm có thể có một hoặc nhiều hình ảnh nhằm giúp khách hàng quan sát sản phẩm từ nhiều góc độ khác nhau.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+NULL
+PK
+FK
+Mô tả
+id
+BIGINT
+No
+✔
+Khóa chính
+product_id
+BIGINT
+No
+✔
+Sản phẩm
+image_url
+VARCHAR(255)
+No
+Đường dẫn hình ảnh
+sort_order
+INT
+No
+Thứ tự hiển thị
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Chỉ mục
+PRIMARY KEY(id)
+INDEX(product_id)
+Business Rules
+Một sản phẩm có tối thiểu 1 ảnh.
+Ảnh đầu tiên được sử dụng làm ảnh đại diện nếu chưa có thumbnail.
+Chỉ chấp nhận định dạng JPG, PNG, WEBP.
+9.21 Đặc tả bảng promotions
+Mục đích
+Lưu thông tin các chương trình giảm giá theo từng thời điểm.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+NULL
+Mô tả
+id
+BIGINT
+No
+Khóa chính
+title
+VARCHAR(150)
+No
+Tên chương trình
+description
+TEXT
+Yes
+Mô tả
+discount_percent
+DECIMAL(5,2)
+No
+Phần trăm giảm
+start_date
+DATETIME
+No
+Ngày bắt đầu
+end_date
+DATETIME
+No
+Ngày kết thúc
+status
+BOOLEAN
+No
+Trạng thái
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Business Rules
+Phần trăm giảm từ 1–100%.
+Ngày kết thúc phải lớn hơn ngày bắt đầu.
+Chỉ áp dụng chương trình đang hoạt động.
+9.22 Đặc tả bảng promotion_products
+Mục đích
+Liên kết nhiều–nhiều giữa sản phẩm và chương trình khuyến mãi.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+PK
+FK
+promotion_id
+BIGINT
+✔
+product_id
+BIGINT
+✔
+Khóa
+PRIMARY KEY
+(promotion_id, product_id)
+Business Rules
+Một sản phẩm có thể tham gia nhiều chương trình (khác thời gian).
+Tại cùng một thời điểm chỉ áp dụng một chương trình có hiệu lực cho một sản phẩm.
+9.23 Đặc tả bảng carts
+Mục đích
+Lưu thông tin giỏ hàng của khách hàng.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+NULL
+PK
+FK
+Mô tả
+id
+BIGINT
+No
+✔
+Khóa chính
+user_id
+BIGINT
+No
+✔
+Khách hàng
+status
+ENUM
+No
+ACTIVE, ORDERED
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Business Rules
+Một khách hàng chỉ có một giỏ hàng đang hoạt động.
+Sau khi đặt hàng thành công, giỏ hàng chuyển sang trạng thái ORDERED và hệ thống tạo giỏ hàng mới khi khách tiếp tục mua sắm.
+9.24 Đặc tả bảng cart_items
+Mục đích
+Lưu danh sách sản phẩm trong giỏ hàng.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+NULL
+PK
+FK
+Mô tả
+id
+BIGINT
+No
+✔
+Khóa chính
+cart_id
+BIGINT
+No
+✔
+Giỏ hàng
+product_id
+BIGINT
+No
+✔
+Sản phẩm
+quantity
+INT
+No
+Số lượng
+unit_price
+DECIMAL(15,2)
+No
+Đơn giá tại thời điểm thêm
+subtotal
+DECIMAL(15,2)
+No
+Thành tiền
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Business Rules
+Quantity > 0.
+Quantity không vượt quá tồn kho.
+Thành tiền = Số lượng × Đơn giá.
+9.25 Đặc tả bảng orders
+Mục đích
+Lưu thông tin chung của đơn hàng.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+NULL
+PK
+FK
+Mô tả
+id
+BIGINT
+No
+✔
+Khóa chính
+order_code
+VARCHAR(30)
+No
+Mã đơn hàng
+user_id
+BIGINT
+No
+✔
+Khách hàng
+receiver_name
+VARCHAR(100)
+No
+Người nhận
+phone
+VARCHAR(15)
+No
+Số điện thoại
+address
+VARCHAR(255)
+No
+Địa chỉ giao hàng
+note
+TEXT
+Yes
+Ghi chú
+subtotal
+DECIMAL(15,2)
+No
+Tiền hàng
+shipping_fee
+DECIMAL(15,2)
+No
+Phí vận chuyển
+total_amount
+DECIMAL(15,2)
+No
+Tổng thanh toán
+payment_status
+ENUM
+No
+UNPAID, PAID
+order_status
+ENUM
+No
+Trạng thái đơn hàng
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Trạng thái đơn hàng
+Chờ thanh toán
+Đã xác nhận
+Chuẩn bị hàng
+Tạm dừng
+Đang giao
+Đã giao
+Đã hủy
+Business Rules
+Mã đơn hàng là duy nhất.
+Không được xóa đơn hàng.
+Tổng thanh toán = Tiền hàng + Phí vận chuyển.
+9.26 Đặc tả bảng order_details
+Mục đích
+Lưu danh sách sản phẩm của từng đơn hàng.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+NULL
+PK
+FK
+Mô tả
+id
+BIGINT
+No
+✔
+Khóa chính
+order_id
+BIGINT
+No
+✔
+Đơn hàng
+product_id
+BIGINT
+No
+✔
+Sản phẩm
+quantity
+INT
+No
+Số lượng
+unit_price
+DECIMAL(15,2)
+No
+Đơn giá
+subtotal
+DECIMAL(15,2)
+No
+Thành tiền
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Business Rules
+Đơn giá được lưu theo thời điểm đặt hàng và không thay đổi khi giá sản phẩm thay đổi sau này.
+Thành tiền = Số lượng × Đơn giá.
+Mỗi đơn hàng phải có ít nhất một dòng chi tiết.
+9.27 Quan hệ giữa các bảng
+Bảng cha
+Bảng con
+Quan hệ
+products
+product_images
+1 - N
+products
+promotion_products
+1 - N
+promotions
+promotion_products
+1 - N
+users
+carts
+1 - N
+carts
+cart_items
+1 - N
+products
+cart_items
+1 - N
+users
+orders
+1 - N
+orders
+order_details
+1 - N
+products
+order_details
+1 - N
+9.28 Đặc tả bảng payments
+Mục đích
+Bảng payments lưu thông tin thanh toán của từng đơn hàng. Hệ thống hỗ trợ thanh toán trực tuyến thông qua MoMo và VietQR. Trong tương lai có thể mở rộng thêm các cổng thanh toán khác mà không cần thay đổi cấu trúc cơ sở dữ liệu.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+Độ dài
+NULL
+PK
+FK
+Mô tả
+id
+BIGINT
+-
+No
+✔
+Khóa chính
+order_id
+BIGINT
+-
+No
+✔
+Đơn hàng
+payment_method
+ENUM
+-
+No
+MOMO, VIETQR
+transaction_code
+VARCHAR
+100
+Yes
+Mã giao dịch
+payment_amount
+DECIMAL
+15,2
+No
+Số tiền thanh toán
+payment_status
+ENUM
+-
+No
+PENDING, PAID, FAILED
+payment_time
+DATETIME
+-
+Yes
+Thời gian thanh toán
+note
+TEXT
+-
+Yes
+Ghi chú
+created_at
+TIMESTAMP
+-
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+-
+No
+Ngày cập nhật
+Chỉ mục
+PRIMARY KEY(id)
+INDEX(order_id)
+INDEX(transaction_code)
+Business Rules
+Một đơn hàng chỉ có một giao dịch thanh toán thành công.
+Chỉ khi trạng thái thanh toán là PAID thì đơn hàng mới được chuyển sang trạng thái Đã xác nhận.
+Nếu giao dịch thất bại, đơn hàng vẫn giữ trạng thái Chờ thanh toán.
+Mã giao dịch không được trùng lặp.
+Ví dụ dữ liệu
+Mã đơn
+Phương thức
+Số tiền
+Trạng thái
+OD202608010001
+MoMo
+350.000
+PAID
+OD202608010002
+VietQR
+620.000
+PENDING
+9.29 Đặc tả bảng shipments
+Mục đích
+Lưu thông tin vận chuyển đơn hàng và hỗ trợ theo dõi trạng thái giao hàng thông qua đơn vị vận chuyển GreenSM.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+NULL
+PK
+FK
+Mô tả
+id
+BIGINT
+No
+✔
+Khóa chính
+order_id
+BIGINT
+No
+✔
+Đơn hàng
+shipping_company
+VARCHAR(100)
+No
+Đơn vị vận chuyển
+tracking_code
+VARCHAR(100)
+Yes
+Mã vận đơn
+shipping_fee
+DECIMAL(15,2)
+No
+Phí vận chuyển
+shipping_status
+ENUM
+No
+Trạng thái vận chuyển
+ship_date
+DATETIME
+Yes
+Ngày giao đơn vị vận chuyển
+delivery_date
+DATETIME
+Yes
+Ngày giao thành công
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Trạng thái vận chuyển
+Chờ tạo vận đơn
+Đã tạo vận đơn
+Đã bàn giao GreenSM
+Đang giao
+Giao thành công
+Giao thất bại
+Business Rules
+Mỗi đơn hàng chỉ có một vận đơn.
+Mã vận đơn phải là duy nhất.
+Sau khi giao thành công, hệ thống cập nhật trạng thái đơn hàng thành Đã giao.
+9.30 Đặc tả bảng banners
+Mục đích
+Quản lý các banner hiển thị trên trang chủ nhằm quảng bá sản phẩm, chương trình khuyến mãi và sự kiện.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+NULL
+Mô tả
+id
+BIGINT
+No
+Khóa chính
+title
+VARCHAR(150)
+No
+Tiêu đề
+image_url
+VARCHAR(255)
+No
+Đường dẫn hình ảnh
+link_url
+VARCHAR(255)
+Yes
+Liên kết
+display_order
+INT
+No
+Thứ tự hiển thị
+status
+BOOLEAN
+No
+Hiển thị / Ẩn
+created_at
+TIMESTAMP
+No
+Ngày tạo
+updated_at
+TIMESTAMP
+No
+Ngày cập nhật
+Business Rules
+Banner được sắp xếp theo display_order.
+Chỉ hiển thị các banner có trạng thái Hoạt động.
+9.31 Đặc tả bảng system_logs
+Mục đích
+Ghi nhận toàn bộ thao tác quan trọng của người dùng và quản trị viên để phục vụ việc kiểm tra, giám sát và xử lý sự cố.
+Cấu trúc bảng
+Tên trường
+Kiểu dữ liệu
+NULL
+PK
+FK
+Mô tả
+id
+BIGINT
+No
+✔
+Khóa chính
+user_id
+BIGINT
+Yes
+✔
+Người thực hiện
+action
+VARCHAR(100)
+No
+Hành động
+module
+VARCHAR(100)
+No
+Module
+description
+TEXT
+Yes
+Mô tả
+ip_address
+VARCHAR(45)
+Yes
+Địa chỉ IP
+user_agent
+TEXT
+Yes
+Thông tin trình duyệt
+created_at
+TIMESTAMP
+No
+Thời gian ghi nhận
+Business Rules
+Không được chỉnh sửa hoặc xóa nhật ký.
+Ghi nhận các thao tác thêm, sửa, xóa và đăng nhập hệ thống.
+9.32 Danh sách khóa ngoại
+Bảng
+Khóa ngoại
+Tham chiếu
+users
+role_id
+roles.id
+users
+branch_id
+branches.id
+role_permissions
+role_id
+roles.id
+role_permissions
+permission_id
+permissions.id
+products
+category_id
+categories.id
+product_images
+product_id
+products.id
+promotion_products
+promotion_id
+promotions.id
+promotion_products
+product_id
+products.id
+carts
+user_id
+users.id
+cart_items
+cart_id
+carts.id
+cart_items
+product_id
+products.id
+orders
+user_id
+users.id
+order_details
+order_id
+orders.id
+order_details
+product_id
+products.id
+payments
+order_id
+orders.id
+shipments
+order_id
+orders.id
+system_logs
+user_id
+users.id
+9.33 Quy tắc toàn vẹn tham chiếu
+Hệ thống áp dụng các quy tắc nhằm đảm bảo tính toàn vẹn dữ liệu:
+Không cho phép tạo bản ghi có khóa ngoại không tồn tại.
+Không cho phép xóa bản ghi đang được tham chiếu bởi bảng khác, trừ khi áp dụng cơ chế Soft Delete.
+Các thao tác cập nhật dữ liệu liên quan nhiều bảng được thực hiện trong Transaction để đảm bảo tính nhất quán.
+Khi xóa mềm sản phẩm, dữ liệu lịch sử trong đơn hàng vẫn được giữ nguyên.
+9.34 Kế hoạch sao lưu và phục hồi
+Mặc dù phiên bản 1.0 chưa yêu cầu chức năng sao lưu tự động, hệ thống vẫn được thiết kế để hỗ trợ triển khai trong tương lai.
+Đề xuất:
+Sao lưu cơ sở dữ liệu hằng ngày.
+Lưu trữ tối thiểu 30 bản sao lưu gần nhất.
+Kiểm tra khả năng phục hồi định kỳ.
+Mã hóa tệp sao lưu trước khi lưu trữ.
+9.35 Tổng kết chương
+Chương này đã hoàn thiện thiết kế cơ sở dữ liệu cho Website Bán Trái Cây với đầy đủ các bảng, khóa chính, khóa ngoại, quan hệ dữ liệu và quy tắc toàn vẹn. Cấu trúc cơ sở dữ liệu đáp ứng các yêu cầu nghiệp vụ của hệ thống, hỗ trợ triển khai bằng Laravel Eloquent ORM và có khả năng mở rộng trong các phiên bản tiếp theo.
+Việc phân tách dữ liệu theo từng bảng chuyên biệt giúp giảm dư thừa, tăng hiệu suất truy vấn và đảm bảo tính nhất quán của dữ liệu trong toàn bộ quá trình vận hành hệ thống. Thiết kế này cũng tạo nền tảng thuận lợi cho việc phát triển API, xây dựng giao diện và thực hiện kiểm thử ở các giai đoạn tiếp theo.
+Chương 10. Thiết kế giao diện người dùng (UI/UX Specification)
+10.1 Giới thiệu
+Giao diện người dùng (User Interface - UI) là thành phần giúp người dùng tương tác trực tiếp với hệ thống Website Bán Trái Cây. Giao diện được thiết kế theo tiêu chí đơn giản, hiện đại, dễ sử dụng, phù hợp với nhiều nhóm khách hàng từ cá nhân đến doanh nghiệp.
+Do đặc thù người dùng thường mua hàng bằng điện thoại, hệ thống được thiết kế theo phương pháp Mobile First, sau đó mở rộng cho máy tính bảng và máy tính để bàn.
+Mục tiêu của thiết kế giao diện:
+Dễ sử dụng đối với mọi đối tượng người dùng.
+Giảm số thao tác khi đặt hàng.
+Hiển thị rõ ràng thông tin sản phẩm.
+Hỗ trợ tìm kiếm nhanh.
+Đảm bảo tính nhất quán giữa các màn hình.
+Tối ưu trải nghiệm người dùng (UX).
+10.2 Nguyên tắc thiết kế
+Hệ thống áp dụng các nguyên tắc sau:
+Thiết kế Responsive.
+Ưu tiên điện thoại và máy tính bảng.
+Điều hướng đơn giản.
+Giảm số lần nhấn khi mua hàng.
+Font chữ rõ ràng.
+Màu sắc đồng nhất.
+Nút thao tác lớn, dễ bấm.
+Khoảng cách hợp lý giữa các thành phần.
+10.3 Bộ nhận diện giao diện
+Màu chủ đạo
+Màu
+Mã màu
+Mục đích
+Xanh lá
+#2E7D32
+Màu thương hiệu
+Xanh nhạt
+#E8F5E9
+Nền
+Cam
+#FF9800
+Khuyến mãi
+Đỏ
+#E53935
+Thông báo lỗi
+Trắng
+#FFFFFF
+Nền nội dung
+Xám
+#757575
+Chữ phụ
+Font chữ
+Roboto
+Inter
+Icon
+Material Icons
+Hero Icons
+10.4 Responsive Design
+Thiết bị
+Độ rộng
+Mobile
+<768px
+Tablet
+768–1024px
+Desktop
+>1024px
+10.5 Danh sách màn hình
+Khách hàng
+STT
+Màn hình
+01
+Trang chủ
+02
+Danh sách sản phẩm
+03
+Chi tiết sản phẩm
+04
+Danh mục sản phẩm
+05
+Tìm kiếm
+06
+Giỏ hàng
+07
+Đặt hàng
+08
+Thanh toán
+09
+Đăng nhập
+10
+Quên mật khẩu
+11
+Xác nhận OTP
+12
+Đặt lại mật khẩu
+13
+Thông tin cá nhân
+14
+Lịch sử đơn hàng
+15
+Chi tiết đơn hàng
+16
+Theo dõi giao hàng
+17
+Danh sách chi nhánh
+Quản trị
+STT
+Màn hình
+01
+Dashboard
+02
+Quản lý sản phẩm
+03
+Quản lý danh mục
+04
+Quản lý khuyến mãi
+05
+Quản lý đơn hàng
+06
+Quản lý khách hàng
+07
+Quản lý Banner
+08
+Quản lý tài khoản
+09
+Quản lý phân quyền
+10
+Quản lý chi nhánh
+11
+Báo cáo
+12
+Cài đặt hệ thống
+10.6 Luồng điều hướng
+Khách hàng
+Trang chủ
+      │
+      ▼
+Danh sách sản phẩm
+      │
+      ▼
+Chi tiết sản phẩm
+      │
+      ▼
+Giỏ hàng
+      │
+      ▼
+Đặt hàng
+      │
+      ▼
+Thanh toán
+      │
+      ▼
+Theo dõi đơn hàng
+Quản trị
+Đăng nhập
+      │
+      ▼
+Dashboard
+      │
+      ├────► Quản lý sản phẩm
+      │
+      ├────► Quản lý đơn hàng
+      │
+      ├────► Báo cáo
+      │
+      ├────► Banner
+      │
+      └────► Tài khoản
+10.7 Wireframe màn hình Trang chủ
+Mục đích
+Trang chủ là màn hình đầu tiên khi người dùng truy cập hệ thống.
+Thành phần giao diện
+Logo
+Thanh tìm kiếm
+Menu danh mục
+Banner quảng cáo
+Danh mục nổi bật
+Sản phẩm nổi bật
+Sản phẩm giảm giá
+Combo trái cây
+Giỏ quà
+Chi nhánh
+Footer
+Chức năng
+Tìm kiếm sản phẩm
+Điều hướng danh mục
+Xem sản phẩm
+Thêm vào giỏ hàng
+10.8 Wireframe màn hình Danh sách sản phẩm
+Thành phần
+Breadcrumb
+Bộ lọc
+Thanh sắp xếp
+Danh sách sản phẩm
+Phân trang
+Bộ lọc
+Danh mục
+Giá
+Khuyến mãi
+Sắp xếp
+Giá tăng
+Giá giảm
+Mới nhất
+Bán chạy
+10.9 Wireframe màn hình Chi tiết sản phẩm
+Thành phần
+Hình ảnh lớn
+Album hình ảnh
+Tên sản phẩm
+Giá bán
+Giá khuyến mãi
+Tình trạng kho
+Mô tả
+Số lượng
+Nút Thêm vào giỏ
+Nút Mua ngay
+Sản phẩm liên quan
+Chức năng
+Chọn số lượng
+Xem hình ảnh
+Thêm vào giỏ
+Mua ngay
+10.10 Wireframe màn hình Giỏ hàng
+Thành phần
+Danh sách sản phẩm
+Giá
+Số lượng
+Thành tiền
+Tổng tiền
+Nút tiếp tục mua
+Nút đặt hàng
+Chức năng
+Cập nhật số lượng
+Xóa sản phẩm
+Đặt hàng
+10.11 Wireframe màn hình Đặt hàng
+Thông tin cần nhập
+Họ và tên
+Số điện thoại
+Địa chỉ nhận hàng
+Ghi chú
+Hiển thị
+Tiền hàng
+Phí vận chuyển
+Tổng thanh toán
+Nút
+Xác nhận đặt hàng
+10.12 Wireframe màn hình Thanh toán
+Thành phần
+Thông tin đơn hàng
+Chọn phương thức thanh toán
+Mã QR
+Trạng thái thanh toán
+Phương thức
+MoMo
+VietQR
+10.13 Quy tắc giao diện
+Không hiển thị nút Đặt hàng nếu giỏ hàng trống.
+Không cho phép nhập số lượng nhỏ hơn 1.
+Khi sản phẩm hết hàng phải hiển thị nhãn Hết hàng và vô hiệu hóa nút Thêm vào giỏ hàng.
+Hiển thị thông báo lỗi rõ ràng nếu dữ liệu nhập không hợp lệ.
+Tự động định dạng giá tiền theo đơn vị VNĐ.
+10.14 Giao diện Dashboard
+Mục đích
+Dashboard là màn hình đầu tiên sau khi quản trị viên đăng nhập, cung cấp cái nhìn tổng quan về tình hình hoạt động của hệ thống.
+Thành phần giao diện
+Thanh điều hướng
+Logo
+Tên hệ thống
+Thanh tìm kiếm
+Thông báo
+Hồ sơ người dùng
+Đăng xuất
+Menu chức năng
+Dashboard
+Quản lý sản phẩm
+Quản lý danh mục
+Quản lý khuyến mãi
+Quản lý đơn hàng
+Quản lý khách hàng
+Quản lý Banner
+Quản lý tài khoản
+Quản lý chi nhánh
+Báo cáo
+Cài đặt
+Thẻ thống kê
+Hiển thị các chỉ số nhanh:
+Tổng số sản phẩm
+Tổng số đơn hàng
+Đơn hàng hôm nay
+Doanh thu hôm nay
+Doanh thu tháng
+Đơn đang giao
+Đơn tạm dừng
+Sản phẩm sắp hết hàng
+Biểu đồ
+Doanh thu theo ngày
+Doanh thu theo tháng
+Tỷ lệ trạng thái đơn hàng
+Top 10 sản phẩm bán chạy
+Danh sách nhanh
+Đơn hàng mới
+Khách hàng mới
+Sản phẩm sắp hết hàng
+10.15 Giao diện Quản lý sản phẩm
+Mục đích
+Quản lý toàn bộ sản phẩm đang kinh doanh.
+Thành phần
+Thanh tìm kiếm
+Bộ lọc
+Danh sách sản phẩm
+Phân trang
+Bộ lọc
+Danh mục
+Trạng thái
+Khoảng giá
+Danh sách
+Cột
+Hình ảnh
+Tên sản phẩm
+Danh mục
+Giá
+Tồn kho
+Trạng thái
+Ngày tạo
+Thao tác
+Nút chức năng
+Thêm mới
+Sửa
+Xóa
+Xem chi tiết
+10.16 Giao diện Thêm sản phẩm
+Thông tin nhập
+Tên sản phẩm
+Danh mục
+Giá bán
+Giá khuyến mãi
+Đơn vị
+Tồn kho
+Mô tả
+Ảnh đại diện
+Album ảnh
+Sản phẩm nổi bật
+Trạng thái
+Nút
+Lưu
+Hủy
+Kiểm tra dữ liệu
+Giá bán > 0
+Tồn kho ≥ 0
+Tên sản phẩm không được để trống
+Danh mục bắt buộc
+10.17 Giao diện Quản lý danh mục
+Chức năng
+Thêm
+Sửa
+Xóa
+Tìm kiếm
+Hiển thị
+Cột
+Tên danh mục
+Slug
+Trạng thái
+Ngày tạo
+Thao tác
+10.18 Giao diện Quản lý khuyến mãi
+Thành phần
+Danh sách chương trình
+Bộ lọc theo ngày
+Bộ lọc trạng thái
+Hiển thị
+Tên chương trình
+Giảm (%)
+Ngày bắt đầu
+Ngày kết thúc
+Trạng thái
+Số sản phẩm áp dụng
+Chức năng
+Thêm
+Sửa
+Xóa
+Chọn sản phẩm áp dụng
+10.19 Giao diện Quản lý đơn hàng
+Đây là màn hình quan trọng nhất của hệ thống.
+Bộ lọc
+Mã đơn
+Khách hàng
+Trạng thái
+Ngày đặt
+Khoảng thời gian
+Danh sách
+Cột
+Mã đơn
+Khách hàng
+SĐT
+Tổng tiền
+Thanh toán
+Trạng thái
+Ngày đặt
+Thao tác
+Chi tiết đơn hàng
+Hiển thị:
+Thông tin khách hàng
+Danh sách sản phẩm
+Phí vận chuyển
+Thanh toán
+Ghi chú
+Lịch sử xử lý
+Các nút
+Xác nhận
+Tạm dừng
+Chuẩn bị hàng
+Bàn giao GreenSM
+Hoàn thành
+Hủy đơn
+10.20 Giao diện Quản lý khách hàng
+Thành phần
+Tìm kiếm
+Danh sách khách hàng
+Hiển thị
+Tên
+SĐT
+Số đơn
+Tổng chi tiêu
+Ngày tham gia
+Chức năng
+Xem lịch sử mua hàng
+Xem chi tiết đơn
+10.21 Giao diện Quản lý Banner
+Hiển thị
+Hình ảnh
+Tiêu đề
+Thứ tự
+Trạng thái
+Chức năng
+Thêm Banner
+Sửa
+Xóa
+Thay đổi thứ tự
+10.22 Giao diện Quản lý tài khoản
+Chỉ dành cho Admin Tổng.
+Hiển thị
+Tên
+SĐT
+Vai trò
+Chi nhánh
+Trạng thái
+Chức năng
+Thêm tài khoản
+Khóa tài khoản
+Mở khóa
+Phân quyền
+10.23 Giao diện Phân quyền
+Admin Tổng có thể chọn quyền bằng Checkbox.
+Ví dụ
+☑ Quản lý sản phẩm
+☑ Quản lý đơn hàng
+☐ Quản lý tài khoản
+☑ Báo cáo
+☑ Banner
+☐ Cài đặt
+10.24 Giao diện Quản lý chi nhánh
+Hiển thị
+Tên chi nhánh
+Địa chỉ
+Điện thoại
+Trạng thái
+Chức năng
+Thêm
+Sửa
+Xóa
+10.25 Giao diện Báo cáo
+Bộ lọc
+Ngày bắt đầu
+Ngày kết thúc
+Báo cáo
+Doanh thu
+Biểu đồ cột
+Đơn hàng
+Biểu đồ đường
+Khách hàng
+Khách mới
+Khách cũ
+Kho
+Tồn kho
+Sắp hết hàng
+Xuất dữ liệu
+Excel
+PDF
+10.26 Giao diện Cài đặt
+Thông tin công ty
+Tên
+Logo
+Hotline
+Email
+Địa chỉ
+Thanh toán
+QR VietQR
+QR MoMo
+Giao hàng
+Phí giao hàng
+SEO
+Meta Title
+Meta Description
+Meta Keywords
+Hệ thống
+Bật/Tắt Banner
+Bật/Tắt Khuyến mãi
+Bật/Tắt Đăng ký
+10.27 Phân quyền giao diện
+Màn hình
+Admin Tổng
+Admin Chi nhánh
+Dashboard
+✔
+✔
+Quản lý sản phẩm
+✔
+Theo quyền
+Quản lý danh mục
+✔
+Theo quyền
+Quản lý đơn hàng
+✔
+Theo quyền
+Khách hàng
+✔
+Theo quyền
+Banner
+✔
+Theo quyền
+Báo cáo
+✔
+Theo quyền
+Quản lý tài khoản
+✔
+✘
+Phân quyền
+✔
+✘
+Chi nhánh
+✔
+✘
+Cài đặt
+✔
+✘
+10.28 Tiêu chuẩn giao diện
+Hệ thống áp dụng các tiêu chuẩn sau:
+Responsive trên mọi thiết bị.
+Giao diện Mobile First.
+Hỗ trợ Dark Mode trong phiên bản tương lai.
+Thời gian tải trang mục tiêu dưới 3 giây.
+Các nút thao tác có kích thước phù hợp để sử dụng trên màn hình cảm ứng.
+Hiển thị thông báo thành công, cảnh báo và lỗi rõ ràng.
+Màu sắc và biểu tượng thống nhất trên toàn hệ thống.
+10.29 Tổng kết chương
+Chương này đã mô tả đầy đủ giao diện người dùng cho cả khách hàng và quản trị viên, bao gồm cấu trúc màn hình, các thành phần hiển thị, chức năng chính và quy tắc phân quyền. Thiết kế hướng đến trải nghiệm người dùng thân thiện, hiện đại và phù hợp với định hướng ưu tiên thiết bị di động của dự án.
+Các đặc tả trong chương là cơ sở để nhóm Frontend xây dựng giao diện bằng ReactJS, đồng thời giúp nhóm Backend xác định các API cần tích hợp và nhóm kiểm thử xây dựng kịch bản kiểm thử giao diện.
+Chương 11. Kiểm thử hệ thống (System Testing)
+11.1 Giới thiệu
+Kiểm thử hệ thống (System Testing) là giai đoạn đánh giá toàn bộ Website Bán Trái Cây sau khi hoàn thành quá trình phát triển nhằm đảm bảo hệ thống hoạt động đúng với các yêu cầu đã được đặc tả trong tài liệu SRS.
+Mục tiêu của kiểm thử là:
+Xác minh tất cả các chức năng hoạt động chính xác.
+Phát hiện lỗi trước khi triển khai.
+Đánh giá hiệu năng và tính ổn định.
+Đảm bảo an toàn dữ liệu.
+Đảm bảo trải nghiệm người dùng trên nhiều thiết bị.
+11.2 Mục tiêu kiểm thử
+Các mục tiêu chính bao gồm:
+Kiểm thử chức năng (Functional Testing).
+Kiểm thử giao diện (UI Testing).
+Kiểm thử tích hợp (Integration Testing).
+Kiểm thử hiệu năng (Performance Testing).
+Kiểm thử bảo mật (Security Testing).
+Kiểm thử khả năng tương thích (Compatibility Testing).
+Kiểm thử chấp nhận người dùng (User Acceptance Testing - UAT).
+11.3 Phạm vi kiểm thử
+Các module cần kiểm thử:
+STT
+Module
+1
+Đăng nhập
+2
+Quên mật khẩu
+3
+Sản phẩm
+4
+Danh mục
+5
+Giỏ hàng
+6
+Đặt hàng
+7
+Thanh toán
+8
+Theo dõi đơn hàng
+9
+Quản lý đơn hàng
+10
+Quản lý sản phẩm
+11
+Khuyến mãi
+12
+Banner
+13
+Quản lý tài khoản
+14
+Chi nhánh
+15
+Báo cáo
+11.4 Môi trường kiểm thử
+Phần cứng
+Thành phần
+Thông số
+CPU
+Intel Core i5 hoặc tương đương
+RAM
+8GB trở lên
+Ổ cứng
+SSD 256GB
+Phần mềm
+Tên
+Phiên bản
+Windows
+11
+PHP
+8.2
+Laravel
+12.x
+React
+19.x
+NodeJS
+22.x
+MySQL
+8.x
+XAMPP
+8.x
+Visual Studio Code
+Latest
+Google Chrome
+Latest
+11.5 Quy trình kiểm thử
+Lập kế hoạch
+      │
+      ▼
+Thiết kế Test Case
+      │
+      ▼
+Chuẩn bị dữ liệu
+      │
+      ▼
+Thực hiện kiểm thử
+      │
+      ▼
+Ghi nhận lỗi
+      │
+      ▼
+Sửa lỗi
+      │
+      ▼
+Kiểm thử lại
+      │
+      ▼
+Nghiệm thu
+11.6 Kiểm thử chức năng
+Các nhóm chức năng cần kiểm thử:
+Đăng nhập
+Đăng xuất
+Quên mật khẩu
+Tìm kiếm sản phẩm
+Quản lý sản phẩm
+Quản lý đơn hàng
+Thanh toán
+Báo cáo
+Phân quyền
+Banner
+11.7 Tiêu chí Pass/Fail
+Một Test Case được đánh giá:
+PASS
+Kết quả thực tế giống kết quả mong đợi.
+FAIL
+Sai kết quả.
+Phát sinh lỗi.
+Không xử lý đúng dữ liệu.
+Giao diện hiển thị sai.
+11.8 Mẫu Test Case
+Thuộc tính
+Mô tả
+Test ID
+Định danh
+Module
+Tên module
+Mục tiêu
+Chức năng kiểm thử
+Điều kiện
+Điều kiện trước
+Các bước
+Các bước thực hiện
+Dữ liệu
+Input
+Kết quả mong đợi
+Expected Result
+Kết quả thực tế
+Actual Result
+Trạng thái
+PASS/FAIL
+11.9 Test Case – Đăng nhập
+TC_LOGIN_001
+Mục tiêu
+Đăng nhập thành công.
+Điều kiện
+Đã có tài khoản.
+Input
+SĐT hợp lệ.
+Mật khẩu đúng.
+Expected
+Đăng nhập thành công.
+Chuyển Dashboard.
+TC_LOGIN_002
+Sai mật khẩu.
+Expected
+Thông báo
+"Mật khẩu không đúng."
+TC_LOGIN_003
+Không nhập SĐT.
+Expected
+Thông báo bắt buộc nhập.
+TC_LOGIN_004
+Không nhập mật khẩu.
+Expected
+Thông báo lỗi.
+TC_LOGIN_005
+Tài khoản bị khóa.
+Expected
+Không cho đăng nhập.
+11.10 Test Case – Quên mật khẩu
+TC_FORGOT_001
+Nhập đúng số điện thoại.
+Expected
+Gửi OTP.
+TC_FORGOT_002
+OTP đúng.
+Expected
+Cho phép đổi mật khẩu.
+TC_FORGOT_003
+OTP sai.
+Expected
+Thông báo OTP không hợp lệ.
+TC_FORGOT_004
+OTP hết hạn.
+Expected
+Yêu cầu gửi OTP mới.
+11.11 Test Case – Sản phẩm
+TC_PRODUCT_001
+Thêm sản phẩm.
+Expected
+Lưu thành công.
+TC_PRODUCT_002
+Không nhập tên.
+Expected
+Không lưu.
+TC_PRODUCT_003
+Giá âm.
+Expected
+Thông báo lỗi.
+TC_PRODUCT_004
+Ảnh sai định dạng.
+Expected
+Không upload.
+TC_PRODUCT_005
+Tồn kho bằng 0.
+Expected
+Hiển thị "Hết hàng".
+11.12 Test Case – Giỏ hàng
+TC_CART_001
+Thêm sản phẩm.
+Expected
+Giỏ hàng cập nhật.
+TC_CART_002
+Thêm sản phẩm hết hàng.
+Expected
+Không cho thêm.
+TC_CART_003
+Giảm số lượng về 0.
+Expected
+Xóa khỏi giỏ.
+TC_CART_004
+Vượt tồn kho.
+Expected
+Thông báo lỗi.
+11.13 Test Case – Đặt hàng
+TC_ORDER_001
+Đặt hàng thành công.
+Expected
+Sinh mã đơn.
+TC_ORDER_002
+Thiếu địa chỉ.
+Expected
+Không cho đặt.
+TC_ORDER_003
+Thiếu SĐT.
+Expected
+Thông báo lỗi.
+TC_ORDER_004
+Thanh toán thành công.
+Expected
+Đơn chuyển sang "Đã xác nhận".
+TC_ORDER_005
+Thanh toán thất bại.
+Expected
+Đơn vẫn ở trạng thái "Chờ thanh toán".
+11.14 Test Case – Quản lý đơn hàng
+TC_ADMIN_ORDER_001
+Xác nhận đơn.
+TC_ADMIN_ORDER_002
+Tạm dừng.
+TC_ADMIN_ORDER_003
+Hủy đơn.
+TC_ADMIN_ORDER_004
+Bàn giao GreenSM.
+TC_ADMIN_ORDER_005
+Hoàn thành đơn.
+11.15 Test Case – Quản lý danh mục
+TC_CATEGORY_001
+Mục tiêu: Thêm danh mục mới.
+Điều kiện: Admin đã đăng nhập và có quyền quản lý danh mục.
+Các bước thực hiện:
+Chọn Quản lý danh mục.
+Nhấn Thêm mới.
+Nhập tên danh mục.
+Nhấn Lưu.
+Kết quả mong đợi:
+Thêm danh mục thành công.
+Danh mục xuất hiện trong danh sách.
+TC_CATEGORY_002
+Không nhập tên danh mục.
+Kết quả mong đợi
+Hiển thị thông báo:
+"Tên danh mục không được để trống."
+TC_CATEGORY_003
+Tên danh mục bị trùng.
+Kết quả mong đợi
+Không cho phép lưu dữ liệu.
+TC_CATEGORY_004
+Sửa tên danh mục.
+Kết quả mong đợi
+Thông tin được cập nhật.
+TC_CATEGORY_005
+Xóa danh mục chưa có sản phẩm.
+Kết quả mong đợi
+Xóa thành công.
+TC_CATEGORY_006
+Xóa danh mục đang có sản phẩm.
+Kết quả mong đợi
+Không cho phép xóa.
+11.16 Test Case – Quản lý khuyến mãi
+TC_PROMOTION_001
+Tạo chương trình giảm giá.
+Expected
+Lưu thành công.
+TC_PROMOTION_002
+Ngày kết thúc nhỏ hơn ngày bắt đầu.
+Expected
+Thông báo lỗi.
+TC_PROMOTION_003
+Giảm giá lớn hơn 100%.
+Expected
+Không cho phép lưu.
+TC_PROMOTION_004
+Chọn sản phẩm áp dụng.
+Expected
+Hiển thị đúng danh sách.
+TC_PROMOTION_005
+Ngừng chương trình.
+Expected
+Không còn áp dụng giảm giá.
+11.17 Test Case – Banner
+TC_BANNER_001
+Thêm Banner.
+Expected
+Banner hiển thị ngoài trang chủ.
+TC_BANNER_002
+Upload ảnh sai định dạng.
+Expected
+Không cho upload.
+TC_BANNER_003
+Upload ảnh vượt dung lượng.
+Expected
+Thông báo lỗi.
+TC_BANNER_004
+Ẩn Banner.
+Expected
+Không hiển thị ngoài website.
+TC_BANNER_005
+Đổi thứ tự Banner.
+Expected
+Hiển thị đúng vị trí.
+11.18 Test Case – Quản lý tài khoản
+TC_USER_001
+Thêm Admin Chi nhánh.
+Expected
+Lưu thành công.
+TC_USER_002
+Trùng số điện thoại.
+Expected
+Thông báo lỗi.
+TC_USER_003
+Khóa tài khoản.
+Expected
+Không đăng nhập được.
+TC_USER_004
+Mở khóa tài khoản.
+Expected
+Đăng nhập bình thường.
+TC_USER_005
+Thay đổi phân quyền.
+Expected
+Áp dụng sau lần đăng nhập tiếp theo.
+11.19 Test Case – Chi nhánh
+TC_BRANCH_001
+Thêm chi nhánh.
+TC_BRANCH_002
+Sửa địa chỉ.
+TC_BRANCH_003
+Xóa chi nhánh chưa có Admin.
+TC_BRANCH_004
+Xóa chi nhánh đang có Admin.
+Expected
+Không cho phép xóa.
+TC_BRANCH_005
+Tìm kiếm chi nhánh.
+11.20 Test Case – Báo cáo
+TC_REPORT_001
+Chọn khoảng thời gian hợp lệ.
+Expected
+Hiển thị báo cáo.
+TC_REPORT_002
+Ngày bắt đầu lớn hơn ngày kết thúc.
+Expected
+Thông báo lỗi.
+TC_REPORT_003
+Xuất Excel.
+Expected
+Sinh tệp Excel thành công.
+TC_REPORT_004
+Xuất PDF.
+Expected
+Sinh tệp PDF.
+TC_REPORT_005
+Không có dữ liệu.
+Expected
+Hiển thị:
+Không có dữ liệu.
+11.21 Test Case – Phân quyền
+TC_PERMISSION_001
+Cấp quyền.
+Expected
+Đăng nhập lại có quyền.
+TC_PERMISSION_002
+Thu hồi quyền.
+Expected
+Không sử dụng được chức năng.
+TC_PERMISSION_003
+Admin Chi nhánh truy cập chức năng không được cấp.
+Expected
+403 Forbidden.
+11.22 Test Case – Thanh toán
+TC_PAYMENT_001
+Thanh toán MoMo thành công.
+TC_PAYMENT_002
+Thanh toán VietQR thành công.
+TC_PAYMENT_003
+Không chuyển khoản.
+Expected
+Đơn ở trạng thái Chờ thanh toán.
+TC_PAYMENT_004
+QR hết hạn.
+Expected
+Sinh QR mới.
+TC_PAYMENT_005
+Số tiền không khớp.
+Expected
+Không xác nhận thanh toán.
+11.23 Test Case – Giao hàng
+TC_SHIPMENT_001
+Tạo vận đơn.
+TC_SHIPMENT_002
+Bàn giao GreenSM.
+TC_SHIPMENT_003
+Đang giao.
+TC_SHIPMENT_004
+Giao thành công.
+Expected
+Đơn chuyển sang Đã giao.
+TC_SHIPMENT_005
+Giao thất bại.
+Expected
+Thông báo cho Admin.
+11.24 Kiểm thử phân quyền
+Chức năng
+Admin Tổng
+Admin Chi nhánh
+Dashboard
+PASS
+PASS
+Sản phẩm
+PASS
+Theo quyền
+Danh mục
+PASS
+Theo quyền
+Đơn hàng
+PASS
+Theo quyền
+Khuyến mãi
+PASS
+Theo quyền
+Banner
+PASS
+Theo quyền
+Tài khoản
+PASS
+FAIL
+Phân quyền
+PASS
+FAIL
+Chi nhánh
+PASS
+FAIL
+11.25 Kiểm thử bảo mật
+Các nội dung cần kiểm thử:
+SQL Injection.
+Cross Site Scripting (XSS).
+CSRF.
+Brute Force Login.
+Upload File độc hại.
+JWT Token giả.
+Truy cập API trái phép.
+Phân quyền sai.
+Lộ dữ liệu.
+Tiêu chí:
+Hệ thống từ chối mọi truy cập trái phép.
+Không thực thi mã độc từ dữ liệu đầu vào.
+Token không hợp lệ phải bị từ chối với mã HTTP phù hợp (401 hoặc 403).
+11.26 Kiểm thử hiệu năng
+Tiêu chí
+Yêu cầu
+Trang chủ
+< 3 giây
+Danh sách sản phẩm
+< 3 giây
+Chi tiết sản phẩm
+< 2 giây
+Đặt hàng
+< 5 giây
+Dashboard
+< 4 giây
+Kiểm thử với:
+100 người dùng đồng thời.
+500 người dùng đồng thời.
+1.000 người dùng đồng thời (mô phỏng tải cao).
+11.27 Kiểm thử khả năng tương thích
+Trình duyệt hỗ trợ:
+Google Chrome
+Microsoft Edge
+Mozilla Firefox
+Safari (macOS/iOS)
+Thiết bị:
+Điện thoại Android
+iPhone
+Máy tính bảng Android
+iPad
+Máy tính Windows
+Máy tính macOS
+11.28 Kiểm thử chấp nhận người dùng (UAT)
+Các tiêu chí nghiệm thu:
+Toàn bộ chức năng đúng theo tài liệu đặc tả.
+Không có lỗi nghiêm trọng (Critical).
+Không có lỗi mức cao (High) chưa được xử lý.
+Giao diện hiển thị đúng trên các thiết bị hỗ trợ.
+Dữ liệu lưu chính xác.
+Quy trình đặt hàng hoàn chỉnh từ chọn sản phẩm đến giao hàng.
+Kết quả UAT được ghi nhận thông qua biên bản nghiệm thu và xác nhận của đại diện đơn vị sử dụng.
+11.29 Tổng kết chương
+Chương này đã trình bày kế hoạch kiểm thử toàn diện cho Website Bán Trái Cây, bao gồm kiểm thử chức năng, phân quyền, thanh toán, giao hàng, bảo mật, hiệu năng và khả năng tương thích. Hệ thống được đánh giá theo các tiêu chí PASS/FAIL rõ ràng nhằm đảm bảo đáp ứng đầy đủ yêu cầu nghiệp vụ trước khi đưa vào vận hành.
+Các Test Case trong chương là cơ sở để nhóm kiểm thử thực hiện kiểm tra chất lượng phần mềm, hỗ trợ nhóm phát triển phát hiện và khắc phục lỗi, đồng thời cung cấp căn cứ cho quá trình nghiệm thu với doanh nghiệp.
+Chương 12. Triển khai, vận hành và bảo trì hệ thống
+12.1 Giới thiệu
+Sau khi hoàn thành quá trình phân tích, thiết kế, phát triển và kiểm thử, hệ thống Website Bán Trái Cây sẽ được triển khai lên môi trường vận hành nhằm phục vụ người dùng thực tế. Chương này trình bày quy trình triển khai, cấu hình hệ thống, hướng dẫn vận hành, sao lưu dữ liệu, bảo trì và kế hoạch phát triển trong tương lai.
+Mục tiêu của chương là:
+Đảm bảo hệ thống được triển khai đúng quy trình.
+Hỗ trợ người quản trị vận hành hệ thống.
+Đảm bảo dữ liệu được bảo vệ an toàn.
+Giảm thiểu thời gian gián đoạn khi xảy ra sự cố.
+Tạo cơ sở cho việc mở rộng hệ thống trong tương lai.
+12.2 Kiến trúc triển khai
+Website được xây dựng theo mô hình Client – Server với kiến trúc tách biệt Frontend và Backend.
+Người dùng
+      │
+      ▼
+Frontend (ReactJS)
+      │
+ REST API
+      │
+      ▼
+Backend (Laravel)
+      │
+      ▼
+MySQL Database
+Ngoài ra, hệ thống có thể tích hợp:
+Dịch vụ OTP.
+MoMo Payment.
+VietQR.
+GreenSM.
+Google Maps.
+12.3 Yêu cầu môi trường triển khai
+Máy chủ ứng dụng
+Thành phần
+Yêu cầu
+CPU
+4 Core trở lên
+RAM
+8 GB trở lên
+Ổ cứng
+SSD 100 GB
+Hệ điều hành
+Ubuntu Server 24.04 LTS hoặc Windows Server
+Web Server
+Nginx hoặc Apache
+Máy chủ cơ sở dữ liệu
+Thành phần
+Yêu cầu
+MySQL
+8.x
+Dung lượng ban đầu
+20 GB
+Charset
+utf8mb4
+Collation
+utf8mb4_unicode_ci
+Phần mềm
+Tên
+Phiên bản
+PHP
+8.2 trở lên
+Composer
+2.x
+NodeJS
+22.x
+Laravel
+12.x
+React
+19.x
+12.4 Quy trình triển khai
+Bước 1
+Cài đặt hệ điều hành.
+Bước 2
+Cài đặt PHP.
+Bước 3
+Cài đặt Composer.
+Bước 4
+Cài đặt NodeJS.
+Bước 5
+Cài đặt MySQL.
+Bước 6
+Clone Source Code.
+git clone https://...
+Bước 7
+Backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan storage:link
+Bước 8
+Frontend
+npm install
+npm run build
+Bước 9
+Khởi động hệ thống.
+12.5 Cấu hình hệ thống
+Các thông số cần cấu hình:
+APP_NAME
+APP_URL
+APP_KEY
+DB_HOST
+DB_PORT
+DB_DATABASE
+DB_USERNAME
+DB_PASSWORD
+Cấu hình:
+MoMo
+VietQR
+GreenSM
+SMTP
+JWT Secret
+12.6 Quy trình vận hành
+Khách hàng
+Truy cập website.
+Tìm kiếm sản phẩm.
+Thêm vào giỏ hàng.
+Đặt hàng.
+Thanh toán.
+Theo dõi đơn hàng.
+Admin
+Đăng nhập.
+Quản lý sản phẩm.
+Quản lý đơn hàng.
+Theo dõi doanh thu.
+Quản lý Banner.
+Phân quyền.
+12.7 Nhật ký hệ thống
+Hệ thống ghi nhận các thao tác:
+Đăng nhập.
+Đăng xuất.
+Thêm dữ liệu.
+Cập nhật dữ liệu.
+Xóa dữ liệu.
+Thay đổi quyền.
+Thanh toán.
+Hủy đơn.
+Thông tin lưu:
+Người thực hiện.
+Thời gian.
+Địa chỉ IP.
+Trình duyệt.
+Nội dung thao tác.
+12.8 Sao lưu dữ liệu
+Đề xuất:
+Sao lưu hằng ngày.
+Sao lưu trước khi cập nhật phiên bản.
+Lưu tối thiểu 30 bản sao.
+Có thể sử dụng:
+MySQL Dump.
+Snapshot máy chủ.
+Cloud Backup.
+12.9 Phục hồi dữ liệu
+Quy trình:
+Dừng hệ thống.
+Khôi phục Database.
+Kiểm tra dữ liệu.
+Khởi động lại Website.
+Kiểm tra hoạt động.
+12.10 Cập nhật phiên bản
+Khi có phiên bản mới:
+Sao lưu dữ liệu.
+Deploy Source Code.
+Chạy Migration.
+Build React.
+Kiểm thử nhanh.
+Đưa vào sử dụng.
+12.11 Bảo trì hệ thống
+Bảo trì định kỳ:
+Hằng ngày
+Kiểm tra Log.
+Kiểm tra lỗi.
+Hằng tuần
+Kiểm tra Database.
+Kiểm tra Backup.
+Hằng tháng
+Tối ưu Database.
+Xóa Log cũ.
+Kiểm tra hiệu năng.
+12.12 Giám sát hệ thống
+Các nội dung cần giám sát:
+CPU.
+RAM.
+Ổ cứng.
+Database.
+API.
+SSL.
+Băng thông.
+Thời gian phản hồi.
+12.13 Bảo mật hệ thống
+Áp dụng:
+HTTPS.
+JWT Authentication.
+Mã hóa mật khẩu bằng bcrypt.
+CSRF Protection.
+XSS Protection.
+SQL Injection Protection.
+Rate Limiting.
+Phân quyền theo Role.
+12.14 Kế hoạch nâng cấp
+Phiên bản 2.0 dự kiến bổ sung:
+Đa ngôn ngữ.
+Chat trực tuyến.
+Đánh giá sản phẩm.
+Yêu thích sản phẩm.
+Phiếu giảm giá.
+Khách hàng thân thiết.
+Thông báo đẩy.
+Ứng dụng Android.
+Ứng dụng iOS.
+12.15 Rủi ro và phương án xử lý
+Rủi ro
+Phương án
+Mất điện
+UPS và Backup
+Mất dữ liệu
+Khôi phục từ bản sao lưu
+Máy chủ quá tải
+Nâng cấp tài nguyên, cân bằng tải
+Lỗi phần mềm
+Khắc phục và triển khai bản vá
+Tấn công mạng
+Tường lửa, WAF, giám sát nhật ký
+Mất kết nối Internet
+Sử dụng nhiều đường truyền dự phòng
+12.16 Hướng dẫn bàn giao
+Khi hoàn thành dự án, nhóm phát triển bàn giao cho doanh nghiệp:
+Mã nguồn
+Backend Laravel.
+Frontend React.
+Cơ sở dữ liệu.
+File cấu hình.
+Tài liệu
+Tài liệu SRS.
+Tài liệu thiết kế.
+Tài liệu API.
+Hướng dẫn cài đặt.
+Hướng dẫn sử dụng.
+Danh sách Test Case.
+Tài liệu triển khai.
+Tài khoản
+Admin Tổng.
+Admin Chi nhánh (nếu có).
+Tài khoản CSDL.
+Tài khoản máy chủ.
+12.17 Hướng dẫn bảo trì
+Để đảm bảo hệ thống hoạt động ổn định, người quản trị cần:
+Theo dõi nhật ký hệ thống.
+Kiểm tra dung lượng lưu trữ.
+Gia hạn tên miền và chứng chỉ SSL đúng hạn.
+Cập nhật các bản vá bảo mật của hệ điều hành, PHP, Laravel và các thư viện phụ thuộc.
+Kiểm tra định kỳ việc sao lưu và khả năng phục hồi dữ liệu.
+Theo dõi hiệu năng và tối ưu cơ sở dữ liệu khi cần.
+12.18 Tiêu chí nghiệm thu dự án
+Dự án được xem là hoàn thành khi đáp ứng các tiêu chí sau:
+Hoàn thành đầy đủ các chức năng đã thống nhất trong tài liệu đặc tả yêu cầu phiên bản 1.0.
+Các chức năng hoạt động ổn định và vượt qua kiểm thử.
+Không còn lỗi nghiêm trọng (Critical) hoặc lỗi mức cao (High).
+Giao diện hiển thị đúng trên các thiết bị hỗ trợ.
+Tài liệu hướng dẫn sử dụng và triển khai được bàn giao đầy đủ.
+Mã nguồn được tổ chức rõ ràng, dễ bảo trì và có chú thích cần thiết.
+12.19 Kết luận dự án
+Website Bán Trái Cây được xây dựng nhằm đáp ứng nhu cầu kinh doanh trực tuyến của doanh nghiệp với các chức năng từ quản lý sản phẩm, đặt hàng, thanh toán, giao hàng đến quản trị hệ thống. Kiến trúc sử dụng Laravel, React và MySQL giúp hệ thống có khả năng mở rộng, dễ bảo trì và phù hợp với xu hướng phát triển ứng dụng web hiện đại.
+Việc xây dựng đầy đủ tài liệu đặc tả yêu cầu, thiết kế hệ thống, cơ sở dữ liệu, API, giao diện và kiểm thử giúp giảm rủi ro trong quá trình phát triển, đồng thời tạo điều kiện thuận lợi cho việc nâng cấp và mở rộng hệ thống trong các phiên bản tiếp theo.
+12.20 Tổng kết chương
+Chương này đã trình bày toàn bộ nội dung liên quan đến triển khai, vận hành và bảo trì hệ thống Website Bán Trái Cây. Từ yêu cầu môi trường triển khai, quy trình cài đặt, cấu hình, sao lưu, phục hồi, giám sát, bảo mật đến kế hoạch nâng cấp và bàn giao đều được mô tả nhằm đảm bảo hệ thống có thể được triển khai và vận hành ổn định trong thực tế.
+Kết hợp với các chương trước, tài liệu đã hình thành một bộ hồ sơ thiết kế và đặc tả hoàn chỉnh, phục vụ cho quá trình phát triển, kiểm thử, triển khai và bảo trì hệ thống Website Bán Trái Cây phiên bản 1.0.

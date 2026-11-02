@@ -1,0 +1,58 @@
+# compose.prod.yml — Đổ Đống 4 Mùa chạy trên MÁY CHỦ (Buổi 13 & 14)
+# Trên máy chủ chỉ có đúng 3 file: compose.prod.yml, Caddyfile, .env — KHÔNG chứa mã nguồn gốc, KHÔNG build.
+# Lệnh luôn kèm -f: docker compose -f compose.prod.yml <lệnh>
+
+name: dodong4mua
+
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Thiếu DB_ROOT_PASSWORD trong .env}
+      MYSQL_DATABASE: ${DB_NAME:-do_dong_4_mua}
+      MYSQL_USER: ${DB_USER:-dodong4mua_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Thiếu DB_PASSWORD trong .env}
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --silent"]
+      interval: 5s
+      retries: 20
+    restart: unless-stopped
+    # CSDL chạy trong mạng nội bộ, không mở ports ra ngoài internet
+
+  app:
+    image: ghcr.io/${GHCR_USER:?Thiếu GHCR_USER trong .env}/dodong4mua:${IMAGE_TAG:?Thiếu IMAGE_TAG trong .env}
+    environment:
+      PORT: "8080"
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:-do_dong_4_mua}
+      DB_USER: ${DB_USER:-dodong4mua_user}
+      DB_PASSWORD: ${DB_PASSWORD}
+      NEXT_PUBLIC_APP_NAME: "Đổ Đống 4 Mùa"
+    volumes:
+      - uploads:/app/public/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    # App không mở ports ra ngoài, chỉ nhận traffic qua reverse proxy Caddy
+
+  proxy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  uploads:
+  caddy-data:

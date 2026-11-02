@@ -1,0 +1,59 @@
+# compose.yml — Đổ Đống 4 Mùa (Node.js Next.js + React + MySQL 8.4 + Caddy)
+name: dodong4mua
+
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-Dodong4mua@RootPass2026}
+      MYSQL_DATABASE: ${DB_NAME:-do_dong_4_mua}
+      MYSQL_USER: ${DB_USER:-dodong4mua_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-Dodong4mua@Password2026}
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./database/do_dong_4_mua.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --silent"]
+      interval: 5s
+      retries: 20
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+
+  app:
+    build: .
+    environment:
+      PORT: "8080"
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:-do_dong_4_mua}
+      DB_USER: ${DB_USER:-dodong4mua_user}
+      DB_PASSWORD: ${DB_PASSWORD:-Dodong4mua@Password2026}
+      NEXT_PUBLIC_APP_NAME: "Đổ Đống 4 Mùa"
+    volumes:
+      - uploads:/app/public/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+
+  proxy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  uploads:
+  caddy-data:
+

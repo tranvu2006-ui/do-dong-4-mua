@@ -1,0 +1,4 @@
+dodongbonmua.duckdns.org, localhost {
+    reverse_proxy app:8080
+}
+
