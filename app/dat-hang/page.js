@@ -346,8 +346,6 @@ export default function CheckoutPage() {
     );
   }
 
-  // VietQR URL calculation for preview (MB Bank - TRAN VU)
-  const vietQrUrl = `https://img.vietqr.io/image/MB-0929894248-compact2.png?amount=${totalAmount}&addInfo=DODONG4MUA&accountName=TRAN%20VU`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
@@ -699,23 +697,27 @@ export default function CheckoutPage() {
                 </label>
               </div>
 
-              {/* VietQR Preview Box - Khổ Lớn To Rõ */}
+              {/* VietQR Information Notice */}
               {formData.payment_method === 'VIETQR' && (
-                <div className="bg-emerald-50 p-5 rounded-3xl border border-emerald-200 flex flex-col sm:flex-row items-center gap-5 text-xs">
-                  <div className="w-48 h-48 sm:w-56 sm:h-56 bg-white p-2.5 rounded-2xl shadow-sm border-2 border-emerald-300 shrink-0 flex items-center justify-center">
-                    <img src={vietQrUrl} alt="VietQR Đổ Đống 4 Mùa" className="w-full h-full object-contain" />
-                  </div>
-                  <div className="space-y-2 text-emerald-900 flex-1">
-                    <div className="font-extrabold text-sm text-emerald-800 flex items-center gap-2">
-                      <QrCode className="w-4 h-4 text-emerald-600" /> Quét mã VietQR MB Bank
+                <div className="bg-emerald-50/80 p-5 rounded-3xl border border-emerald-200 text-xs space-y-3">
+                  <div className="flex items-center gap-2.5 font-bold text-sm text-emerald-900">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm shrink-0">
+                      <QrCode className="w-5 h-5" />
                     </div>
-                    <p className="text-xs text-emerald-700 leading-relaxed">
-                      Sau khi bấm <strong>Xác nhận đặt hàng</strong>, hệ thống sẽ bật mã QR cỡ lớn kèm mã đơn riêng của bạn để quét thanh toán tức thì.
+                    <div>
+                      <div>Thanh toán chuyển khoản qua VietQR 24/7</div>
+                      <div className="text-[11px] font-normal text-emerald-700">Mã QR kèm mã đơn sẽ được tạo ngay sau khi bấm Xác Nhận Đặt Hàng</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/95 p-3.5 rounded-2xl border border-emerald-100 text-emerald-800 space-y-2">
+                    <p className="leading-relaxed">
+                      💡 Quý khách vui lòng bấm nút <strong>&quot;Xác Nhận Đặt Hàng&quot;</strong> bên dưới. Sau khi hệ thống cấp <strong>Mã đơn hàng chính thức</strong>, bạn sẽ được chuyển đến trang <strong>Mã VietQR riêng biệt</strong> (đã điền sẵn số tiền và mã đơn để ngân hàng đối soát tự động).
                     </p>
-                    <div className="text-xs bg-white/90 p-3 rounded-xl border border-emerald-200 font-mono space-y-1 shadow-2xs">
-                      <div>Ngân hàng: <strong>MB Bank (Quân Đội)</strong></div>
-                      <div>Số tài khoản: <strong className="text-brand-700 text-sm">0929894248</strong></div>
-                      <div>Chủ tài khoản: <strong>TRAN VU</strong></div>
+                    <div className="pt-2 border-t border-emerald-100 grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-[11px] text-gray-700">
+                      <div>Ngân hàng: <strong className="text-brand-700">MB Bank</strong></div>
+                      <div>Số tài khoản: <strong className="text-brand-700">0929894248</strong></div>
+                      <div>Chủ TK: <strong className="text-brand-700">TRAN VU</strong></div>
                     </div>
                   </div>
                 </div>
