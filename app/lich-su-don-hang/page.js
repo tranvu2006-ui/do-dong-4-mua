@@ -182,22 +182,37 @@ function OrderHistoryContent() {
 
               {/* Items in order */}
               <div className="divide-y divide-gray-50">
-                {ord.items?.map((item) => (
-                  <div key={item.id} className="py-2.5 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-3">
-                      <img src={item.thumbnail} alt={item.product_name} className="w-10 h-10 rounded-xl object-cover" />
-                      <div>
-                        <div className="font-bold text-gray-800">{item.product_name}</div>
-                        <div className="text-[11px] text-gray-400">
-                          {parseFloat(item.unit_price).toLocaleString('vi-VN')} đ x {item.quantity}
+                {ord.items?.map((item) => {
+                  const lineTotal = parseFloat(item.total_price || (item.unit_price * item.quantity) || 0);
+                  const itemImg = item.thumbnail || item.image;
+                  return (
+                    <div key={item.id} className="py-2.5 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-3">
+                        {itemImg ? (
+                          <img 
+                            src={itemImg} 
+                            alt={item.product_name} 
+                            className="w-10 h-10 rounded-xl object-cover bg-gray-50 border border-gray-100"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-base">
+                            🍇
+                          </div>
+                        )}
+                        <div>
+                          <div className="font-bold text-gray-800">{item.product_name}</div>
+                          <div className="text-[11px] text-gray-400">
+                            {parseFloat(item.unit_price || 0).toLocaleString('vi-VN')} đ x {item.quantity}
+                          </div>
                         </div>
                       </div>
+                      <span className="font-bold text-gray-900">
+                        {lineTotal.toLocaleString('vi-VN')} đ
+                      </span>
                     </div>
-                    <span className="font-bold text-gray-900">
-                      {parseFloat(item.subtotal).toLocaleString('vi-VN')} đ
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Order Footer */}
@@ -226,7 +241,7 @@ function OrderHistoryContent() {
                     href={`/don-hang/${ord.order_code}`}
                     className="px-4 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-xl font-bold text-xs transition flex items-center gap-1"
                   >
-                    <span>Lộ trình GreenSM</span>
+                    <span>Xem chi tiết đơn</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
