@@ -33,6 +33,73 @@ export async function GET(request, { params }) {
 
     order.items = items;
 
+    // Lịch sử xử lý đơn hàng theo SRS FR-030
+    const rawLogs = await query(
+      `SELECT sl.id, sl.action, sl.description, sl.created_at, 
+              u.full_name as user_name, r.role_name as role_name
+       FROM system_logs sl
+       LEFT JOIN users u ON sl.user_id = u.id
+       LEFT JOIN roles r ON u.role_id = r.id
+       WHERE sl.description LIKE ?
+       ORDER BY sl.id ASC`,
+      [`%${order.order_code}%`]
+    );
+
+    const logs = [];
+
+    // Mốc 1: Khách hàng tạo đơn
+    logs.push({
+      action: 'CREATE',
+      title: 'Khách hàng đặt hàng',
+      description: `Khách hàng ${order.receiver_name} đặt đơn thành công (Phương thức: ${order.payment_method || 'COD'}, Tổng: ${parseFloat(order.total_amount).toLocaleString('vi-VN')} đ)`,
+      user_name: order.receiver_name,
+      role_name: 'Khách hàng',
+      created_at: order.created_at
+    });
+
+    // Mốc từ system_logs (các thao tác duyệt, cập nhật, hủy...)
+    if (rawLogs && rawLogs.length > 0) {
+      for (const l of rawLogs) {
+        if (l.action !== 'CREATE') {
+          let title = 'Cập nhật trạng thái';
+          if (l.action === 'CANCEL') title = 'Hủy đơn hàng';
+          else if (l.description.includes('PAID')) title = 'Xác nhận thanh toán';
+          else if (l.description.includes('DANG_GIAO')) title = 'Bàn giao GreenSM';
+          else if (l.description.includes('DA_GIAO')) title = 'Giao hàng thành công';
+          else if (l.description.includes('DA_XAC_NHAN')) title = 'Duyệt đơn hàng';
+          else if (l.description.includes('DANG_CHUAN_BI')) title = 'Chuẩn bị đóng gói';
+
+          logs.push({
+            action: l.action,
+            title,
+            description: l.description,
+            user_name: l.user_name || 'Trần Vũ (Admin Tổng)',
+            role_name: l.role_name || 'Admin Tổng',
+            created_at: l.created_at
+          });
+        }
+      }
+    }
+
+    // Mốc thanh toán nếu đã thu mà chưa có log riêng
+    if (order.payment_status === 'PAID' && order.payment_time) {
+      const hasPaid = logs.some(l => l.description && l.description.includes('PAID'));
+      if (!hasPaid) {
+        logs.push({
+          action: 'PAYMENT',
+          title: 'Đã xác nhận thu tiền',
+          description: `Đã thu đủ ${parseFloat(order.total_amount).toLocaleString('vi-VN')} đ qua ${order.payment_method}`,
+          user_name: 'Admin Tổng',
+          role_name: 'Quản trị viên',
+          created_at: order.payment_time
+        });
+      }
+    }
+
+    // Sắp xếp theo thời gian tăng dần
+    logs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    order.logs = logs;
+
     return NextResponse.json({ success: true, data: order });
   } catch (error) {
     console.error('Error fetching order detail:', error);

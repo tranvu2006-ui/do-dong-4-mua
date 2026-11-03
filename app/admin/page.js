@@ -4691,11 +4691,12 @@ export default function AdminDashboardPage() {
                       <span className="text-slate-500 shrink-0">Địa chỉ nhận:</span>
                       <span className="text-slate-900 text-right font-medium">{selectedOrder.address}</span>
                     </div>
-                    {selectedOrder.note && (
-                      <div className="mt-1 p-2 bg-yellow-50 text-yellow-900 rounded-xl border border-yellow-200 text-[11px]">
-                        <strong>Ghi chú:</strong> {selectedOrder.note}
-                      </div>
-                    )}
+                    <div className="flex justify-between items-start gap-2 pt-1 border-t border-slate-200/50">
+                      <span className="text-slate-500 shrink-0">Ghi chú:</span>
+                      <span className="text-slate-900 text-right font-medium italic">
+                        {selectedOrder.note && selectedOrder.note.trim() ? selectedOrder.note : 'Không có ghi chú'}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -4729,8 +4730,24 @@ export default function AdminDashboardPage() {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-500">Trạng thái đơn:</span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">
-                        {selectedOrder.order_status}
+                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                        selectedOrder.order_status === 'DA_GIAO' ? 'bg-emerald-100 text-emerald-800' :
+                        selectedOrder.order_status === 'DANG_GIAO' ? 'bg-teal-100 text-teal-800' :
+                        selectedOrder.order_status === 'DANG_CHUAN_BI' ? 'bg-blue-100 text-blue-800' :
+                        selectedOrder.order_status === 'TAM_DUNG' ? 'bg-yellow-100 text-yellow-800' :
+                        selectedOrder.order_status === 'DA_XAC_NHAN' ? 'bg-purple-100 text-purple-800' :
+                        selectedOrder.order_status === 'CHO_THANH_TOAN' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                        selectedOrder.order_status === 'DA_HUY' ? 'bg-red-100 text-red-800' :
+                        'bg-amber-100 text-amber-800'
+                      }`}>
+                        {selectedOrder.order_status === 'CHO_THANH_TOAN' ? 'Chờ thanh toán (VietQR)' :
+                         selectedOrder.order_status === 'CHO_XAC_NHAN' ? 'Chờ xác nhận (COD)' :
+                         selectedOrder.order_status === 'DA_XAC_NHAN' ? 'Đã duyệt (Tiếp nhận)' :
+                         selectedOrder.order_status === 'DANG_CHUAN_BI' ? 'Đang chuẩn bị hàng' :
+                         selectedOrder.order_status === 'TAM_DUNG' ? 'Tạm dừng xử lý' :
+                         selectedOrder.order_status === 'DANG_GIAO' ? 'Đang giao GreenSM' :
+                         selectedOrder.order_status === 'DA_GIAO' ? 'Giao thành công' :
+                         selectedOrder.order_status === 'DA_HUY' ? 'Đã hủy đơn' : selectedOrder.order_status}
                       </span>
                     </div>
                   </div>
@@ -4799,6 +4816,56 @@ export default function AdminDashboardPage() {
                 <div className="flex justify-between text-sm font-black text-brand-700 pt-2 border-t border-slate-200">
                   <span>Tổng tiền thanh toán:</span>
                   <span className="text-base">{parseFloat(selectedOrder.total_amount || 0).toLocaleString('vi-VN')} đ</span>
+                </div>
+              </div>
+
+              {/* Lịch Sử Xử Lý Đơn Hàng (SRS FR-030) */}
+              <div className="border border-slate-200 rounded-2xl p-4 bg-slate-50/60 space-y-3">
+                <div className="font-bold text-slate-900 flex items-center justify-between text-xs pb-2 border-b border-slate-200/60">
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-brand-600" />
+                    <span>Lịch Sử Xử Lý Đơn Hàng (FR-030)</span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-normal">
+                    {selectedOrder.logs?.length || 1} mốc xử lý
+                  </span>
+                </div>
+
+                <div className="relative pl-6 space-y-3.5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+                  {selectedOrder.logs && selectedOrder.logs.length > 0 ? (
+                    selectedOrder.logs.map((log, idx) => (
+                      <div key={log.id || idx} className="relative text-xs">
+                        <div className="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-brand-600 border-2 border-white ring-2 ring-brand-100" />
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                          <strong className="text-slate-900 font-bold">{log.title || log.action}</strong>
+                          <span className="text-[10px] text-slate-400 font-mono">
+                            {new Date(log.created_at).toLocaleString('vi-VN')}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-600 mt-0.5">{log.description}</p>
+                        <div className="text-[10px] text-slate-400 mt-0.5">
+                          Người xử lý: <span className="font-medium text-slate-700">{log.user_name || 'Admin'}</span>
+                          {log.role_name && <span className="text-slate-400"> ({log.role_name})</span>}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="relative text-xs">
+                      <div className="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-brand-600 border-2 border-white ring-2 ring-brand-100" />
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <strong className="text-slate-900 font-bold">Khách hàng đặt hàng</strong>
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          {selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleString('vi-VN') : '—'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 mt-0.5">
+                        Khách hàng {selectedOrder.receiver_name} đặt đơn qua {selectedOrder.payment_method || 'COD'}
+                      </p>
+                      <div className="text-[10px] text-slate-400 mt-0.5">
+                        Người xử lý: <span className="font-medium text-slate-700">{selectedOrder.receiver_name}</span> (Khách hàng)
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
