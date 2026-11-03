@@ -2080,7 +2080,13 @@ export default function AdminDashboardPage() {
 
                               {/* 8. Người xử lý */}
                               <td className="py-3 px-3 whitespace-nowrap text-slate-600 font-medium text-[11px]">
-                                Admin Tổng
+                                {['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(o.order_status) && !o.processor_name ? (
+                                  <span className="text-slate-400 italic">Chưa tiếp nhận</span>
+                                ) : o.order_status === 'DA_HUY' && (!o.processor_name || o.processor_name === o.receiver_name) ? (
+                                  <span className="text-red-500 font-medium">Khách tự hủy</span>
+                                ) : (
+                                  <span className="text-slate-800 font-medium">{o.processor_name || 'Admin Tổng'}</span>
+                                )}
                               </td>
 
                               {/* 9. Thao tác */}
@@ -4657,7 +4663,15 @@ export default function AdminDashboardPage() {
                     <span className="font-mono text-brand-700 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-200/60">{selectedOrder.order_code}</span>
                   </h3>
                   <div className="text-xs text-slate-500 mt-0.5">
-                    Thời gian đặt: {selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleString('vi-VN') : '—'} • Xử lý: <strong className="text-slate-700">Admin Tổng</strong>
+                    Thời gian đặt: {selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleString('vi-VN') : '—'} • Xử lý: <strong className="text-slate-700">
+                      {['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(selectedOrder.order_status) && !selectedOrder.processor_name ? (
+                        <span className="text-slate-400 italic font-normal">Chưa tiếp nhận</span>
+                      ) : selectedOrder.order_status === 'DA_HUY' && (!selectedOrder.processor_name || selectedOrder.processor_name === selectedOrder.receiver_name) ? (
+                        <span className="text-red-600 font-medium">Khách hàng hủy</span>
+                      ) : (
+                        selectedOrder.processor_name || 'Admin Tổng'
+                      )}
+                    </strong>
                   </div>
                 </div>
               </div>

@@ -8,7 +8,15 @@ export async function GET(request, { params }) {
     const orders = await query(
       `SELECT o.*, 
               p.payment_method, p.status as payment_detail_status, p.transaction_code, p.payment_time,
-              s.shipping_company, s.tracking_code, s.shipping_status, s.ship_date, s.delivery_date
+              s.shipping_company, s.tracking_code, s.shipping_status, s.ship_date, s.delivery_date,
+              (SELECT u.full_name 
+               FROM system_logs sl 
+               JOIN users u ON sl.user_id = u.id 
+               WHERE sl.module = 'ORDER' 
+                 AND sl.action != 'CREATE' 
+                 AND sl.description LIKE CONCAT('%', o.order_code, '%') 
+               ORDER BY sl.id DESC 
+               LIMIT 1) as processor_name
        FROM orders o
        LEFT JOIN payments p ON p.order_id = o.id
        LEFT JOIN shipments s ON s.order_id = o.id
