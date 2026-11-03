@@ -359,6 +359,24 @@ export default function AdminDashboardPage() {
     onConfirm: null
   });
 
+  // Modal xác nhận thao tác Đơn hàng (Đổi trạng thái, Tạm dừng, Tiếp tục, Hủy đơn - Chuẩn giao diện Đổ Đống 4 Mùa)
+  const [orderActionModal, setOrderActionModal] = useState({
+    isOpen: false,
+    actionType: 'STATUS', // 'STATUS' | 'PAUSE' | 'RESUME' | 'CANCEL'
+    order: null,
+    title: '',
+    message: '',
+    targetStatus: null,
+    targetShippingStatus: null,
+    targetPaymentStatus: null,
+    statusLabel: '',
+    reason: '',
+    requireReason: false,
+    confirmText: 'Xác nhận',
+    confirmColor: 'bg-brand-600 hover:bg-brand-700',
+    iconType: 'status'
+  });
+
   // Modal xác nhận thao tác Tài khoản (Chuẩn KhoHang_JAVA: lockModal, unlockModal, deleteModal)
   const [actionModal, setActionModal] = useState({
     isOpen: false,
@@ -557,12 +575,13 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleUpdateOrderStatus = async (orderCode, newOrderStatus, newShippingStatus = null, newPaymentStatus = null) => {
+  const handleUpdateOrderStatus = async (orderCode, newOrderStatus, newShippingStatus = null, newPaymentStatus = null, reason = null) => {
     try {
       const body = {};
       if (newOrderStatus) body.order_status = newOrderStatus;
       if (newShippingStatus) body.shipping_status = newShippingStatus;
       if (newPaymentStatus) body.payment_status = newPaymentStatus;
+      if (reason) body.reason = reason;
 
       const res = await fetch(`/api/orders/${orderCode}`, {
         method: 'PATCH',
@@ -589,6 +608,142 @@ export default function AdminDashboardPage() {
     } catch (e) {
       showToast('Có lỗi xảy ra: ' + e.message, 'error');
     }
+  };
+
+  // 1. Mở modal Đổi trạng thái với thông báo & xác nhận rõ ràng
+  const promptChangeOrderStatus = (order, newStatus, newShippingStatus = null, label = 'Duyệt đơn') => {
+    let color = 'bg-brand-600 hover:bg-brand-700';
+    if (newStatus === 'DA_XAC_NHAN') color = 'bg-purple-600 hover:bg-purple-700';
+    else if (newStatus === 'DANG_CHUAN_BI') color = 'bg-blue-600 hover:bg-blue-700';
+    else if (newStatus === 'DANG_GIAO') color = 'bg-teal-600 hover:bg-teal-700';
+    else if (newStatus === 'DA_GIAO') color = 'bg-emerald-600 hover:bg-emerald-700';
+
+    const statusNames = {
+      DA_XAC_NHAN: 'Đã xác nhận',
+      DANG_CHUAN_BI: 'Đang chuẩn bị đóng gói',
+      DANG_GIAO: 'Đang giao (Bàn giao GreenSM)',
+      DA_GIAO: 'Đã giao (Hoàn tất đơn hàng)',
+    };
+
+    setOrderActionModal({
+      isOpen: true,
+      actionType: 'STATUS',
+      order,
+      title: `Xác Nhận ${label}`,
+      message: `Bạn có chắc chắn muốn chuyển đơn hàng #${order.order_code} sang trạng thái "${statusNames[newStatus] || newStatus}" không?`,
+      targetStatus: newStatus,
+      targetShippingStatus: newShippingStatus,
+      targetPaymentStatus: null,
+      statusLabel: label,
+      reason: '',
+      requireReason: false,
+      confirmText: `Xác nhận ${label}`,
+      confirmColor: color,
+      iconType: 'status'
+    });
+  };
+
+  // 2. Mở modal Tạm dừng (FR-034: có ô nhập lý do)
+  const promptPauseOrder = (order) => {
+    setOrderActionModal({
+      isOpen: true,
+      actionType: 'PAUSE',
+      order,
+      title: 'Tạm Dừng Xử Lý Đơn Hàng (FR-034)',
+      message: `Tạm dừng đơn hàng #${order.order_code} khi có sự cố phát sinh. Vui lòng nhập lý do cụ thể (lý do này sẽ hiển thị cho khách hàng và lưu vết hệ thống):`,
+      targetStatus: 'TAM_DUNG',
+      targetShippingStatus: null,
+      targetPaymentStatus: null,
+      statusLabel: 'Tạm dừng',
+      reason: 'Hết hàng tạm thời, chờ bổ sung đợt mới',
+      requireReason: true,
+      confirmText: 'Xác nhận Tạm dừng',
+      confirmColor: 'bg-amber-500 hover:bg-amber-600',
+      iconType: 'pause'
+    });
+  };
+
+  // 3. Mở modal Tiếp tục xử lý (FR-035)
+  const promptResumeOrder = (order) => {
+    setOrderActionModal({
+      isOpen: true,
+      actionType: 'RESUME',
+      order,
+      title: 'Tiếp Tục Xử Lý Đơn Hàng (FR-035)',
+      message: `Xác nhận đã khắc phục xong sự cố và tiếp tục xử lý đơn hàng #${order.order_code}? Đơn sẽ được chuyển về khâu Đang chuẩn bị đóng gói.`,
+      targetStatus: 'DANG_CHUAN_BI',
+      targetShippingStatus: null,
+      targetPaymentStatus: null,
+      statusLabel: 'Tiếp tục',
+      reason: 'Đã giải quyết sự cố, tiếp tục đóng gói',
+      requireReason: false,
+      confirmText: 'Tiếp tục xử lý',
+      confirmColor: 'bg-blue-600 hover:bg-blue-700',
+      iconType: 'resume'
+    });
+  };
+
+  // 4. Mở modal Hủy đơn hàng (FR-028 & BR-020)
+  const promptCancelOrder = (order) => {
+    setOrderActionModal({
+      isOpen: true,
+      actionType: 'CANCEL',
+      order,
+      title: 'Xác Nhận Hủy Đơn Hàng (BR-020)',
+      message: `Cảnh báo: Hành động này sẽ hủy đơn hàng #${order.order_code} và tự động hoàn trả số lượng quả vào kho. Vui lòng nhập lý do hủy:`,
+      targetStatus: 'DA_HUY',
+      targetShippingStatus: null,
+      targetPaymentStatus: null,
+      statusLabel: 'Hủy đơn',
+      reason: 'Khách hàng yêu cầu hủy đơn',
+      requireReason: true,
+      confirmText: 'Xác nhận Hủy Đơn',
+      confirmColor: 'bg-red-600 hover:bg-red-700',
+      iconType: 'cancel'
+    });
+  };
+
+  // Thực thi thao tác từ modal
+  const executeOrderActionModal = async () => {
+    const { actionType, order, targetStatus, targetShippingStatus, targetPaymentStatus, reason, requireReason } = orderActionModal;
+    if (!order) return;
+
+    if (requireReason && (!reason || !reason.trim())) {
+      showToast('Vui lòng nhập lý do để tiếp tục!', 'warning');
+      return;
+    }
+
+    setOrderActionModal((prev) => ({ ...prev, isOpen: false }));
+
+    if (actionType === 'CANCEL') {
+      try {
+        const res = await fetch(`/api/orders/${order.order_code}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'CANCEL', reason: reason ? reason.trim() : 'Quản trị viên hủy đơn' }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message || 'Đã hủy đơn hàng thành công!', 'success');
+          loadData();
+          setSelectedOrder((prev) => prev && prev.order_code === order.order_code ? { ...prev, order_status: 'DA_HUY' } : prev);
+        } else {
+          showToast(data.message || 'Hủy đơn thất bại', 'error');
+        }
+      } catch (e) {
+        showToast('Lỗi kết nối: ' + e.message, 'error');
+      }
+      return;
+    }
+
+    // STATUS, PAUSE, RESUME
+    handleUpdateOrderStatus(
+      order.order_code,
+      targetStatus,
+      targetShippingStatus,
+      targetPaymentStatus,
+      reason ? reason.trim() : null
+    );
   };
 
   const handleCreateProduct = async (e) => {
@@ -2069,7 +2224,16 @@ export default function AdminDashboardPage() {
                                   o.order_status === "DA_HUY" ? "bg-red-100 text-red-800" :
                                   "bg-amber-100 text-amber-800"
                                 }`}>
-                                  {o.order_status === "CHO_THANH_TOAN" ? "CHỜ THANH TOÁN" : o.order_status === "CHO_XAC_NHAN" ? "CHỜ XÁC NHẬN" : o.order_status}
+                                  {
+                                    o.order_status === "CHO_THANH_TOAN" ? "Chờ thanh toán" :
+                                    o.order_status === "CHO_XAC_NHAN" ? "Chờ xác nhận" :
+                                    o.order_status === "DA_XAC_NHAN" ? "Đã xác nhận" :
+                                    o.order_status === "DANG_CHUAN_BI" ? "Đang chuẩn bị" :
+                                    o.order_status === "TAM_DUNG" ? "Tạm dừng" :
+                                    o.order_status === "DANG_GIAO" ? "Đang giao" :
+                                    o.order_status === "DA_GIAO" ? "Đã giao" :
+                                    o.order_status === "DA_HUY" ? "Đã hủy" : o.order_status
+                                  }
                                 </span>
                               </td>
 
@@ -2089,89 +2253,117 @@ export default function AdminDashboardPage() {
                                 )}
                               </td>
 
-                              {/* 9. Thao tác */}
+                              {/* 9. Thao tác: Đúng chuẩn 4 nút nghiệp vụ */}
                               <td className="py-3 px-3 text-right space-x-1 whitespace-nowrap">
+                                {/* 1. Xem chi tiết */}
                                 <button
                                   onClick={() => handleViewOrderDetail(o)}
-                                  className="px-2.5 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-[10px] font-bold transition inline-flex items-center gap-1 cursor-pointer border border-brand-200/60"
-                                  title="Mở cửa sổ chi tiết đơn hàng (FR-030)"
+                                  className="px-2 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-[10px] font-bold transition inline-flex items-center gap-1 cursor-pointer border border-brand-200/60"
+                                  title="Xem chi tiết đơn hàng (FR-030)"
                                 >
-                                  <Eye className="w-3 h-3" /> Xem chi tiết
+                                  <Eye className="w-3 h-3" /> Chi tiết
                                 </button>
-                                {o.payment_status !== "PAID" && o.order_status !== "DA_HUY" && (
-                                  <button
-                                    onClick={() => {
-                                      requestConfirm({
-                                        title: "Xác Nhận Đã Thu Tiền (FR-032)",
-                                        message: `Xác nhận đã nhận đủ ${parseFloat(o.total_amount).toLocaleString("vi-VN")} đ cho đơn hàng ${o.order_code}? Trạng thái thanh toán sẽ chuyển sang ĐÃ THU.`,
-                                        confirmText: "Xác nhận thu tiền",
-                                        type: "success",
-                                        onConfirm: () => handleUpdateOrderStatus(
-                                          o.order_code, 
-                                          ["CHO_XAC_NHAN", "CHO_THANH_TOAN"].includes(o.order_status) ? "DA_XAC_NHAN" : null, 
-                                          ["CHO_XAC_NHAN", "CHO_THANH_TOAN"].includes(o.order_status) ? "DA_TAO_VAN_DON" : null, 
-                                          "PAID"
-                                        ),
-                                      });
-                                    }}
-                                    className="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold cursor-pointer shadow-sm transition"
-                                    title="Xác nhận thanh toán thủ công (FR-032)"
-                                  >
-                                    ✓ Đã thu
-                                  </button>
-                                )}
-                                {["CHO_XAC_NHAN", "CHO_THANH_TOAN"].includes(o.order_status) && (
-                                  <button
-                                    onClick={() => handleUpdateOrderStatus(o.order_code, "DA_XAC_NHAN", "DA_TAO_VAN_DON")}
-                                    className="px-2.5 py-1 bg-purple-600 text-white rounded-lg text-[10px] font-bold hover:bg-purple-700 cursor-pointer"
-                                    title="Tiếp nhận đơn hàng"
-                                  >
-                                    Duyệt
-                                  </button>
-                                )}
-                                {o.order_status === "DA_XAC_NHAN" && (
-                                  <button
-                                    onClick={() => handleUpdateOrderStatus(o.order_code, "DANG_CHUAN_BI")}
-                                    className="px-2.5 py-1 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700 cursor-pointer"
-                                    title="Chuẩn bị đơn hàng"
-                                  >
-                                    Đóng gói
-                                  </button>
-                                )}
-                                {o.order_status === "DANG_CHUAN_BI" && (
-                                  <>
+
+                                {/* 2. Đổi trạng thái (Modal xác nhận chuẩn) */}
+                                {(() => {
+                                  if (['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(o.order_status)) {
+                                    return (
+                                      <button
+                                        onClick={() => promptChangeOrderStatus(o, 'DA_XAC_NHAN', 'DA_TAO_VAN_DON', 'Duyệt đơn')}
+                                        className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
+                                        title="Duyệt đơn hàng (FR-031)"
+                                      >
+                                        Duyệt đơn
+                                      </button>
+                                    );
+                                  }
+                                  if (o.order_status === 'DA_XAC_NHAN') {
+                                    return (
+                                      <button
+                                        onClick={() => promptChangeOrderStatus(o, 'DANG_CHUAN_BI', null, 'Đóng gói')}
+                                        className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
+                                        title="Chuyển sang đóng gói (FR-033)"
+                                      >
+                                        Đóng gói
+                                      </button>
+                                    );
+                                  }
+                                  if (o.order_status === 'DANG_CHUAN_BI') {
+                                    return (
+                                      <button
+                                        onClick={() => promptChangeOrderStatus(o, 'DANG_GIAO', 'DANG_GIAO', 'Bàn giao GreenSM')}
+                                        className="px-2 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
+                                        title="Bàn giao GreenSM (FR-036)"
+                                      >
+                                        Giao hàng
+                                      </button>
+                                    );
+                                  }
+                                  if (o.order_status === 'DANG_GIAO') {
+                                    return (
+                                      <button
+                                        onClick={() => promptChangeOrderStatus(o, 'DA_GIAO', 'GIAO_THANH_CONG', 'Hoàn tất đơn')}
+                                        className="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
+                                        title="Hoàn tất đơn hàng (FR-037)"
+                                      >
+                                        Hoàn tất
+                                      </button>
+                                    );
+                                  }
+                                  return (
                                     <button
-                                      onClick={() => handleUpdateOrderStatus(o.order_code, "TAM_DUNG")}
-                                      className="px-2 py-1 bg-yellow-500 text-white rounded-lg text-[10px] font-bold hover:bg-yellow-600 cursor-pointer"
-                                      title="Tạm dừng đơn hàng"
+                                      disabled
+                                      className="px-2 py-1 bg-slate-100 text-slate-400 rounded-lg text-[10px] font-bold cursor-not-allowed border border-slate-200"
+                                      title="Không có bước kế tiếp"
                                     >
-                                      Tạm dừng
+                                      Đổi trạng thái
                                     </button>
-                                    <button
-                                      onClick={() => handleUpdateOrderStatus(o.order_code, "DANG_GIAO", "DANG_GIAO")}
-                                      className="px-2.5 py-1 bg-teal-600 text-white rounded-lg text-[10px] font-bold hover:bg-teal-700 cursor-pointer"
-                                      title="Bàn giao GreenSM"
-                                    >
-                                      Giao GreenSM
-                                    </button>
-                                  </>
-                                )}
-                                {o.order_status === "TAM_DUNG" && (
+                                  );
+                                })()}
+
+                                {/* 3. Tạm dừng / Tiếp tục (Modal nhập lý do chuẩn) */}
+                                {['CHO_XAC_NHAN', 'CHO_THANH_TOAN', 'DA_XAC_NHAN', 'DANG_CHUAN_BI'].includes(o.order_status) ? (
                                   <button
-                                    onClick={() => handleUpdateOrderStatus(o.order_code, "DANG_CHUAN_BI")}
-                                    className="px-2.5 py-1 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700 cursor-pointer"
-                                    title="Tiếp tục xử lý"
+                                    onClick={() => promptPauseOrder(o)}
+                                    className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
+                                    title="Tạm dừng xử lý đơn hàng (FR-034)"
+                                  >
+                                    Tạm dừng
+                                  </button>
+                                ) : o.order_status === 'TAM_DUNG' ? (
+                                  <button
+                                    onClick={() => promptResumeOrder(o)}
+                                    className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
+                                    title="Tiếp tục xử lý đơn hàng (FR-035)"
                                   >
                                     Tiếp tục
                                   </button>
-                                )}
-                                {o.order_status === "DANG_GIAO" && (
+                                ) : (
                                   <button
-                                    onClick={() => handleUpdateOrderStatus(o.order_code, "DA_GIAO", "GIAO_THANH_CONG")}
-                                    className="px-2.5 py-1 bg-emerald-600 text-white rounded-lg text-[10px] font-bold hover:bg-emerald-700 cursor-pointer"
-                                    title="Hoàn tất đơn hàng"
+                                    disabled
+                                    className="px-2 py-1 bg-slate-100 text-slate-400 rounded-lg text-[10px] font-bold cursor-not-allowed border border-slate-200"
+                                    title="Không thể tạm dừng khi đơn đã bàn giao vận chuyển hoặc đã kết thúc"
                                   >
-                                    Hoàn tất
+                                    Tạm dừng
+                                  </button>
+                                )}
+
+                                {/* 4. Hủy (Modal cảnh báo hoàn kho chuẩn) */}
+                                {!['DANG_GIAO', 'DA_GIAO', 'DA_HUY'].includes(o.order_status) ? (
+                                  <button
+                                    onClick={() => promptCancelOrder(o)}
+                                    className="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-[10px] font-bold cursor-pointer transition border border-red-200 hover:border-red-300"
+                                    title="Hủy đơn hàng và hoàn trả tồn kho (BR-020)"
+                                  >
+                                    Hủy
+                                  </button>
+                                ) : (
+                                  <button
+                                    disabled
+                                    className="px-2 py-1 bg-slate-100 text-slate-400 rounded-lg text-[10px] font-bold cursor-not-allowed border border-slate-200"
+                                    title="Không thể hủy khi đơn đã bàn giao GreenSM hoặc đã kết thúc"
+                                  >
+                                    Hủy
                                   </button>
                                 )}
                               </td>
@@ -4554,6 +4746,91 @@ export default function AdminDashboardPage() {
       )}
 
       {/* MODAL XÁC NHẬN THAO TÁC TÀI KHOẢN (Đồng bộ chuẩn giao diện Đổ Đống 4 Mùa) */}
+            {/* MODAL THAO TÁC ĐƠN HÀNG CHUẨN (Đổi trạng thái, Tạm dừng, Tiếp tục, Hủy đơn - Đổ Đống 4 Mùa) */}
+      {orderActionModal.isOpen && orderActionModal.order && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200 relative">
+            <button
+              type="button"
+              onClick={() => setOrderActionModal((prev) => ({ ...prev, isOpen: false }))}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition cursor-pointer text-sm font-bold"
+            >
+              ✕
+            </button>
+
+            {/* Top Icon with Brand Tint */}
+            <div className="mb-3.5 flex justify-center">
+              {orderActionModal.iconType === 'status' ? (
+                <div className="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center shadow-sm">
+                  <CheckCircle2 className="w-7 h-7" />
+                </div>
+              ) : orderActionModal.iconType === 'pause' ? (
+                <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-500 border border-amber-100 flex items-center justify-center shadow-sm">
+                  <Clock className="w-7 h-7" />
+                </div>
+              ) : orderActionModal.iconType === 'resume' ? (
+                <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shadow-sm">
+                  <Play className="w-7 h-7" />
+                </div>
+              ) : (
+                <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-600 border border-red-100 flex items-center justify-center shadow-sm">
+                  <AlertTriangle className="w-7 h-7" />
+                </div>
+              )}
+            </div>
+
+            <h3 className="text-lg font-black text-slate-900 mb-1.5">{orderActionModal.title}</h3>
+            <p className="text-xs text-slate-500 mb-4 leading-relaxed px-2">{orderActionModal.message}</p>
+
+            {/* Thông tin vắn tắt đơn hàng */}
+            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 mb-4 text-left flex items-center justify-between">
+              <div>
+                <div className="text-[10px] uppercase font-bold text-slate-400">Mã đơn hàng</div>
+                <div className="font-mono font-bold text-slate-800 text-xs mt-0.5">#{orderActionModal.order.order_code}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-[10px] uppercase font-bold text-slate-400">Khách nhận</div>
+                <div className="font-bold text-slate-800 text-xs mt-0.5">{orderActionModal.order.receiver_name}</div>
+              </div>
+            </div>
+
+            {/* Ô nhập lý do nếu là Tạm dừng hoặc Hủy đơn */}
+            {orderActionModal.requireReason && (
+              <div className="mb-4 text-left">
+                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                  Lý do {orderActionModal.actionType === 'PAUSE' ? 'tạm dừng' : 'hủy đơn'} <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={orderActionModal.reason}
+                  onChange={(e) => setOrderActionModal((prev) => ({ ...prev, reason: e.target.value }))}
+                  rows={2}
+                  className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none font-sans"
+                  placeholder={orderActionModal.actionType === 'PAUSE' ? 'Nhập lý do tạm dừng đơn hàng...' : 'Nhập lý do hủy đơn hàng...'}
+                  autoFocus
+                />
+              </div>
+            )}
+
+            <div className="flex gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setOrderActionModal((prev) => ({ ...prev, isOpen: false }))}
+                className="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 font-bold text-xs text-slate-600 hover:bg-slate-50 transition cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={executeOrderActionModal}
+                className={`flex-1 py-2.5 px-4 rounded-xl font-black text-xs text-white transition cursor-pointer shadow-sm ${orderActionModal.confirmColor}`}
+              >
+                {orderActionModal.confirmText}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {actionModal.isOpen && actionModal.targetUser && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200 relative">
@@ -4911,7 +5188,7 @@ export default function AdminDashboardPage() {
 
                 {['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(selectedOrder.order_status) && (
                   <button
-                    onClick={() => handleUpdateOrderStatus(selectedOrder.order_code, 'DA_XAC_NHAN', 'DA_TAO_VAN_DON')}
+                    onClick={() => promptChangeOrderStatus(selectedOrder, 'DA_XAC_NHAN', 'DA_TAO_VAN_DON', 'Duyệt đơn')}
                     className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
                   >
                     Duyệt đơn
@@ -4920,7 +5197,7 @@ export default function AdminDashboardPage() {
 
                 {selectedOrder.order_status === 'DA_XAC_NHAN' && (
                   <button
-                    onClick={() => handleUpdateOrderStatus(selectedOrder.order_code, 'DANG_CHUAN_BI')}
+                    onClick={() => promptChangeOrderStatus(selectedOrder, 'DANG_CHUAN_BI', null, 'Đóng gói')}
                     className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
                   >
                     Đóng gói
@@ -4929,7 +5206,7 @@ export default function AdminDashboardPage() {
 
                 {selectedOrder.order_status === 'DANG_CHUAN_BI' && (
                   <button
-                    onClick={() => handleUpdateOrderStatus(selectedOrder.order_code, 'DANG_GIAO', 'DANG_GIAO')}
+                    onClick={() => promptChangeOrderStatus(selectedOrder, 'DANG_GIAO', 'DANG_GIAO', 'Bàn giao GreenSM')}
                     className="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
                   >
                     Bàn giao GreenSM
@@ -4938,10 +5215,38 @@ export default function AdminDashboardPage() {
 
                 {selectedOrder.order_status === 'DANG_GIAO' && (
                   <button
-                    onClick={() => handleUpdateOrderStatus(selectedOrder.order_code, 'DA_GIAO', 'GIAO_THANH_CONG')}
+                    onClick={() => promptChangeOrderStatus(selectedOrder, 'DA_GIAO', 'GIAO_THANH_CONG', 'Hoàn tất giao hàng')}
                     className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
                   >
                     Hoàn tất giao hàng
+                  </button>
+                )}
+
+                {/* Tạm dừng / Tiếp tục trong modal */}
+                {['CHO_XAC_NHAN', 'CHO_THANH_TOAN', 'DA_XAC_NHAN', 'DANG_CHUAN_BI'].includes(selectedOrder.order_status) && (
+                  <button
+                    onClick={() => promptPauseOrder(selectedOrder)}
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
+                  >
+                    Tạm dừng
+                  </button>
+                )}
+                {selectedOrder.order_status === 'TAM_DUNG' && (
+                  <button
+                    onClick={() => promptResumeOrder(selectedOrder)}
+                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-sm"
+                  >
+                    Tiếp tục xử lý
+                  </button>
+                )}
+
+                {/* Hủy đơn trong modal */}
+                {!['DANG_GIAO', 'DA_GIAO', 'DA_HUY'].includes(selectedOrder.order_status) && (
+                  <button
+                    onClick={() => promptCancelOrder(selectedOrder)}
+                    className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold cursor-pointer transition"
+                  >
+                    Hủy đơn
                   </button>
                 )}
               </div>

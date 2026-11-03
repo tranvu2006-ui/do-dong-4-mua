@@ -131,7 +131,7 @@ export async function PATCH(request, { params }) {
 
     // Xử lý HỦY ĐƠN HÀNG (FR-028 & BR-020)
     if (action === 'CANCEL' || order_status === 'DA_HUY') {
-      if (currentOrder.order_status !== 'CHO_XAC_NHAN' && currentOrder.order_status !== 'CHO_THANH_TOAN') {
+      if (['DANG_GIAO', 'DA_GIAO', 'DA_HUY'].includes(currentOrder.order_status)) {
         return NextResponse.json({
           success: false,
           message: `Không thể hủy đơn hàng vì đơn đã chuyển sang trạng thái "${currentOrder.order_status}". Vui lòng liên hệ Hotline 0901.234.567 để được hỗ trợ!`
@@ -199,7 +199,7 @@ export async function PATCH(request, { params }) {
     await query(
       `INSERT INTO system_logs (user_id, action, module, description)
        VALUES (?, 'UPDATE_STATUS', 'ORDER', ?)`,
-      [1, `Cập nhật đơn hàng ${currentOrder.order_code} sang trạng thái: ${order_status || currentOrder.order_status}`]
+      [1, `Cập nhật đơn hàng ${currentOrder.order_code} sang trạng thái: ${order_status || currentOrder.order_status}${reason ? ' (Lý do: ' + reason + ')' : ''}`]
     );
 
     return NextResponse.json({ success: true, message: 'Cập nhật trạng thái đơn hàng thành công' });
