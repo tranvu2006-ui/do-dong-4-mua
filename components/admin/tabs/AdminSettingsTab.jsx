@@ -113,11 +113,11 @@ export default function AdminSettingsTab({
                         <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-white rounded-xl border border-slate-200">
                           <div
                             onClick={openLogoCropperWithCurrentUrl}
-                            className="group relative w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:border-brand-500 transition shadow-sm"
+                            className="group relative w-20 h-20 rounded-full bg-slate-50 border-2 border-emerald-500/30 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:border-brand-500 transition shadow-sm"
                             title="Bấm để mở khung xem trước và căn chỉnh logo"
                           >
                             {siteSettings.logo_url ? (
-                              <img src={siteSettings.logo_url} alt="Logo Preview" className="w-full h-full object-contain p-1" />
+                              <img src={siteSettings.logo_url} alt="Logo Preview" className="w-full h-full object-cover" />
                             ) : (
                               <Leaf className="w-8 h-8 text-emerald-600" />
                             )}

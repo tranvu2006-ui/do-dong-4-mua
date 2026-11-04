@@ -22,6 +22,48 @@ export default function LogoCropperModal({
 
   const imgRef = useRef(null);
   const frameRef = useRef(null);
+  const previewCanvasRef = useRef(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Synchronize live preview canvas with exact spotlight coordinates
+  useEffect(() => {
+    if (!isOpen || !imageSrc) return;
+    const canvas = previewCanvasRef.current;
+    const img = imgRef.current;
+    const frame = frameRef.current;
+    if (!canvas || !img || !frame) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const imgRect = img.getBoundingClientRect();
+    const frameRect = frame.getBoundingClientRect();
+    if (frameRect.width === 0 || frameRect.height === 0) return;
+
+    const PREVIEW_SIZE = 96;
+    canvas.width = PREVIEW_SIZE;
+    canvas.height = PREVIEW_SIZE;
+    ctx.clearRect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
+
+    const scaleFactor = PREVIEW_SIZE / frameRect.width;
+    const dx = (imgRect.left - frameRect.left) * scaleFactor;
+    const dy = (imgRect.top - frameRect.top) * scaleFactor;
+    const dw = imgRect.width * scaleFactor;
+    const dh = imgRect.height * scaleFactor;
+
+    ctx.save();
+    if (shape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(PREVIEW_SIZE / 2, PREVIEW_SIZE / 2, PREVIEW_SIZE / 2, 0, Math.PI * 2);
+      ctx.clip();
+    }
+    try {
+      ctx.drawImage(img, dx, dy, dw, dh);
+    } catch {
+      // safe fallback if image not ready
+    }
+    ctx.restore();
+  }, [isOpen, imageSrc, position, scale, shape, imageLoaded]);
 
   // Reset values when modal opens with new image
   useEffect(() => {
@@ -163,6 +205,7 @@ export default function LogoCropperModal({
                 alt="Crop Source"
                 crossOrigin="anonymous"
                 draggable={false}
+                onLoad={() => setImageLoaded((v) => !v)}
                 className="max-w-none pointer-events-none select-none"
                 style={{
                   transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
@@ -274,37 +317,15 @@ export default function LogoCropperModal({
                 <div
                   className={`w-11 h-11 ${
                     shape === 'circle' ? 'rounded-full' : 'rounded-xl'
-                  } bg-emerald-50/60 border border-emerald-200 overflow-hidden relative flex items-center justify-center shrink-0 shadow-sm`}
+                  } bg-transparent border border-emerald-500/30 overflow-hidden relative flex items-center justify-center shrink-0 shadow-sm`}
                 >
                   {imageSrc ? (
-                    <div
-                      style={{
-                        width: '240px',
-                        height: '240px',
-                        transform: 'scale(0.18333)',
-                        transformOrigin: 'center center',
-                        position: 'absolute',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        pointerEvents: 'none'
-                      }}
-                    >
-                      <img
-                        src={imageSrc}
-                        alt="Simulated Preview"
-                        crossOrigin="anonymous"
-                        draggable={false}
-                        className="max-w-none select-none"
-                        style={{
-                          transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-                          transformOrigin: 'center center',
-                          maxHeight: '85%',
-                          maxWidth: '85%',
-                          objectFit: 'contain',
-                        }}
-                      />
-                    </div>
+                    <canvas
+                      ref={previewCanvasRef}
+                      width={96}
+                      height={96}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <Leaf className="w-5 h-5 text-emerald-600" />
                   )}

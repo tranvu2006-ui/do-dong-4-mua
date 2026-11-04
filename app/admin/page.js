@@ -2883,11 +2883,11 @@ export default function AdminDashboardPage() {
           {/* Brand Logo Header */}
           <div className="p-5 border-b border-slate-800/80 flex items-center gap-3 shrink-0">
             {siteSettings?.logo_url ? (
-              <div className="w-11 h-11 rounded-2xl overflow-hidden bg-white p-1 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/10">
-                <img src={siteSettings.logo_url} alt="Logo" className="w-full h-full object-contain" />
+              <div className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20 border border-emerald-500/30">
+                <img src={siteSettings.logo_url} alt="Logo" className="w-full h-full object-cover" />
               </div>
             ) : (
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/25 shrink-0">
+              <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/25 shrink-0">
                 <Leaf className="w-6 h-6 text-slate-950" />
               </div>
             )}

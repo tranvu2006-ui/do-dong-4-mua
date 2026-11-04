@@ -253,15 +253,15 @@ export default function Navbar() {
           ) : (
             <Link href="/" className="flex items-center gap-2.5 group shrink-0 cursor-pointer">
               {siteSettings?.logo_url ? (
-                <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md border border-gray-100 flex items-center justify-center bg-white p-0.5 group-hover:scale-105 transition-transform shrink-0">
+                <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md border border-emerald-500/30">
                   <img
                     src={siteSettings.logo_url}
                     alt={siteSettings?.site_name || "Logo"}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               ) : (
-                <div className="w-10 h-10 bg-gradient-to-br from-brand-600 to-brand-800 rounded-xl flex items-center justify-center text-white shadow-md shadow-brand-600/20 group-hover:scale-105 transition-transform shrink-0">
+                <div className="w-10 h-10 bg-gradient-to-br from-brand-600 to-brand-800 rounded-full flex items-center justify-center text-white shadow-md shadow-brand-600/20 group-hover:scale-105 transition-transform shrink-0">
                   <Leaf className="w-6 h-6 text-white" />
                 </div>
               )}
@@ -276,9 +276,11 @@ export default function Navbar() {
                     </>
                   )}
                 </div>
-                <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">
-                  {siteSettings?.site_slogan || 'Trái Cây Tươi Ngon Chuẩn Vị'}
-                </p>
+                {siteSettings?.site_slogan?.trim() ? (
+                  <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                    {siteSettings.site_slogan.trim()}
+                  </p>
+                ) : null}
               </div>
             </Link>
           )}

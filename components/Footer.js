@@ -61,11 +61,11 @@ export default function Footer() {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             {siteSettings?.logo_url && (
-              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white p-1 shadow-md shrink-0 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full overflow-hidden shadow-md border border-emerald-500/30 shrink-0 flex items-center justify-center">
                 <img
                   src={siteSettings.logo_url}
                   alt={siteSettings?.site_name || "Logo"}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                 />
               </div>
             )}
