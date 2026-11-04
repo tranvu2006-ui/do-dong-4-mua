@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { calculateShippingFee } from '@/lib/shipping';
+import { hashPassword } from '@/lib/auth-passwords';
 
 export async function GET(request) {
   try {
@@ -109,11 +110,12 @@ export async function POST(request) {
         finalUserId = existingUser[0].id;
         userRecord = existingUser[0];
       } else {
-        // Tự động tạo tài khoản khách hàng mới
+        // Tự động tạo tài khoản khách hàng mới với Bcrypt hash (SRS NFR-004)
+        const hashedInitialPassword = await hashPassword(initialPassword);
         const newUser = await query(
           `INSERT INTO users (role_id, full_name, phone, password, address, status)
            VALUES (3, ?, ?, ?, ?, 1)`,
-          [receiver_name.trim(), cleanPhone, initialPassword, address.trim()]
+          [receiver_name.trim(), cleanPhone, hashedInitialPassword, address.trim()]
         );
         finalUserId = newUser.insertId;
         isNewAccount = true;

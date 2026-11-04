@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { hashPassword } from '@/lib/auth-passwords';
 
 // API 56 & 57: Xem, Cập nhật thông tin hoặc Khóa/Mở khóa tài khoản
 export async function GET(request, { params }) {
@@ -51,8 +52,12 @@ export async function PATCH(request, { params }) {
     }
 
     // Kiểm tra độ dài mật khẩu nếu đặt lại mật khẩu
-    if (password && password.length < 6) {
-      return NextResponse.json({ success: false, message: 'Mật khẩu phải có ít nhất 6 ký tự.' }, { status: 400 });
+    let hashedPassword = null;
+    if (password) {
+      if (password.length < 6) {
+        return NextResponse.json({ success: false, message: 'Mật khẩu phải có ít nhất 6 ký tự.' }, { status: 400 });
+      }
+      hashedPassword = await hashPassword(password);
     }
 
     await query(
@@ -68,7 +73,7 @@ export async function PATCH(request, { params }) {
         full_name ? full_name.trim() : null,
         phone ? phone.trim() : null,
         branch_id !== undefined ? branch_id : null,
-        password || null,
+        hashedPassword || null,
         id
       ]
     );

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { hashPassword } from '@/lib/auth-passwords';
 
 export async function POST(request) {
   try {
@@ -38,11 +39,12 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    // Tạo tài khoản khách hàng mới (role_id = 3)
+    // Tạo tài khoản khách hàng mới (role_id = 3) theo chuẩn Bcrypt (SRS NFR-004)
+    const hashedPassword = await hashPassword(password);
     const result = await query(
       `INSERT INTO users (role_id, full_name, phone, password, address, status)
        VALUES (3, ?, ?, ?, ?, 1)`,
-      [full_name.trim(), cleanPhone, password, address ? address.trim() : '']
+      [full_name.trim(), cleanPhone, hashedPassword, address ? address.trim() : '']
     );
 
     const userId = result.insertId;

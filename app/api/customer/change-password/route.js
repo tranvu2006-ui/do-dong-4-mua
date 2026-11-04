@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { verifyPassword, hashPassword } from '@/lib/auth-passwords';
 
 export async function POST(request) {
   try {
@@ -22,12 +23,13 @@ export async function POST(request) {
     }
 
     const user = users[0];
-    const isMatch = user.password === old_password || old_password === '123456' || old_password === 'Admin@123456';
-    if (!isMatch) {
+    const { isValid } = await verifyPassword(old_password, user.password);
+    if (!isValid) {
       return NextResponse.json({ success: false, message: 'Mật khẩu hiện tại không chính xác.' }, { status: 400 });
     }
 
-    await query('UPDATE users SET password = ? WHERE id = ?', [new_password, user_id]);
+    const hashedPassword = await hashPassword(new_password);
+    await query('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, user_id]);
 
     await query(
       `INSERT INTO system_logs (user_id, action, module, description)

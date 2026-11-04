@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { hashPassword } from '@/lib/auth-passwords';
 
 export async function POST(request) {
   try {
@@ -21,11 +22,12 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: 'Số điện thoại này đã được đăng ký tài khoản' }, { status: 409 });
     }
 
-    // Create user (role_id = 3: Khách hàng)
+    // Create user (role_id = 3: Khách hàng) with Bcrypt hash (SRS NFR-004)
+    const hashedPassword = await hashPassword(password);
     const result = await query(
       `INSERT INTO users (role_id, full_name, phone, password, address, status)
        VALUES (3, ?, ?, ?, ?, 1)`,
-      [full_name.trim(), cleanPhone, password, address || '']
+      [full_name.trim(), cleanPhone, hashedPassword, address || '']
     );
 
     // Audit log

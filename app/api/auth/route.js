@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { getRealClientIp, getUserAgent } from '@/lib/logger';
+import { verifyPassword, hashPassword } from '@/lib/auth-passwords';
 
 // Bộ nhớ theo dõi số lần đăng nhập sai theo BR-010 (5 lần sai -> khóa 15 phút)
 if (!global.__failedLogins) {
@@ -57,16 +58,22 @@ export async function POST(request) {
       }, { status: 403 });
     }
 
-    // Xác thực mật khẩu
-    const isValid = user.password === password ||
-                    (user.phone === '0988888888' && (password === 'Admin@123456' || password === 'admin')) ||
-                    (user.phone === '0929894248' && (password === 'Admin@123456' || password === 'admin')) ||
-                    (user.phone === '0912345678' && (password === '123456' || password === 'Admin@123456')) ||
-                    password === '123456' || password === 'Admin@123456';
+    // Xác thực mật khẩu theo chuẩn Bcrypt (SRS NFR-004) kèm hỗ trợ tương thích ngược
+    const { isValid, needsRehash } = await verifyPassword(password, user.password);
 
     // TH3: Sai mật khẩu
     if (!isValid) {
       return recordFailedAttempt(cleanPhone);
+    }
+
+    // Tự động nâng cấp mật khẩu cũ dạng Plain Text lên chuẩn Bcrypt khi đăng nhập thành công
+    if (needsRehash) {
+      try {
+        const newHash = await hashPassword(password);
+        await query('UPDATE users SET password = ? WHERE id = ?', [newHash, user.id]);
+      } catch (hashErr) {
+        console.error('Lỗi tự động rehash mật khẩu:', hashErr);
+      }
     }
 
     // Đăng nhập thành công -> Xóa bộ đếm sai

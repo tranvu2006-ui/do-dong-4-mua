@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { hashPassword } from '@/lib/auth-passwords';
 
 // API 54: Danh sách tài khoản quản trị
 export async function GET() {
@@ -35,10 +36,11 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: 'Số điện thoại này đã được sử dụng.' }, { status: 409 });
     }
 
+    const hashedPassword = await hashPassword(password);
     const result = await query(
       `INSERT INTO users (role_id, branch_id, full_name, phone, password, address, status)
        VALUES (?, ?, ?, ?, ?, 'Trụ sở chi nhánh', 1)`,
-      [role_id, branch_id || 1, full_name.trim(), cleanPhone, password]
+      [role_id, branch_id || 1, full_name.trim(), cleanPhone, hashedPassword]
     );
 
     // Ghi nhật ký
