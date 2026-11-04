@@ -73,6 +73,13 @@ export default function AdminReportsTab({
   loadOrderReport,
   categories
 }) {
+  // Phân trang danh sách khách hàng trong báo cáo
+  const custReportList = customerReportData?.customers || [];
+  const paginatedCustReport = custReportList.slice(
+    ((customerReportPage || 1) - 1) * (customerReportPageSize || 10),
+    (customerReportPage || 1) * (customerReportPageSize || 10)
+  );
+
   return (
                 <div className="space-y-6 animate-in fade-in duration-200">
                   {/* THANH CHUYỂN ĐỔI BÁO CÁO (REPORTING MODULE - SRS 7.6 & FR-047, FR-048) */}
