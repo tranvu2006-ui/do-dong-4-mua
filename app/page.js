@@ -283,65 +283,6 @@ function HomeContent() {
 
       {/* 3. Main Content Container */}
       <div id="product-section" className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
-        {/* Danh Mục Nổi Bật */}
-        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 px-1">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-black text-gray-900 flex items-center gap-2.5 font-heading">
-                <Sparkles className="w-5 h-5 text-brand-600" />
-                <span>Danh Mục Nổi Bật</span>
-              </h2>
-              <p className="text-gray-500 font-medium text-xs sm:text-sm mt-0.5">Khám phá các dòng sản phẩm tuyển chọn tươi ngon mỗi ngày</p>
-            </div>
-            {currentCategory && (
-              <button
-                onClick={() => updateFilters({ category: '' })}
-                className="font-bold text-brand-600 hover:text-brand-800 flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Xem tất cả danh mục</span>
-              </button>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
-            {categories.map((c) => {
-              const isActive = currentCategory === String(c.id) || currentCategory === c.slug;
-              const catImages = {
-                1: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=600&auto=format&fit=crop&q=80',
-                2: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&auto=format&fit=crop&q=80',
-                3: 'https://images.unsplash.com/photo-1546548970-71785318a17b?w=600&auto=format&fit=crop&q=80'
-              };
-              const imgUrl = catImages[c.id] || 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=600&auto=format&fit=crop&q=80';
-
-              return (
-                <div
-                  key={c.id}
-                  onClick={() => updateFilters({ category: isActive ? '' : (c.slug || c.id) })}
-                  className={`group relative rounded-2xl overflow-hidden border p-5 cursor-pointer transition-all duration-300 flex items-center justify-between ${
-                    isActive
-                      ? 'border-brand-600 bg-brand-50/70 ring-2 ring-brand-600 shadow-md'
-                      : 'border-gray-200/80 bg-white hover:border-brand-400 hover:shadow-lg'
-                  }`}
-                >
-                  <div className="space-y-1 z-10">
-                    <span className="text-[11px] font-black uppercase tracking-wider text-brand-700 bg-brand-100/80 px-2 py-0.5 rounded-full inline-block">
-                      {c.product_count || 0} sản phẩm
-                    </span>
-                    <h3 className="font-extrabold text-base sm:text-lg text-gray-900 group-hover:text-brand-700 transition">
-                      {c.name}
-                    </h3>
-                    <p className="text-xs text-gray-500 font-medium line-clamp-1">{c.description || 'Trái cây ngon loại 1'}</p>
-                  </div>
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-white shadow-md group-hover:scale-110 transition-transform duration-300">
-                    <img src={imgUrl} alt={c.name} className="w-full h-full object-cover" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
         {/* 4. Filter Toolbar: Categories Tabs + Quick Filters (Còn hàng, Giảm giá) + Sort (FR-017 & FR-018) */}
         <div className="space-y-3">
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
