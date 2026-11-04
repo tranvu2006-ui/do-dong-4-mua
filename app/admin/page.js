@@ -2900,7 +2900,7 @@ export default function AdminDashboardPage() {
             {/* Branch Selector Badge */}
             <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
               <Store className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Hệ thống 2 Chi nhánh (Thủ Đức & Q.1)</span>
+              <span>Hệ thống {branches?.filter(b => b.status === 1)?.length || branches?.length || 2} Chi nhánh</span>
             </div>
 
             {/* Refresh Button */}

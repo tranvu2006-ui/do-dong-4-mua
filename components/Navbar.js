@@ -17,11 +17,35 @@ export default function Navbar() {
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [siteSettings, setSiteSettings] = useState(null);
+  const [activeBranchCount, setActiveBranchCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [selectedNotif, setSelectedNotif] = useState(null);
   const [readNotifIds, setReadNotifIds] = useState([]);
+
+  const loadSettingsAndBranches = async () => {
+    try {
+      const [settingsRes, branchesRes] = await Promise.all([
+        fetch('/api/system/settings'),
+        fetch('/api/branches?all=true')
+      ]);
+      const [settingsData, branchesData] = await Promise.all([
+        settingsRes.json(),
+        branchesRes.json()
+      ]);
+      if (settingsData.success && settingsData.data) {
+        setSiteSettings(settingsData.data);
+      }
+      if (branchesData.success && Array.isArray(branchesData.data)) {
+        const activeCount = branchesData.data.filter(b => b.status === 1).length;
+        setActiveBranchCount(activeCount || branchesData.data.length);
+      }
+    } catch (e) {
+      console.warn('Lỗi tải cấu hình động navbar:', e);
+    }
+  };
 
   const loadNotifications = async () => {
     try {
@@ -80,6 +104,7 @@ export default function Navbar() {
   useEffect(() => {
     loadUser();
     loadNotifications();
+    loadSettingsAndBranches();
     window.addEventListener('auth-change', loadUser);
     window.addEventListener('auth-change', loadNotifications);
 
@@ -141,12 +166,12 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <Link href="/chi-nhanh" className="flex items-center gap-1 font-semibold hover:text-brand-200 transition cursor-pointer">
               <MapPin className="w-3.5 h-3.5 text-accent-400 shrink-0" />
-              <span>Hệ thống 2 Chi nhánh (Thủ Đức & Q.1)</span>
+              <span>Hệ thống {activeBranchCount > 0 ? activeBranchCount : 2} Chi nhánh</span>
             </Link>
             <span className="hidden md:inline-block text-brand-700">|</span>
             <span className="hidden md:flex items-center gap-1.5 text-emerald-100">
               <Sparkles className="w-3.5 h-3.5 text-yellow-300 shrink-0" />
-              <span>Bao ăn 1 đổi 1 trong 24h & Giao hỏa tốc GreenSM</span>
+              <span>Bao ăn 1 đổi 1 trong 24h & Giao hỏa tốc {siteSettings?.shipping_partner || 'GreenSM'}</span>
             </span>
           </div>
 
@@ -161,10 +186,19 @@ export default function Navbar() {
                 <span>Cổng Quản Trị</span>
               </Link>
             )}
-            <a href="tel:0901234567" className="flex items-center gap-1 font-bold text-yellow-300 hover:text-yellow-200 cursor-pointer">
-              <Phone className="w-3.5 h-3.5 shrink-0" />
-              <span>Hotline: 0901.234.567</span>
-            </a>
+            {(() => {
+              const hotlineRaw = siteSettings?.hotline || '0929894248';
+              const cleanPhone = hotlineRaw.replace(/\D/g, '');
+              const formattedPhone = cleanPhone.length === 10
+                ? `${cleanPhone.slice(0, 4)}.${cleanPhone.slice(4, 7)}.${cleanPhone.slice(7)}`
+                : hotlineRaw;
+              return (
+                <a href={`tel:${cleanPhone}`} className="flex items-center gap-1 font-bold text-yellow-300 hover:text-yellow-200 cursor-pointer">
+                  <Phone className="w-3.5 h-3.5 shrink-0" />
+                  <span>Hotline: {formattedPhone}</span>
+                </a>
+              );
+            })()}
           </div>
         </div>
       </div>
@@ -438,7 +472,7 @@ export default function Navbar() {
               </Link>
               <Link href="/chi-nhanh" onClick={() => setMobileMenuOpen(false)} className="p-2.5 bg-gray-50 rounded-xl text-gray-800 font-bold flex items-center gap-2 cursor-pointer">
                 <MapPin className="w-4 h-4 text-accent-500" />
-                <span>Hệ thống 2 chi nhánh</span>
+                <span>Hệ thống {activeBranchCount > 0 ? activeBranchCount : 2} chi nhánh</span>
               </Link>
               {currentUser ? (
                 <button onClick={handleLogout} className="p-2.5 text-red-600 font-bold text-left flex items-center gap-2 cursor-pointer">

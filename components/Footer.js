@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -10,6 +10,28 @@ import {
 
 export default function Footer() {
   const pathname = usePathname();
+  const [siteSettings, setSiteSettings] = useState(null);
+  const [branches, setBranches] = useState([]);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [settingsRes, branchesRes] = await Promise.all([
+          fetch('/api/system/settings'),
+          fetch('/api/branches?all=true')
+        ]);
+        const [settingsData, branchesData] = await Promise.all([
+          settingsRes.json(),
+          branchesRes.json()
+        ]);
+        if (settingsData.success && settingsData.data) setSiteSettings(settingsData.data);
+        if (branchesData.success && Array.isArray(branchesData.data)) setBranches(branchesData.data);
+      } catch (e) {
+        console.warn('Lỗi tải footer data:', e);
+      }
+    }
+    loadData();
+  }, []);
   if (pathname?.startsWith('/admin')) return null;
 
   return (
@@ -75,8 +97,8 @@ export default function Footer() {
           </p>
           <div className="text-emerald-300 space-y-2 font-medium">
             <p className="flex items-center gap-2"><Clock className="w-5 h-5 text-accent-400 shrink-0" /> Giờ mở cửa: 07:00 - 21:30 hàng ngày</p>
-            <p className="flex items-center gap-2"><Phone className="w-5 h-5 text-accent-400 shrink-0" /> Hotline CSKH: 0901.234.567</p>
-            <p className="flex items-center gap-2"><Mail className="w-5 h-5 text-accent-400 shrink-0" /> Email: cskh@dodongbonmua.vn</p>
+            <p className="flex items-center gap-2"><Phone className="w-5 h-5 text-accent-400 shrink-0" /> Hotline CSKH: {siteSettings?.hotline || "0929894248"}</p>
+            <p className="flex items-center gap-2"><Mail className="w-5 h-5 text-accent-400 shrink-0" /> Email: {siteSettings?.contact_email || "tranvukuroko@gmail.com"}</p>
           </div>
         </div>
 
