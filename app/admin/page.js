@@ -2773,6 +2773,16 @@ export default function AdminDashboardPage() {
     customerPage * customerPageSize
   );
 
+  // Compatibility aliases for modularized sub-tabs
+  const handlePromptChangeOrderStatus = promptChangeOrderStatus;
+  const handlePromptPauseOrder = promptPauseOrder;
+  const handlePromptResumeOrder = promptResumeOrder;
+  const handlePromptCancelOrder = promptCancelOrder;
+  const handleOpenEditProductModal = openEditProductModal;
+  const handleOpenAssignProductsModal = openAssignProductsModal;
+  const handleOpenAssignPermissionsModal = openAssignPermissionsModal;
+  const loadLogs = () => reloadLogs();
+
   const reloadLogs = async () => {
     setRefreshingLogs(true);
     try {
@@ -3221,10 +3231,10 @@ export default function AdminDashboardPage() {
                   orderPageSize={orderPageSize}
                   setOrderPageSize={setOrderPageSize}
                   onViewOrderDetail={(o) => setSelectedOrder(o)}
-                  onPromptChangeOrderStatus={handlePromptChangeOrderStatus}
-                  onPromptPauseOrder={handlePromptPauseOrder}
-                  onPromptResumeOrder={handlePromptResumeOrder}
-                  onPromptCancelOrder={handlePromptCancelOrder}
+                  onPromptChangeOrderStatus={promptChangeOrderStatus}
+                  onPromptPauseOrder={promptPauseOrder}
+                  onPromptResumeOrder={promptResumeOrder}
+                  onPromptCancelOrder={promptCancelOrder}
                 />
               )}
 
@@ -3245,7 +3255,7 @@ export default function AdminDashboardPage() {
                   productPageSize={productPageSize}
                   setProductPageSize={setProductPageSize}
                   onOpenAddProductModal={() => setShowAddProductModal(true)}
-                  onOpenEditProductModal={handleOpenEditProductModal}
+                  onOpenEditProductModal={openEditProductModal}
                   onToggleProductStatus={handleToggleProductStatus}
                   onDeleteProduct={handleDeleteProduct}
                 />
@@ -3278,7 +3288,7 @@ export default function AdminDashboardPage() {
                   setPromotionPageSize={setPromotionPageSize}
                   onOpenAddPromotionModal={() => setShowAddPromotionModal(true)}
                   onOpenEditPromotionModal={(p) => setEditPromotionModal({ isOpen: true, promotion: { ...p } })}
-                  onOpenAssignProductsModal={handleOpenAssignProductsModal}
+                  onOpenAssignProductsModal={openAssignProductsModal}
                   onTogglePromotionStatus={handleTogglePromotionStatus}
                   onDeletePromotion={handleDeletePromotion}
                 />
@@ -3323,7 +3333,7 @@ export default function AdminDashboardPage() {
                   onOpenAddAdminModal={() => setShowAddAdminModal(true)}
                   onOpenEditAdminModal={(a) => setEditAdminModal({ isOpen: true, admin: { ...a } })}
                   onOpenResetPasswordModal={(a) => setResetPasswordModal({ isOpen: true, admin: a, password: '', confirm_password: '' })}
-                  onOpenAssignPermissionsModal={handleOpenAssignPermissionsModal}
+                  onOpenAssignPermissionsModal={openAssignPermissionsModal}
                   onLockUser={(a) => setActionModal({ isOpen: true, actionType: 'lock', targetUser: a })}
                   onUnlockUser={(a) => setActionModal({ isOpen: true, actionType: 'unlock', targetUser: a })}
                   onDeleteUser={(a) => setActionModal({ isOpen: true, actionType: 'delete', targetUser: a })}
@@ -3365,7 +3375,7 @@ export default function AdminDashboardPage() {
                   setLogPage={setLogPage}
                   logPageSize={logPageSize}
                   setLogPageSize={setLogPageSize}
-                  reloadLogs={loadLogs}
+                  reloadLogs={reloadLogs}
                   refreshingLogs={refreshingLogs}
                 />
               )}
