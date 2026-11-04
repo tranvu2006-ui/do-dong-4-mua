@@ -3,9 +3,8 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { 
-  Sparkles, Filter, Banknote, X, RefreshCw, Truck, Award, Zap, 
-  ChevronRight, Flower2, Sun, Wind, Snowflake, CheckCircle2,
-  ShieldCheck, ArrowRight, PackageOpen, Tag, Check, SlidersHorizontal
+  Sparkles, Filter, X, RefreshCw, 
+  ChevronRight, PackageOpen, Tag, Check, SlidersHorizontal
 } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 
@@ -281,51 +280,6 @@ function HomeContent() {
           </div>
         </section>
       ) : null}
-
-      {/* 2. Feature Value Proposition Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-brand-600 flex items-center justify-center shrink-0 border border-emerald-100">
-              <CheckCircle2 className="w-6 h-6 stroke-[2.2]" />
-            </div>
-            <div>
-              <h3 className="font-extrabold text-gray-900 mb-0.5 text-sm sm:text-base">100% Chín Tự Nhiên</h3>
-              <p className="text-gray-500 font-medium text-xs sm:text-sm">Không hóa chất ủ ép, thu hái tươi tại các nhà vườn VietGAP.</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 text-accent-500 flex items-center justify-center shrink-0 border border-amber-100">
-              <Truck className="w-6 h-6 stroke-[2.2]" />
-            </div>
-            <div>
-              <h3 className="font-extrabold text-gray-900 mb-0.5 text-sm sm:text-base">Giao Hỏa Tốc 2H</h3>
-              <p className="text-gray-500 font-medium text-xs sm:text-sm">Đội xe điện GreenSM vận chuyển bọc xốp cẩn thận không dập nát.</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 border border-sky-100">
-              <ShieldCheck className="w-6 h-6 stroke-[2.2]" />
-            </div>
-            <div>
-              <h3 className="font-extrabold text-gray-900 mb-0.5 text-sm sm:text-base">Bao Ăn 1 Đổi 1</h3>
-              <p className="text-gray-500 font-medium text-xs sm:text-sm">Bảo hành vị ngọt trong 24 giờ. Đổi ngay hoặc hoàn tiền nếu sượng/hỏng.</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100">
-              <Zap className="w-6 h-6 stroke-[2.2]" />
-            </div>
-            <div>
-              <h3 className="font-extrabold text-gray-900 mb-0.5 text-sm sm:text-base">Giá Rẻ Tận Vườn</h3>
-              <p className="text-gray-500 font-medium text-xs sm:text-sm">Mô hình thu mua trực tiếp, giá sỉ lẻ cạnh tranh tốt nhất thị trường.</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* 3. Main Content Container */}
       <div id="product-section" className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
@@ -638,38 +592,6 @@ function HomeContent() {
             ))}
           </div>
         )}
-
-        {/* 6. GreenSM Logistics Highlight Banner */}
-        <section className="bg-gradient-to-r from-emerald-800 via-teal-700 to-emerald-900 rounded-3xl p-7 sm:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden">
-          <div className="space-y-2.5 text-center md:text-left z-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/20 text-white font-black uppercase tracking-wider backdrop-blur-md text-xs">
-              <Truck className="w-4 h-4 text-accent-300" />
-              <span>Đối Tác Vận Chuyển Chiến Lược</span>
-            </div>
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-black font-heading leading-snug">
-              Giao Hàng Siêu Tốc 2H Bằng Đội Xe Điện GreenSM
-            </h3>
-            <p className="text-emerald-100 max-w-2xl font-medium leading-relaxed text-xs sm:text-sm">
-              Trái cây giữ trọn độ tươi mát như vừa hái tại vườn. Giảm phát thải CO2, bảo vệ môi trường xanh và bảo vệ an toàn sức khỏe gia đình bạn!
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 z-10">
-            <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/20 text-center">
-              <div className="text-emerald-200 text-xs font-medium">Đơn từ 500k</div>
-              <div className="text-xl font-black text-yellow-300">FREESHIP 100%</div>
-            </div>
-            <button
-              onClick={() => {
-                const el = document.getElementById('product-section');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="px-6 py-3.5 bg-white text-emerald-900 rounded-2xl font-black hover:bg-emerald-50 transition shadow-lg cursor-pointer text-xs"
-            >
-              Đặt hàng ngay
-            </button>
-          </div>
-        </section>
       </div>
     </div>
   );
