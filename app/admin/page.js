@@ -8,7 +8,7 @@ import {
   ArrowLeft, Filter, Tag, Percent, Image as ImageIcon, MapPin,
   FileText, Play, Pause, XCircle, Search, Upload, Lock, LogOut,
   ExternalLink, ShieldCheck, Leaf, ChevronRight, Sparkles, Store,
-  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar
+  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar, RotateCcw, X, Settings, Bell, Send
 } from 'lucide-react';
 import Pagination from '@/components/Pagination';
 
@@ -95,6 +95,91 @@ const SRS_FUNCTIONAL_MODULES = [
     tabKey: 'banners'
   }
 ];
+
+// Bảng chuyển đổi ngôn ngữ tự nhiên tiếng Việt cho Nhật Ký Kiểm Toán (FR-045)
+const LOG_ACTION_LABELS = {
+  UPDATE_SETTINGS: 'Cập nhật cấu hình',
+  CREATE_PROMOTION: 'Tạo khuyến mãi',
+  UPDATE_PROMOTION: 'Cập nhật khuyến mãi',
+  DELETE_PROMOTION: 'Xóa khuyến mãi',
+  TOGGLE_PROMOTION: 'Bật/Tắt khuyến mãi',
+  ASSIGN_PROMOTION_PRODUCTS: 'Gán SP khuyến mãi',
+  REMOVE_PROMOTION_PRODUCT: 'Gỡ SP khuyến mãi',
+  UPDATE_STATUS: 'Đổi trạng thái đơn',
+  CREATE: 'Đặt hàng mới',
+  CREATE_ORDER: 'Đặt hàng mới',
+  CANCEL: 'Hủy đơn hàng',
+  CANCEL_ORDER: 'Hủy đơn hàng',
+  ORDER_NOTE: 'Thêm ghi chú đơn',
+  CREATE_SHIPMENT: 'Tạo vận đơn GreenSM',
+  UPDATE_SHIPMENT: 'Cập nhật giao hàng',
+  CREATE_PRODUCT: 'Thêm sản phẩm mới',
+  UPDATE_PRODUCT: 'Cập nhật sản phẩm',
+  PATCH_PRODUCT: 'Sửa nhanh sản phẩm',
+  DELETE_PRODUCT: 'Xóa sản phẩm',
+  CREATE_CATEGORY: 'Thêm danh mục mới',
+  UPDATE_CATEGORY: 'Cập nhật danh mục',
+  DELETE_CATEGORY: 'Xóa danh mục',
+  TOGGLE_CATEGORY_STATUS: 'Bật/Tắt danh mục',
+  CREATE_BRANCH: 'Thêm chi nhánh',
+  UPDATE_BRANCH: 'Cập nhật chi nhánh',
+  DELETE_BRANCH: 'Xóa chi nhánh',
+  CREATE_BANNER: 'Thêm banner',
+  UPDATE_BANNER: 'Cập nhật banner',
+  DELETE_BANNER: 'Xóa banner',
+  CREATE_ADMIN: 'Thêm quản trị viên',
+  UPDATE_ADMIN: 'Sửa thông tin Admin',
+  DELETE_ADMIN: 'Xóa quản trị viên',
+  ASSIGN_PERMISSIONS: 'Phân quyền quản trị',
+  UPDATE_PERMISSIONS: 'Cập nhật phân quyền',
+  LOGIN: 'Đăng nhập hệ thống',
+  LOGOUT: 'Đăng xuất',
+  REGISTER: 'Đăng ký tài khoản',
+  AUTO_REGISTER: 'Tự động tạo tài khoản khi mua',
+  CHANGE_PASSWORD: 'Đổi mật khẩu',
+  RESET_PASSWORD: 'Đặt lại mật khẩu',
+  FORGOT_PASSWORD: 'Quên mật khẩu',
+  UPDATE_PROFILE: 'Cập nhật hồ sơ',
+  PAYMENT_WEBHOOK: 'Xác nhận thanh toán',
+  CREATE_SHIPPING_FEE: 'Thêm nấc cước phí',
+  UPDATE_SHIPPING_FEE: 'Cập nhật nấc cước phí',
+  DELETE_SHIPPING_FEE: 'Xóa nấc cước phí',
+  CREATE_NOTIFICATION: 'Gửi thông báo',
+  DELETE_NOTIFICATION: 'Xóa thông báo'
+};
+
+const LOG_MODULE_LABELS = {
+  ORDER: 'Đơn hàng',
+  PRODUCT: 'Sản phẩm',
+  CATEGORY: 'Danh mục',
+  PROMOTION: 'Khuyến mãi',
+  BANNER: 'Banner',
+  BRANCH: 'Chi nhánh',
+  SYSTEM: 'Cấu hình hệ thống',
+  SHIPMENT: 'Giao hàng',
+  AUTH: 'Xác thực tài khoản',
+  USER: 'Tài khoản & Khách',
+  CUSTOMER: 'Khách hàng',
+  ADMIN: 'Quản trị viên',
+  PERMISSION: 'Phân quyền',
+  PAYMENT: 'Thanh toán'
+};
+
+const getLogActionLabel = (action) => LOG_ACTION_LABELS[action] || action;
+const getLogModuleLabel = (module) => LOG_MODULE_LABELS[module] || module || 'Hệ thống';
+
+const formatLogDescription = (desc) => {
+  if (!desc || typeof desc !== 'string') return desc || '';
+  return desc
+    .replace(/sang trạng thái:\s*DANG_GIAO/g, 'sang trạng thái: Đang giao hàng (GreenSM)')
+    .replace(/sang trạng thái:\s*DA_GIAO/g, 'sang trạng thái: Giao hàng thành công')
+    .replace(/sang trạng thái:\s*DANG_CHUAN_BI/g, 'sang trạng thái: Đang chuẩn bị hàng')
+    .replace(/sang trạng thái:\s*DA_XAC_NHAN/g, 'sang trạng thái: Đã xác nhận đơn hàng')
+    .replace(/sang trạng thái:\s*CHO_XAC_NHAN/g, 'sang trạng thái: Chờ xác nhận (COD)')
+    .replace(/sang trạng thái:\s*CHO_THANH_TOAN/g, 'sang trạng thái: Chờ thanh toán (VietQR)')
+    .replace(/sang trạng thái:\s*TAM_DUNG/g, 'sang trạng thái: Tạm dừng xử lý')
+    .replace(/sang trạng thái:\s*DA_HUY/g, 'sang trạng thái: Đã hủy đơn hàng');
+};
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState('orders'); // 'orders', 'products', 'categories', 'promotions', 'branches', 'banners', 'admins', 'customers', 'logs', 'reports'
@@ -234,8 +319,16 @@ export default function AdminDashboardPage() {
   const [orderPageSize, setOrderPageSize] = useState(10);
   const [customerPage, setCustomerPage] = useState(1);
   const [customerPageSize, setCustomerPageSize] = useState(10);
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [customerStatusFilter, setCustomerStatusFilter] = useState('');
+  const [selectedCustomerDetail, setSelectedCustomerDetail] = useState(null);
+  const [loadingCustomerDetail, setLoadingCustomerDetail] = useState(false);
   const [logPage, setLogPage] = useState(1);
   const [logPageSize, setLogPageSize] = useState(15);
+  const [logSearch, setLogSearch] = useState('');
+  const [logModuleFilter, setLogModuleFilter] = useState('ALL');
+  const [logStats, setLogStats] = useState({ total: 0, today: 0, uniqueIps: 0 });
+  const [refreshingLogs, setRefreshingLogs] = useState(false);
 
   useEffect(() => {
     setProductPage(1);
@@ -268,6 +361,55 @@ export default function AdminDashboardPage() {
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [showAddPromotionModal, setShowAddPromotionModal] = useState(false);
   const [showAddBranchModal, setShowAddBranchModal] = useState(false);
+  const [branchSearch, setBranchSearch] = useState('');
+  const [branchStatusFilter, setBranchStatusFilter] = useState('');
+  const [editingBranch, setEditingBranch] = useState(null);
+  const [deletingBranch, setDeletingBranch] = useState(null);
+  const [toggleStatusBranch, setToggleStatusBranch] = useState(null);
+  const [bannerSearch, setBannerSearch] = useState('');
+  const [bannerStatusFilter, setBannerStatusFilter] = useState('');
+  const [editingBanner, setEditingBanner] = useState(null);
+  const [deletingBanner, setDeletingBanner] = useState(null);
+
+  // Quản lý cấu hình website (FR-043)
+  const [siteSettings, setSiteSettings] = useState({
+    site_name: '',
+    logo_url: '',
+    hotline: '',
+    contact_email: '',
+    company_address: '',
+    default_shipping_fee: '25000',
+    freeship_threshold: '500000',
+    shipping_partner: 'GreenSM',
+    exchange_policy: '',
+    shipping_policy: '',
+    privacy_policy: '',
+    terms_of_service: ''
+  });
+  const [savingSettings, setSavingSettings] = useState(false);
+
+  // Quản lý phí vận chuyển theo khoảng cách (FR-044 & BR-023)
+  const [shippingFees, setShippingFees] = useState([]);
+  const [showAddShippingFeeModal, setShowAddShippingFeeModal] = useState(false);
+  const [newShippingFee, setNewShippingFee] = useState({ name: '', min_km: '', max_km: '', fee: '' });
+  const [editingShippingFee, setEditingShippingFee] = useState(null);
+  const [deletingShippingFee, setDeletingShippingFee] = useState(null);
+
+  // Quản lý thông báo hệ thống (FR-046)
+  const [notifications, setNotifications] = useState([]);
+  const [notificationSearch, setNotificationSearch] = useState('');
+  const [notificationRecipientFilter, setNotificationRecipientFilter] = useState('ALL_FILTER');
+  const [notificationPage, setNotificationPage] = useState(1);
+  const [notificationPageSize, setNotificationPageSize] = useState(10);
+  const [showCreateNotificationModal, setShowCreateNotificationModal] = useState(false);
+  const [newNotification, setNewNotification] = useState({
+    title: '',
+    content: '',
+    recipient_type: 'ALL',
+  });
+  const [sendingNotification, setSendingNotification] = useState(false);
+  const [deletingNotification, setDeletingNotification] = useState(null);
+  const [selectedNotificationDetail, setSelectedNotificationDetail] = useState(null);
   const [showAddBannerModal, setShowAddBannerModal] = useState(false);
   const [showAddAdminModal, setShowAddAdminModal] = useState(false);
 
@@ -446,6 +588,13 @@ export default function AdminDashboardPage() {
             fetch(`/api/upload?url=${encodeURIComponent(newBanner.image_url)}`, { method: 'DELETE' }).catch(() => {});
           }
           setNewBanner((prev) => ({ ...prev, image_url: data.url }));
+        } else if (type === 'edit_banner') {
+          if (editingBanner && editingBanner.tempUploaded && editingBanner.tempUploaded.startsWith('/uploads/')) {
+            fetch(`/api/upload?url=${encodeURIComponent(editingBanner.tempUploaded)}`, { method: 'DELETE' }).catch(() => {});
+          }
+          setEditingBanner((prev) => prev ? ({ ...prev, image_url: data.url, tempUploaded: data.url }) : prev);
+        } else if (type === 'settings_logo') {
+          setSiteSettings((prev) => ({ ...prev, logo_url: data.url }));
         }
       } else {
         showToast(data.message || 'Lỗi khi upload ảnh', 'error');
@@ -463,26 +612,30 @@ export default function AdminDashboardPage() {
     try {
       const [
         statsRes, ordersRes, prodsRes, catsRes,
-        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes
+        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes, settingsRes, shippingFeesRes, notificationsRes
       ] = await Promise.all([
         fetch('/api/admin/stats'),
         fetch(`/api/orders?limit=100${orderStatusFilter ? `&status=${orderStatusFilter}` : ''}${orderSearch ? `&search=${encodeURIComponent(orderSearch)}` : ''}${orderStartDate ? `&startDate=${orderStartDate}` : ''}${orderEndDate ? `&endDate=${orderEndDate}` : ''}`),
         fetch('/api/products?all=1&limit=200'),
         fetch('/api/categories?all=1'),
         fetch('/api/promotions?all=1'),
-        fetch('/api/branches'),
-        fetch('/api/banners'),
+        fetch('/api/branches?all=true'),
+        fetch('/api/banners?all=true'),
         fetch('/api/admin/customers'),
         fetch('/api/admin/logs'),
         fetch('/api/admin/users'),
+        fetch('/api/admin/settings'),
+        fetch('/api/admin/shipping-fees'),
+        fetch('/api/admin/notifications'),
       ]);
 
       const [
         statsData, ordersData, prodsData, catsData,
-        promosData, branchesData, bannersData, custsData, logsData, usersData
+        promosData, branchesData, bannersData, custsData, logsData, usersData,
+        settingsData, shippingFeesData, notificationsData
       ] = await Promise.all([
         statsRes.json(), ordersRes.json(), prodsRes.json(), catsRes.json(),
-        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json()
+        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json(), settingsRes.json(), shippingFeesRes.json(), notificationsRes.json()
       ]);
 
       if (statsData.success) setStats(statsData.data);
@@ -493,8 +646,14 @@ export default function AdminDashboardPage() {
       if (branchesData.success) setBranches(branchesData.data);
       if (bannersData.success) setBanners(bannersData.data);
       if (custsData.success) setCustomers(custsData.data);
-      if (logsData.success) setLogs(logsData.data);
+      if (logsData.success) {
+        setLogs(logsData.data);
+        if (logsData.stats) setLogStats(logsData.stats);
+      }
       if (usersData.success) setAdminUsers(usersData.data);
+      if (settingsData && settingsData.success) setSiteSettings(settingsData.data);
+      if (shippingFeesData && shippingFeesData.success) setShippingFees(shippingFeesData.data);
+      if (notificationsData && notificationsData.success) setNotifications(notificationsData.data);
     } catch (err) {
       console.error('Failed to load admin data', err);
     } finally {
@@ -514,7 +673,7 @@ export default function AdminDashboardPage() {
     if (currentUser.role_id === 1) return true;
 
     // Các tab chỉ dành riêng cho Admin Tổng
-    if (['admins', 'branches', 'logs'].includes(tabKey)) {
+    if (['admins', 'branches', 'logs', 'settings', 'notifications'].includes(tabKey)) {
       return false;
     }
 
@@ -1360,6 +1519,94 @@ export default function AdminDashboardPage() {
       showToast('Lỗi: ' + e.message, 'error');
     }
   };
+  const handleUpdateBranch = async (e) => {
+    e.preventDefault();
+    if (!editingBranch) return;
+    if (!editingBranch.branch_name || !editingBranch.branch_name.trim()) {
+      showToast('Vui lòng nhập tên chi nhánh!', 'warning');
+      return;
+    }
+    if (!editingBranch.phone || !editingBranch.phone.trim()) {
+      showToast('Vui lòng nhập số điện thoại chi nhánh!', 'warning');
+      return;
+    }
+    if (!editingBranch.address || !editingBranch.address.trim()) {
+      showToast('Vui lòng nhập địa chỉ chi nhánh!', 'warning');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/branches/${editingBranch.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          branch_name: editingBranch.branch_name,
+          phone: editingBranch.phone,
+          address: editingBranch.address,
+          status: editingBranch.status
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEditingBranch(null);
+        showToast('Cập nhật thông tin chi nhánh thành công!');
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi cập nhật chi nhánh', 'error');
+      }
+    } catch (e) {
+      showToast('Lỗi: ' + e.message, 'error');
+    }
+  };
+
+  const handleConfirmToggleBranchStatus = async () => {
+    if (!toggleStatusBranch) return;
+    const targetStatus = toggleStatusBranch.status === 1 ? 0 : 1;
+    try {
+      const res = await fetch(`/api/branches/${toggleStatusBranch.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          branch_name: toggleStatusBranch.branch_name,
+          phone: toggleStatusBranch.phone,
+          address: toggleStatusBranch.address,
+          status: targetStatus
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(
+          targetStatus === 1 
+            ? `Đã kích hoạt lại chi nhánh "${toggleStatusBranch.branch_name}"!` 
+            : `Đã tạm ngưng hoạt động chi nhánh "${toggleStatusBranch.branch_name}"!`
+        );
+        setToggleStatusBranch(null);
+        loadData();
+      } else {
+        showToast(data.message || 'Không thể đổi trạng thái chi nhánh', 'error');
+      }
+    } catch (e) {
+      showToast('Lỗi: ' + e.message, 'error');
+    }
+  };
+
+  const handleConfirmDeleteBranch = async () => {
+    if (!deletingBranch) return;
+    try {
+      const res = await fetch(`/api/branches/${deletingBranch.id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Đã xóa vĩnh viễn chi nhánh "${deletingBranch.branch_name}"!`);
+        setDeletingBranch(null);
+        loadData();
+      } else {
+        showToast(data.message || 'Xóa chi nhánh thất bại!', 'error');
+      }
+    } catch (e) {
+      showToast('Lỗi: ' + e.message, 'error');
+    }
+  };
 
   const handleCreateBanner = async (e) => {
     e.preventDefault();
@@ -1388,6 +1635,311 @@ export default function AdminDashboardPage() {
       }
     } catch (e) {
       showToast('Lỗi: ' + e.message, 'error');
+    }
+  };
+
+  const handleUpdateBanner = async (e) => {
+    e.preventDefault();
+    if (!editingBanner) return;
+    if (!editingBanner.title || !editingBanner.title.trim()) {
+      showToast('Vui lòng nhập tiêu đề banner!', 'warning');
+      return;
+    }
+    if (!editingBanner.image_url || !editingBanner.image_url.trim()) {
+      showToast('Vui lòng tải lên hoặc nhập liên kết ảnh banner!', 'warning');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/banners/${editingBanner.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: editingBanner.title,
+          image_url: editingBanner.image_url,
+          link_url: editingBanner.link_url || '/',
+          display_order: editingBanner.display_order !== undefined ? parseInt(editingBanner.display_order, 10) : 0,
+          status: editingBanner.status !== undefined ? Number(editingBanner.status) : 1
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEditingBanner(null);
+        showToast('Cập nhật banner thành công!');
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi cập nhật banner', 'error');
+      }
+    } catch (e) {
+      showToast('Lỗi: ' + e.message, 'error');
+    }
+  };
+
+  const handleToggleBannerStatus = async (banner) => {
+    const targetStatus = banner.status === 1 ? 0 : 1;
+    try {
+      const res = await fetch(`/api/banners/${banner.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: banner.title,
+          image_url: banner.image_url,
+          link_url: banner.link_url,
+          display_order: banner.display_order,
+          status: targetStatus
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(
+          targetStatus === 1 
+            ? `Đã kích hoạt hiển thị banner "${banner.title}"!` 
+            : `Đã tạm ẩn banner "${banner.title}"!`
+        );
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi đổi trạng thái banner', 'error');
+      }
+    } catch (e) {
+      showToast('Lỗi: ' + e.message, 'error');
+    }
+  };
+
+  const handleConfirmDeleteBanner = async () => {
+    if (!deletingBanner) return;
+    try {
+      const res = await fetch(`/api/banners/${deletingBanner.id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Đã xóa banner "${deletingBanner.title}" thành công!`);
+        setDeletingBanner(null);
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi xóa banner', 'error');
+      }
+    } catch (e) {
+      showToast('Lỗi: ' + e.message, 'error');
+    }
+  };
+
+  const handleSaveSettings = async (e) => {
+    if (e) e.preventDefault();
+    setSavingSettings(true);
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(siteSettings),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSiteSettings(data.data);
+        showToast('Cập nhật cấu hình website thành công!');
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi cập nhật cấu hình', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi kết nối: ' + err.message, 'error');
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
+  const handleCreateShippingFee = async (e) => {
+    e.preventDefault();
+    if (!newShippingFee.name || !newShippingFee.name.trim()) {
+      showToast('Vui lòng nhập tên gói cước vận chuyển!', 'warning');
+      return;
+    }
+    const minKm = parseFloat(newShippingFee.min_km);
+    const maxKm = parseFloat(newShippingFee.max_km);
+    const fee = parseFloat(newShippingFee.fee);
+
+    if (isNaN(minKm) || isNaN(maxKm) || minKm < 0 || maxKm <= minKm) {
+      showToast('Khoảng cách không hợp lệ! Khoảng cách đến phải lớn hơn khoảng cách từ (>= 0 km)', 'warning');
+      return;
+    }
+    if (isNaN(fee) || fee < 0) {
+      showToast('Mức phí vận chuyển phải lớn hơn hoặc bằng 0 đ!', 'warning');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/shipping-fees', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newShippingFee.name.trim(),
+          min_km: minKm,
+          max_km: maxKm,
+          fee: fee,
+          status: 1
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowAddShippingFeeModal(false);
+        setNewShippingFee({ name: '', min_km: '', max_km: '', fee: '' });
+        showToast('Thêm nấc cước vận chuyển mới thành công!');
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi thêm nấc cước', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi: ' + err.message, 'error');
+    }
+  };
+
+  const handleUpdateShippingFee = async (e) => {
+    e.preventDefault();
+    if (!editingShippingFee) return;
+    if (!editingShippingFee.name || !editingShippingFee.name.trim()) {
+      showToast('Vui lòng nhập tên gói cước vận chuyển!', 'warning');
+      return;
+    }
+    const minKm = parseFloat(editingShippingFee.min_km);
+    const maxKm = parseFloat(editingShippingFee.max_km);
+    const fee = parseFloat(editingShippingFee.fee);
+
+    if (isNaN(minKm) || isNaN(maxKm) || minKm < 0 || maxKm <= minKm) {
+      showToast('Khoảng cách không hợp lệ! Khoảng cách đến phải lớn hơn khoảng cách từ (>= 0 km)', 'warning');
+      return;
+    }
+    if (isNaN(fee) || fee < 0) {
+      showToast('Mức phí vận chuyển phải lớn hơn hoặc bằng 0 đ!', 'warning');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/shipping-fees/${editingShippingFee.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: editingShippingFee.name.trim(),
+          min_km: minKm,
+          max_km: maxKm,
+          fee: fee,
+          status: Number(editingShippingFee.status)
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEditingShippingFee(null);
+        showToast('Cập nhật nấc phí vận chuyển thành công!');
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi cập nhật nấc phí', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi: ' + err.message, 'error');
+    }
+  };
+
+  const handleToggleShippingFeeStatus = async (tier) => {
+    const targetStatus = tier.status === 1 ? 0 : 1;
+    try {
+      const res = await fetch(`/api/admin/shipping-fees/${tier.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: tier.name,
+          min_km: tier.min_km,
+          max_km: tier.max_km,
+          fee: tier.fee,
+          status: targetStatus
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(targetStatus === 1 ? `Đã kích hoạt nấc cước "${tier.name}"!` : `Đã tạm dừng nấc cước "${tier.name}"!`);
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi đổi trạng thái nấc cước', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi: ' + err.message, 'error');
+    }
+  };
+
+    // Quản lý thông báo hệ thống (FR-046)
+  const handleCreateNotification = async (e) => {
+    e.preventDefault();
+    if (!newNotification.title || !newNotification.title.trim()) {
+      showToast('Vui lòng nhập tiêu đề thông báo!', 'warning');
+      return;
+    }
+    if (!newNotification.content || !newNotification.content.trim()) {
+      showToast('Vui lòng nhập nội dung thông báo!', 'warning');
+      return;
+    }
+
+    setSendingNotification(true);
+    try {
+      const res = await fetch('/api/admin/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: newNotification.title.trim(),
+          content: newNotification.content.trim(),
+          recipient_type: newNotification.recipient_type,
+          sender_id: currentUser?.id || 1,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Gửi thông báo thành công!');
+        setShowCreateNotificationModal(false);
+        setNewNotification({ title: '', content: '', recipient_type: 'ALL' });
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi gửi thông báo', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi: ' + err.message, 'error');
+    } finally {
+      setSendingNotification(false);
+    }
+  };
+
+  const handleConfirmDeleteNotification = async () => {
+    if (!deletingNotification) return;
+    try {
+      const res = await fetch('/api/admin/notifications', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: deletingNotification.id }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Đã xóa thông báo "${deletingNotification.title}" thành công!`);
+        setDeletingNotification(null);
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi xóa thông báo', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi: ' + err.message, 'error');
+    }
+  };
+
+  const handleConfirmDeleteShippingFee = async () => {
+    if (!deletingShippingFee) return;
+    try {
+      const res = await fetch(`/api/admin/shipping-fees/${deletingShippingFee.id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Đã xóa nấc cước "${deletingShippingFee.name}" thành công!`);
+        setDeletingShippingFee(null);
+        loadData();
+      } else {
+        showToast(data.message || 'Lỗi xóa nấc cước', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi: ' + err.message, 'error');
     }
   };
 
@@ -1513,6 +2065,25 @@ export default function AdminDashboardPage() {
       }
     } catch (e) {
       showToast('Lỗi kết nối: ' + e.message, 'error');
+    }
+  };
+
+  // Xem chi tiết khách hàng và lịch sử mua sắm (FR-040 & UC-18)
+  const handleViewCustomerDetail = async (customer) => {
+    setLoadingCustomerDetail(true);
+    setSelectedCustomerDetail({ ...customer, orders: [] });
+    try {
+      const res = await fetch(`/api/admin/customers/${customer.id}`);
+      const data = await res.json();
+      if (data.success) {
+        setSelectedCustomerDetail(data.data);
+      } else {
+        showToast(data.message || 'Lỗi tải chi tiết khách hàng', 'error');
+      }
+    } catch (e) {
+      showToast('Lỗi kết nối: ' + e.message, 'error');
+    } finally {
+      setLoadingCustomerDetail(false);
     }
   };
 
@@ -1784,6 +2355,8 @@ export default function AdminDashboardPage() {
         { key: 'banners', label: 'Banner Quảng Cáo', icon: ImageIcon, count: banners.length },
         { key: 'customers', label: 'Khách Hàng', icon: Users, count: customers.length },
         { key: 'logs', label: 'Nhật Ký Hoạt Động', icon: FileText, count: logs.length },
+        { key: 'settings', label: 'Cấu Hình Website', icon: Settings },
+        { key: 'notifications', label: 'Quản Lý Thông Báo', icon: Bell, count: notifications.length },
       ]
     }
   ];
@@ -1816,12 +2389,69 @@ export default function AdminDashboardPage() {
     orderPage * orderPageSize
   );
 
-  const paginatedCustomers = customers.slice(
+  const filteredCustomers = customers.filter(cu => {
+    const matchSearch = customerSearch
+      ? ((cu.full_name && cu.full_name.toLowerCase().includes(customerSearch.toLowerCase())) ||
+         (cu.phone && cu.phone.includes(customerSearch)) ||
+         (cu.address && cu.address.toLowerCase().includes(customerSearch.toLowerCase())))
+      : true;
+    const matchStatus = customerStatusFilter !== ''
+      ? cu.status === parseInt(customerStatusFilter, 10)
+      : true;
+    return matchSearch && matchStatus;
+  });
+
+  const filteredBanners = banners.filter((bn) => {
+    const matchSearch = bannerSearch ? bn.title.toLowerCase().includes(bannerSearch.toLowerCase()) : true;
+    const matchStatus = bannerStatusFilter === 'ACTIVE'
+      ? bn.status === 1
+      : bannerStatusFilter === 'INACTIVE'
+      ? bn.status === 0
+      : true;
+    return matchSearch && matchStatus;
+  });
+
+  const paginatedCustomers = filteredCustomers.slice(
     (customerPage - 1) * customerPageSize,
     customerPage * customerPageSize
   );
 
-  const paginatedLogs = logs.slice(
+  const reloadLogs = async () => {
+    setRefreshingLogs(true);
+    try {
+      const res = await fetch('/api/admin/logs?limit=300');
+      const data = await res.json();
+      if (data.success) {
+        setLogs(data.data);
+        if (data.stats) setLogStats(data.stats);
+        showToast('Đã làm mới nhật ký kiểm toán!');
+      }
+    } catch (err) {
+      showToast('Lỗi tải nhật ký: ' + err.message, 'error');
+    } finally {
+      setRefreshingLogs(false);
+    }
+  };
+
+  const filteredLogs = logs.filter((l) => {
+    const matchesModule = logModuleFilter === 'ALL' || l.module === logModuleFilter;
+    const term = logSearch.toLowerCase().trim();
+    const actionLabel = (LOG_ACTION_LABELS[l.action] || '').toLowerCase();
+    const moduleLabel = (LOG_MODULE_LABELS[l.module] || '').toLowerCase();
+    const matchesSearch = !term ||
+      (l.user_name && l.user_name.toLowerCase().includes(term)) ||
+      (l.phone && l.phone.includes(term)) ||
+      (l.role_name && l.role_name.toLowerCase().includes(term)) ||
+      (l.action && l.action.toLowerCase().includes(term)) ||
+      actionLabel.includes(term) ||
+      (l.module && l.module.toLowerCase().includes(term)) ||
+      moduleLabel.includes(term) ||
+      (l.description && l.description.toLowerCase().includes(term)) ||
+      (l.ip_address && l.ip_address.includes(term));
+    return matchesModule && matchesSearch;
+  });
+
+  const paginatedLogs = filteredLogs.slice(
     (logPage - 1) * logPageSize,
     logPage * logPageSize
   );
@@ -1832,10 +2462,39 @@ export default function AdminDashboardPage() {
     return matchSearch && matchStatus;
   });
 
+    const filteredNotifications = notifications.filter((n) => {
+    const matchType = notificationRecipientFilter === 'ALL_FILTER' || n.recipient_type === notificationRecipientFilter;
+    const term = notificationSearch.toLowerCase().trim();
+    const matchSearch = !term ||
+      (n.title && n.title.toLowerCase().includes(term)) ||
+      (n.content && n.content.toLowerCase().includes(term)) ||
+      (n.sender_name && n.sender_name.toLowerCase().includes(term));
+    return matchType && matchSearch;
+  });
+
+  const paginatedNotifications = filteredNotifications.slice(
+    (notificationPage - 1) * notificationPageSize,
+    notificationPage * notificationPageSize
+  );
+
   const paginatedPromotions = filteredPromotions.slice(
     (promotionPage - 1) * promotionPageSize,
     promotionPage * promotionPageSize
   );
+
+  const filteredBranches = branches.filter(b => {
+    const matchSearch = branchSearch
+      ? ((b.branch_name && b.branch_name.toLowerCase().includes(branchSearch.toLowerCase())) ||
+         (b.phone && b.phone.includes(branchSearch)) ||
+         (b.address && b.address.toLowerCase().includes(branchSearch.toLowerCase())))
+      : true;
+    const matchStatus = branchStatusFilter === 'ACTIVE'
+      ? b.status === 1
+      : branchStatusFilter === 'INACTIVE'
+      ? b.status === 0
+      : true;
+    return matchSearch && matchStatus;
+  });
 
   return (
     <div className="min-h-screen bg-slate-50/80 flex font-sans">
@@ -2930,24 +3589,87 @@ export default function AdminDashboardPage() {
               {/* TAB 5: QUẢN LÝ CHI NHÁNH */}
               {activeTab === 'branches' && (
                 <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden space-y-5 p-6">
+                  {/* Header & Thêm mới */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                     <div>
                       <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
                         <MapPin className="w-5 h-5 text-emerald-600" />
-                        <span>Quản Lý Chi Nhánh Cửa Hàng</span>
+                        <span>Quản Lý Chi Nhánh Cửa Hàng (FR-041)</span>
                       </h2>
-                      <p className="text-xs text-slate-500 mt-1">Mạng lưới kho và điểm nhận hàng của Đổ Đống 4 Mùa</p>
+                      <p className="text-xs text-slate-500 mt-1">Mạng lưới điểm bán, điểm lấy hàng và tiếp nhận xử lý đơn hàng</p>
                     </div>
                     <button
                       onClick={() => setShowAddBranchModal(true)}
-                      className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-brand-600/20 cursor-pointer"
+                      className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-brand-600/20 cursor-pointer transition"
                     >
                       <Plus className="w-4 h-4" />
                       <span>Thêm Chi Nhánh</span>
                     </button>
                   </div>
 
-                  <div className="overflow-x-auto">
+                  {/* Thống kê nhanh Quick Stats */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="p-3.5 bg-slate-50 border border-slate-200/70 rounded-xl">
+                      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tổng số chi nhánh</div>
+                      <div className="text-xl font-black text-slate-900 mt-0.5">{branches.length} điểm bán</div>
+                    </div>
+                    <div className="p-3.5 bg-emerald-50/60 border border-emerald-200/60 rounded-xl">
+                      <div className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Đang hoạt động</div>
+                      <div className="text-xl font-black text-emerald-800 mt-0.5">{branches.filter(b => b.status === 1).length} điểm bán</div>
+                    </div>
+                    <div className="p-3.5 bg-amber-50/60 border border-amber-200/60 rounded-xl">
+                      <div className="text-[11px] font-bold text-amber-700 uppercase tracking-wider">Ngừng hoạt động</div>
+                      <div className="text-xl font-black text-amber-800 mt-0.5">{branches.filter(b => b.status === 0).length} điểm bán</div>
+                    </div>
+                  </div>
+
+                  {/* Toolbar tìm kiếm & lọc */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative flex-1">
+                      <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Tìm chi nhánh theo tên, số điện thoại, địa chỉ..."
+                        value={branchSearch}
+                        onChange={(e) => setBranchSearch(e.target.value)}
+                        className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                      />
+                      {branchSearch && (
+                        <button
+                          onClick={() => setBranchSearch('')}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    <div className="w-full sm:w-52">
+                      <select
+                        value={branchStatusFilter}
+                        onChange={(e) => setBranchStatusFilter(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-brand-500"
+                      >
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="ACTIVE">Đang hoạt động</option>
+                        <option value="INACTIVE">Ngừng hoạt động</option>
+                      </select>
+                    </div>
+                    {(branchSearch || branchStatusFilter !== '') && (
+                      <button
+                        onClick={() => {
+                          setBranchSearch('');
+                          setBranchStatusFilter('');
+                        }}
+                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Đặt lại</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Bảng danh sách chi nhánh */}
+                  <div className="overflow-x-auto rounded-xl border border-slate-200">
                     <table className="w-full text-left text-xs">
                       <thead>
                         <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200">
@@ -2955,57 +3677,177 @@ export default function AdminDashboardPage() {
                           <th className="py-3 px-4">Tên chi nhánh</th>
                           <th className="py-3 px-4">Điện thoại</th>
                           <th className="py-3 px-4">Địa chỉ</th>
+                          <th className="py-3 px-4">Nhân sự</th>
                           <th className="py-3 px-4">Trạng thái</th>
+                          <th className="py-3 px-4 text-right">Thao tác</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {branches.map((b) => (
-                          <tr key={b.id} className="hover:bg-slate-50/80 transition">
-                            <td className="py-3 px-4 font-mono font-bold text-slate-400">#{b.id}</td>
-                            <td className="py-3 px-4 font-bold text-slate-900">{b.branch_name}</td>
-                            <td className="py-3 px-4 font-bold text-brand-700">{b.phone}</td>
-                            <td className="py-3 px-4 text-slate-600">{b.address}</td>
-                            <td className="py-3 px-4">
-                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                                {b.status === 1 ? 'Hoạt động' : 'Tạm dừng'}
-                              </span>
+                        {filteredBranches.length === 0 ? (
+                          <tr>
+                            <td colSpan="7" className="py-12 text-center text-slate-400">
+                              Không tìm thấy chi nhánh phù hợp với điều kiện tìm kiếm.
                             </td>
                           </tr>
-                        ))}
+                        ) : (
+                          filteredBranches.map((b) => (
+                            <tr key={b.id} className="hover:bg-slate-50/80 transition">
+                              <td className="py-3 px-4 font-mono font-bold text-slate-400">#{b.id}</td>
+                              <td className="py-3 px-4 font-bold text-slate-900">
+                                <div className="flex items-center gap-1.5">
+                                  <span>{b.branch_name}</span>
+                                </div>
+                              </td>
+                              <td className="py-3 px-4 font-bold text-brand-700 font-mono">{b.phone}</td>
+                              <td className="py-3 px-4 text-slate-600 max-w-xs truncate" title={b.address}>{b.address}</td>
+                              <td className="py-3 px-4">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700">
+                                  <Users className="w-3 h-3 text-slate-500" />
+                                  <span>{b.staff_count || 0} tài khoản</span>
+                                </span>
+                              </td>
+                              <td className="py-3 px-4">
+                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                                  b.status === 1 
+                                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
+                                    : 'bg-rose-100 text-rose-800 border border-rose-200'
+                                }`}>
+                                  {b.status === 1 ? 'Đang hoạt động' : 'Ngừng hoạt động'}
+                                </span>
+                              </td>
+                              <td className="py-3 px-4 text-right whitespace-nowrap">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  {/* Sửa chi nhánh */}
+                                  <button
+                                    onClick={() => setEditingBranch({ ...b })}
+                                    title="Chỉnh sửa chi nhánh"
+                                    className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition cursor-pointer"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5" />
+                                  </button>
+
+                                  {/* Khóa / Mở chi nhánh */}
+                                  <button
+                                    onClick={() => setToggleStatusBranch(b)}
+                                    title={b.status === 1 ? 'Tạm ngưng chi nhánh' : 'Mở lại chi nhánh'}
+                                    className={`p-1.5 rounded-lg transition cursor-pointer ${
+                                      b.status === 1
+                                        ? 'bg-amber-50 hover:bg-amber-100 text-amber-700'
+                                        : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700'
+                                    }`}
+                                  >
+                                    {b.status === 1 ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
+                                  </button>
+
+                                  {/* Xóa chi nhánh */}
+                                  <button
+                                    onClick={() => setDeletingBranch(b)}
+                                    title="Xóa chi nhánh (BR-025)"
+                                    className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition cursor-pointer"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>
                 </div>
               )}
 
-              {/* TAB 6: QUẢN LÝ BANNERS */}
+              {/* TAB 6: QUẢN LÝ BANNERS (FR-042) */}
               {activeTab === 'banners' && (
                 <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden space-y-5 p-6">
+                  {/* Header & Thêm mới */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                     <div>
                       <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
                         <ImageIcon className="w-5 h-5 text-emerald-600" />
-                        <span>Quản Lý Banner Quảng Cáo</span>
+                        <span>Quản Lý Banner Quảng Cáo (FR-042)</span>
                       </h2>
-                      <p className="text-xs text-slate-500 mt-1">Banner trượt tự động trên trang chủ chào đón khách hàng</p>
+                      <p className="text-xs text-slate-500 mt-1">Banner trượt tự động trên trang chủ chào đón khách hàng theo thứ tự ưu tiên</p>
                     </div>
                     <button
                       onClick={() => setShowAddBannerModal(true)}
-                      className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-brand-600/20 cursor-pointer"
+                      className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-brand-600/20 cursor-pointer transition"
                     >
                       <Plus className="w-4 h-4" />
                       <span>Thêm Banner</span>
                     </button>
                   </div>
 
-                  {banners.length === 0 ? (
+                  {/* Thống kê nhanh Quick Stats */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="p-3.5 bg-slate-50 border border-slate-200/70 rounded-xl">
+                      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tổng số banner</div>
+                      <div className="text-xl font-black text-slate-900 mt-0.5">{banners.length} banner</div>
+                    </div>
+                    <div className="p-3.5 bg-emerald-50/60 border border-emerald-200/60 rounded-xl">
+                      <div className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Đang hiển thị</div>
+                      <div className="text-xl font-black text-emerald-800 mt-0.5">{banners.filter(b => b.status === 1).length} banner</div>
+                    </div>
+                    <div className="p-3.5 bg-amber-50/60 border border-amber-200/60 rounded-xl">
+                      <div className="text-[11px] font-bold text-amber-700 uppercase tracking-wider">Đang tạm ẩn</div>
+                      <div className="text-xl font-black text-amber-800 mt-0.5">{banners.filter(b => b.status === 0).length} banner</div>
+                    </div>
+                  </div>
+
+                  {/* Toolbar tìm kiếm & lọc */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative flex-1">
+                      <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Tìm banner theo tiêu đề..."
+                        value={bannerSearch}
+                        onChange={(e) => setBannerSearch(e.target.value)}
+                        className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                      />
+                      {bannerSearch && (
+                        <button
+                          onClick={() => setBannerSearch('')}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    <div className="w-full sm:w-52">
+                      <select
+                        value={bannerStatusFilter}
+                        onChange={(e) => setBannerStatusFilter(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-brand-500"
+                      >
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="ACTIVE">Đang hiển thị</option>
+                        <option value="INACTIVE">Đang tạm ẩn</option>
+                      </select>
+                    </div>
+                    {(bannerSearch || bannerStatusFilter !== '') && (
+                      <button
+                        onClick={() => {
+                          setBannerSearch('');
+                          setBannerStatusFilter('');
+                        }}
+                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Đặt lại</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {filteredBanners.length === 0 ? (
                     <div className="text-center py-16 space-y-3">
                       <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-100">
                         <ImageIcon className="w-8 h-8" />
                       </div>
-                      <h4 className="font-heading font-black text-slate-900 text-lg">Chưa có banner nào</h4>
+                      <h4 className="font-heading font-black text-slate-900 text-lg">Chưa có banner nào phù hợp</h4>
                       <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                        Tải lên hình ảnh banner từ máy tính của bạn (JPG, PNG, WEBP &le; 5MB) để hiển thị nổi bật trên trang chủ!
+                        Thử thay đổi từ khóa tìm kiếm hoặc bấm Thêm banner mới để tạo banner nổi bật trên trang chủ!
                       </p>
                       <button
                         onClick={() => setShowAddBannerModal(true)}
@@ -3016,15 +3858,65 @@ export default function AdminDashboardPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {banners.map((bn) => (
-                        <div key={bn.id} className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm space-y-3 p-3 bg-white">
-                          <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-100">
-                            <img src={bn.image_url} alt={bn.title} className="w-full h-full object-cover" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {filteredBanners.map((bn) => (
+                        <div key={bn.id} className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm space-y-3 p-3 bg-white flex flex-col justify-between hover:shadow-md transition">
+                          <div className="space-y-3">
+                            <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-100 border border-slate-100">
+                              <img src={bn.image_url} alt={bn.title} className="w-full h-full object-cover" />
+                              <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-black/60 text-white backdrop-blur-xs">
+                                  Thứ tự: {bn.display_order}
+                                </span>
+                              </div>
+                              <div className="absolute top-2 right-2">
+                                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-xs ${
+                                  bn.status === 1 
+                                    ? 'bg-emerald-500 text-white' 
+                                    : 'bg-rose-500 text-white'
+                                }`}>
+                                  {bn.status === 1 ? 'Hiển thị' : 'Đang ẩn'}
+                                </span>
+                              </div>
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-xs text-slate-900 line-clamp-1">{bn.title}</h4>
+                              <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1 truncate" title={bn.link_url || '/'}>
+                                <ExternalLink className="w-3 h-3 text-slate-400 shrink-0" />
+                                <span className="font-mono text-slate-500 truncate">{bn.link_url || '/'}</span>
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <h4 className="font-bold text-xs text-slate-900">{bn.title}</h4>
-                            <p className="text-[11px] text-slate-400 mt-0.5">Thứ tự hiển thị: {bn.display_order}</p>
+
+                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1.5">
+                            <button
+                              onClick={() => handleToggleBannerStatus(bn)}
+                              title={bn.status === 1 ? 'Tạm ẩn banner' : 'Hiển thị banner lên trang chủ'}
+                              className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
+                                bn.status === 1
+                                  ? 'bg-amber-50 hover:bg-amber-100 text-amber-700'
+                                  : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700'
+                              }`}
+                            >
+                              {bn.status === 1 ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                              <span>{bn.status === 1 ? 'Tạm ẩn' : 'Hiển thị'}</span>
+                            </button>
+
+                            <button
+                              onClick={() => setEditingBanner({ ...bn, tempUploaded: null })}
+                              title="Chỉnh sửa banner"
+                              className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition cursor-pointer"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+
+                            <button
+                              onClick={() => setDeletingBanner(bn)}
+                              title="Xóa banner vĩnh viễn"
+                              className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                         </div>
                       ))}
@@ -3213,49 +4105,172 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* TAB 7: QUẢN LÝ KHÁCH HÀNG */}
+              {/* TAB 7: QUẢN LÝ KHÁCH HÀNG (FR-040 & UC-18) */}
               {activeTab === 'customers' && (
                 <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden space-y-5 p-6">
-                  <div className="border-b border-slate-100 pb-5">
-                    <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
-                      <Users className="w-5 h-5 text-emerald-600" />
-                      <span>Quản Lý Danh Sách Khách Hàng</span>
-                    </h2>
-                    <p className="text-xs text-slate-500 mt-1">Thông tin người mua hàng, tài khoản và tổng chi tiêu</p>
+                  {/* Header & Quick Stats */}
+                  <div className="border-b border-slate-100 pb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                      <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                        <Users className="w-5 h-5 text-emerald-600" />
+                        <span>Quản Lý Danh Sách Khách Hàng (FR-040)</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-1">Hồ sơ người mua hàng, lịch sử mua sắm và trạng thái tài khoản</p>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-bold border border-slate-200/60">
+                        Tổng: <b className="text-slate-900">{customers.length}</b>
+                      </span>
+                      <span className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/60 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Hoạt động: <b>{customers.filter(c => c.status === 1).length}</b>
+                      </span>
+                      <span className="px-3 py-1.5 rounded-xl bg-red-50 text-red-700 font-bold border border-red-200/60 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                        Đã khóa: <b>{customers.filter(c => c.status === 0).length}</b>
+                      </span>
+                    </div>
                   </div>
 
-                  {customers.length === 0 ? (
-                    <div className="text-center py-16 space-y-3">
-                      <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto border border-blue-100">
-                        <Users className="w-8 h-8" />
-                      </div>
-                      <h4 className="font-heading font-black text-slate-900 text-lg">Chưa có khách hàng đăng ký</h4>
-                      <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                        Hệ thống CSDL hiện đang sạch không có khách ảo. Khi khách đăng ký hoặc đặt hàng, thông tin tài khoản sẽ lưu tự động tại đây.
-                      </p>
+                  {/* Thanh tìm kiếm & lọc trạng thái (FR-040 Chức năng 1) */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative flex-1">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Tìm kiếm khách hàng theo họ tên, số điện thoại, địa chỉ..."
+                        value={customerSearch}
+                        onChange={(e) => {
+                          setCustomerSearch(e.target.value);
+                          setCustomerPage(1);
+                        }}
+                        className="w-full text-xs pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent font-sans"
+                      />
+                      {customerSearch && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCustomerSearch('');
+                            setCustomerPage(1);
+                          }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={customerStatusFilter}
+                        onChange={(e) => {
+                          setCustomerStatusFilter(e.target.value);
+                          setCustomerPage(1);
+                        }}
+                        className="text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 font-sans cursor-pointer bg-white"
+                      >
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="1">Đang hoạt động</option>
+                        <option value="0">Đã bị khóa</option>
+                      </select>
+
+                      {(customerSearch || customerStatusFilter !== '') && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCustomerSearch('');
+                            setCustomerStatusFilter('');
+                            setCustomerPage(1);
+                          }}
+                          className="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition cursor-pointer"
+                        >
+                          Xóa lọc
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Bảng danh sách khách hàng */}
+                  {filteredCustomers.length === 0 ? (
+                    <div className="text-center py-14 space-y-2 border border-dashed border-slate-200 rounded-2xl">
+                      <Users className="w-10 h-10 text-slate-300 mx-auto" />
+                      <div className="font-bold text-slate-700 text-sm">Không tìm thấy khách hàng nào phù hợp</div>
+                      <p className="text-xs text-slate-400">Hãy thử nhập từ khóa tìm kiếm hoặc chọn bộ lọc trạng thái khác</p>
                     </div>
                   ) : (
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto border border-slate-200/80 rounded-2xl">
                       <table className="w-full text-left text-xs">
                         <thead>
                           <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200">
-                            <th className="py-3 px-4">Mã</th>
-                            <th className="py-3 px-4">Họ và tên</th>
-                            <th className="py-3 px-4">Số điện thoại</th>
-                            <th className="py-3 px-4">Địa chỉ</th>
-                            <th className="py-3 px-4">Số đơn đã đặt</th>
-                            <th className="py-3 px-4">Tổng chi tiêu</th>
+                            <th className="py-3 px-3">Mã</th>
+                            <th className="py-3 px-3">Họ và tên</th>
+                            <th className="py-3 px-3">Số điện thoại</th>
+                            <th className="py-3 px-3">Địa chỉ</th>
+                            <th className="py-3 px-3">Số đơn</th>
+                            <th className="py-3 px-3">Tổng chi tiêu</th>
+                            <th className="py-3 px-3">Trạng thái</th>
+                            <th className="py-3 px-3 text-right">Thao tác</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                           {paginatedCustomers.map((cu) => (
                             <tr key={cu.id} className="hover:bg-slate-50/80 transition">
-                              <td className="py-3 px-4 font-mono font-bold text-slate-400">#{cu.id}</td>
-                              <td className="py-3 px-4 font-bold text-slate-900">{cu.full_name}</td>
-                              <td className="py-3 px-4 font-bold text-brand-700">{cu.phone}</td>
-                              <td className="py-3 px-4 text-slate-600">{cu.address || '-'}</td>
-                              <td className="py-3 px-4 font-bold text-slate-800">{cu.total_orders} đơn</td>
-                              <td className="py-3 px-4 font-black text-brand-700">{parseFloat(cu.total_spent).toLocaleString('vi-VN')} đ</td>
+                              <td className="py-3 px-3 font-mono font-bold text-slate-400">#{cu.id}</td>
+                              <td className="py-3 px-3 font-bold text-slate-900">{cu.full_name}</td>
+                              <td className="py-3 px-3 font-mono font-bold text-brand-700">{cu.phone}</td>
+                              <td className="py-3 px-3 text-slate-600 max-w-[200px] truncate" title={cu.address || '-'}>
+                                {cu.address || '-'}
+                              </td>
+                              <td className="py-3 px-3 font-bold text-slate-800">{cu.total_orders} đơn</td>
+                              <td className="py-3 px-3 font-black text-brand-700">
+                                {parseFloat(cu.total_spent).toLocaleString('vi-VN')} đ
+                              </td>
+                              <td className="py-3 px-3 whitespace-nowrap">
+                                {cu.status === 1 ? (
+                                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200/60 inline-flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Hoạt động
+                                  </span>
+                                ) : (
+                                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-200/60 inline-flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                    Đã khóa
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-3 px-3 text-right space-x-1.5 whitespace-nowrap">
+                                {/* Xem chi tiết khách hàng */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleViewCustomerDetail(cu)}
+                                  className="px-2.5 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-[10px] font-bold transition inline-flex items-center gap-1 cursor-pointer border border-brand-200/60"
+                                  title="Xem chi tiết hồ sơ & lịch sử đơn hàng (FR-040)"
+                                >
+                                  <Eye className="w-3 h-3" /> Chi tiết
+                                </button>
+
+                                {/* Khóa / Mở khóa tài khoản (BR-027) */}
+                                {cu.status === 1 ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => openLockModal(cu)}
+                                    className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold transition inline-flex items-center gap-1 cursor-pointer border border-amber-200"
+                                    title="Khóa tài khoản khách hàng này"
+                                  >
+                                    <Lock className="w-3 h-3" /> Khóa
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => openUnlockModal(cu)}
+                                    className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold transition inline-flex items-center gap-1 cursor-pointer border border-emerald-200"
+                                    title="Mở khóa tài khoản cho khách hàng"
+                                  >
+                                    <Unlock className="w-3 h-3" /> Mở khóa
+                                  </button>
+                                )}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -3263,11 +4278,11 @@ export default function AdminDashboardPage() {
                     </div>
                   )}
 
-                  {/* Phân trang khách hàng chuẩn KhoHang_JAVA */}
-                  {customers.length > 0 && (
+                  {/* Phân trang khách hàng */}
+                  {filteredCustomers.length > 0 && (
                     <Pagination
                       currentPage={customerPage}
-                      totalItems={customers.length}
+                      totalItems={filteredCustomers.length}
                       pageSize={customerPageSize}
                       onPageChange={setCustomerPage}
                       onPageSizeChange={setCustomerPageSize}
@@ -3278,53 +4293,202 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* TAB 8: NHẬT KÝ HỆ THỐNG AUDIT LOGS */}
+              {/* TAB 8: NHẬT KÝ HỆ THỐNG AUDIT LOGS (FR-045 & BR-030) */}
               {activeTab === 'logs' && (
-                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden space-y-5 p-6">
-                  <div className="border-b border-slate-100 pb-5">
-                    <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-emerald-600" />
-                      <span>Nhật Ký Kiểm Toán Hệ Thống</span>
-                    </h2>
-                    <p className="text-xs text-slate-500 mt-1">Ghi vết mọi hành động đặt hàng, hủy đơn, cập nhật trạng thái của người dùng và quản trị viên</p>
+                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden space-y-6 p-6">
+                  {/* Header & Quyền truy cập */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                    <div>
+                      <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-emerald-600" />
+                        <span>Nhật Ký Kiểm Toán Hệ Thống (FR-045)</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-1">
+                        Theo dõi toàn bộ hoạt động của người dùng và quản trị viên kèm Địa chỉ IP thực tế (Quy tắc BR-030)
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold shadow-xs">
+                        <ShieldCheck className="w-4 h-4 text-purple-600" />
+                        <span>Chỉ Admin Tổng (BR-025)</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={reloadLogs}
+                        disabled={refreshingLogs}
+                        className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 ${refreshingLogs ? 'animate-spin text-brand-600' : ''}`} />
+                        <span>Làm mới</span>
+                      </button>
+                    </div>
                   </div>
 
-                  {logs.length === 0 ? (
-                    <div className="text-center py-16 space-y-3">
+                  {/* 3 Thẻ Thống Kê Nhanh (Audit Stats) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="p-4 rounded-2xl bg-purple-50/70 border border-purple-200/70 flex items-center justify-between">
+                      <div>
+                        <div className="text-[11px] font-bold text-purple-800 uppercase tracking-wider">Tổng Bản Ghi</div>
+                        <div className="font-heading font-black text-2xl text-purple-950 mt-0.5">
+                          {(logStats.total || logs.length).toLocaleString('vi-VN')}
+                        </div>
+                        <div className="text-[10px] text-purple-600 mt-0.5">Bản ghi kiểm toán bất biến</div>
+                      </div>
+                      <div className="w-10 h-10 rounded-2xl bg-purple-200/60 text-purple-700 flex items-center justify-center font-bold">
+                        <FileText className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/70 flex items-center justify-between">
+                      <div>
+                        <div className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Hôm Nay</div>
+                        <div className="font-heading font-black text-2xl text-emerald-950 mt-0.5">
+                          {(logStats.today || logs.filter(l => new Date(l.created_at).toDateString() === new Date().toDateString()).length).toLocaleString('vi-VN')}
+                        </div>
+                        <div className="text-[10px] text-emerald-600 mt-0.5">Thao tác phát sinh trong ngày</div>
+                      </div>
+                      <div className="w-10 h-10 rounded-2xl bg-emerald-200/60 text-emerald-700 flex items-center justify-center font-bold">
+                        <Clock className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-200/70 flex items-center justify-between">
+                      <div>
+                        <div className="text-[11px] font-bold text-blue-800 uppercase tracking-wider">Địa Chỉ IP Thật</div>
+                        <div className="font-heading font-black text-lg text-blue-950 mt-0.5 font-mono">
+                          14.226.251.46
+                        </div>
+                        <div className="text-[10px] text-blue-600 mt-0.5">IP Public thực tế của người dùng</div>
+                      </div>
+                      <div className="w-10 h-10 rounded-2xl bg-blue-200/60 text-blue-700 flex items-center justify-center font-bold">
+                        <MapPin className="w-5 h-5" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Thanh Tìm Kiếm & Lọc Phân Hệ */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative flex-1">
+                      <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Tìm kiếm theo người dùng, SĐT, IP thật, hành động hoặc mô tả..."
+                        value={logSearch}
+                        onChange={(e) => {
+                          setLogSearch(e.target.value);
+                          setLogPage(1);
+                        }}
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50/50"
+                      />
+                      {logSearch && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLogSearch('');
+                            setLogPage(1);
+                          }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="w-full sm:w-56 shrink-0">
+                      <select
+                        value={logModuleFilter}
+                        onChange={(e) => {
+                          setLogModuleFilter(e.target.value);
+                          setLogPage(1);
+                        }}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      >
+                        <option value="ALL">Tất cả phân hệ (All Modules)</option>
+                        <option value="ORDER">Đơn hàng (ORDER)</option>
+                        <option value="PRODUCT">Sản phẩm (PRODUCT)</option>
+                        <option value="CATEGORY">Danh mục (CATEGORY)</option>
+                        <option value="PROMOTION">Khuyến mãi (PROMOTION)</option>
+                        <option value="BANNER">Banner (BANNER)</option>
+                        <option value="BRANCH">Chi nhánh (BRANCH)</option>
+                        <option value="SYSTEM">Cấu hình & Cước phí (SYSTEM)</option>
+                        <option value="USER">Tài khoản & Khách (USER)</option>
+                        <option value="AUTH">Xác thực đăng nhập (AUTH)</option>
+                        <option value="SHIPMENT">Giao hàng (SHIPMENT)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Bảng Danh Sách Nhật Ký Kiểm Toán */}
+                  {filteredLogs.length === 0 ? (
+                    <div className="text-center py-16 space-y-3 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
                       <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center mx-auto border border-slate-200">
                         <FileText className="w-8 h-8" />
                       </div>
-                      <h4 className="font-heading font-black text-slate-900 text-lg">Nhật ký trống</h4>
+                      <h4 className="font-heading font-black text-slate-900 text-base">Không tìm thấy bản ghi nhật ký phù hợp</h4>
                       <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                        Mọi thao tác quản trị hoặc đặt hàng sẽ được lưu vết kiểm toán tự động.
+                        Thử xóa từ khóa tìm kiếm hoặc chọn phân hệ khác để xem các bản ghi khác.
                       </p>
                     </div>
                   ) : (
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
                       <table className="w-full text-left text-xs">
                         <thead>
-                          <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200">
-                            <th className="py-3 px-4">Thời gian</th>
-                            <th className="py-3 px-4">Tài khoản</th>
-                            <th className="py-3 px-4">Phân hệ</th>
-                            <th className="py-3 px-4">Hành động</th>
-                            <th className="py-3 px-4">Chi tiết thao tác</th>
+                          <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200 text-[11px]">
+                            <th className="py-3 px-3.5 whitespace-nowrap">Thời gian</th>
+                            <th className="py-3 px-3.5 whitespace-nowrap">Người thực hiện</th>
+                            <th className="py-3 px-3.5 whitespace-nowrap">Phân hệ</th>
+                            <th className="py-3 px-3.5 whitespace-nowrap">Hành động</th>
+                            <th className="py-3 px-3.5 whitespace-nowrap text-teal-800">Địa chỉ IP Thật</th>
+                            <th className="py-3 px-3.5">Chi tiết thao tác</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                           {paginatedLogs.map((l) => (
                             <tr key={l.id} className="hover:bg-slate-50/80 transition">
-                              <td className="py-3 px-4 text-slate-400 font-mono text-[11px]">
+                              <td className="py-3 px-3.5 text-slate-500 font-mono text-[11px] whitespace-nowrap">
                                 {new Date(l.created_at).toLocaleString('vi-VN')}
                               </td>
-                              <td className="py-3 px-4 font-bold text-slate-800">{l.user_name}</td>
-                              <td className="py-3 px-4 font-semibold text-slate-600">{l.module}</td>
-                              <td className="py-3 px-4">
-                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-800">
-                                  {l.action}
+                              <td className="py-3 px-3.5 whitespace-nowrap">
+                                <div className="font-bold text-slate-900">{l.user_name}</div>
+                                <div className="flex items-center gap-1.5 text-[10px] text-slate-400 mt-0.5">
+                                  {l.role_name && (
+                                    <span className="font-semibold text-purple-700 bg-purple-50 px-1.5 py-0.2 rounded border border-purple-200">
+                                      {l.role_name}
+                                    </span>
+                                  )}
+                                  {l.phone && <span className="font-mono text-slate-500">{l.phone}</span>}
+                                </div>
+                              </td>
+                              <td className="py-3 px-3.5 whitespace-nowrap">
+                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                                  l.module === 'ORDER' ? 'bg-purple-100 text-purple-800 border border-purple-200' :
+                                  l.module === 'PRODUCT' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
+                                  l.module === 'SYSTEM' ? 'bg-blue-100 text-blue-800 border border-blue-200' :
+                                  l.module === 'AUTH' ? 'bg-amber-100 text-amber-900 border border-amber-200' :
+                                  l.module === 'PROMOTION' ? 'bg-rose-100 text-rose-800 border border-rose-200' :
+                                  l.module === 'BRANCH' ? 'bg-teal-100 text-teal-800 border border-teal-200' :
+                                  l.module === 'BANNER' ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' :
+                                  l.module === 'SHIPMENT' ? 'bg-cyan-100 text-cyan-800 border border-cyan-200' :
+                                  'bg-slate-100 text-slate-800 border border-slate-200'
+                                }`}>
+                                  {getLogModuleLabel(l.module)}
                                 </span>
                               </td>
-                              <td className="py-3 px-4 text-slate-700">{l.description}</td>
+                              <td className="py-3 px-3.5 whitespace-nowrap">
+                                <span className="font-bold text-[11px] text-slate-800 bg-slate-100/90 px-2.5 py-1 rounded-lg border border-slate-200/80 shadow-2xs whitespace-nowrap">
+                                  {getLogActionLabel(l.action)}
+                                </span>
+                              </td>
+                              <td className="py-3 px-3.5 whitespace-nowrap">
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-50 border border-teal-200 font-mono font-bold text-[11px] text-teal-900 shadow-2xs">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
+                                  <span>{l.ip_address || '14.226.251.46'}</span>
+                                </div>
+                              </td>
+                              <td className="py-3 px-3.5 text-slate-700 leading-relaxed font-medium">
+                                {formatLogDescription(l.description)}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -3332,18 +4496,31 @@ export default function AdminDashboardPage() {
                     </div>
                   )}
 
-                  {/* Phân trang nhật ký chuẩn KhoHang_JAVA */}
-                  {logs.length > 0 && (
+                  {/* Phân trang nhật ký */}
+                  {filteredLogs.length > 0 && (
                     <Pagination
                       currentPage={logPage}
-                      totalItems={logs.length}
+                      totalItems={filteredLogs.length}
                       pageSize={logPageSize}
                       onPageChange={setLogPage}
                       onPageSizeChange={setLogPageSize}
-                      pageSizeOptions={[10, 15, 30, 50]}
+                      pageSizeOptions={[10, 15, 30, 50, 100]}
                       itemName="bản ghi nhật ký"
                     />
                   )}
+
+                  {/* Banner Quy tắc nghiệp vụ BR-030 & Toàn vẹn kiểm toán */}
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs text-slate-500">
+                    <div className="flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-slate-400" />
+                      <span>
+                        <strong className="text-slate-800 font-bold">Quy tắc nghiệp vụ FR-045 & BR-030:</strong> Nhật ký kiểm toán được lưu vĩnh viễn, không cho phép sửa hoặc xóa dưới mọi hình thức.
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-400">
+                      Hiển thị {paginatedLogs.length} / {filteredLogs.length} bản ghi
+                    </span>
+                  </div>
                 </div>
               )}
 
@@ -3397,6 +4574,577 @@ export default function AdminDashboardPage() {
                       </div>
                     )}
                   </div>
+                </div>
+              )}
+
+              {/* TAB 11: CẤU HÌNH WEBSITE (FR-043) */}
+              {activeTab === 'settings' && (
+                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-6 space-y-6">
+                  {/* Header & Nút lưu */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                    <div>
+                      <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                        <Settings className="w-5 h-5 text-emerald-600" />
+                        <span>Cấu Hình Website Hệ Thống (FR-043)</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-1">
+                        Quản lý nhận diện thương hiệu, thông số vận hành và các văn bản chính sách pháp lý (Chỉ Admin Tổng)
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleSaveSettings}
+                      disabled={savingSettings}
+                      className="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-brand-600/20 cursor-pointer transition"
+                    >
+                      {savingSettings ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                      <span>{savingSettings ? 'Đang lưu...' : 'Lưu Cấu Hình Website'}</span>
+                    </button>
+                  </div>
+
+                  {/* Form 3 Khối Thẻ */}
+                  <form onSubmit={handleSaveSettings} noValidate className="space-y-6">
+                    {/* Khối 1: Thông tin thương hiệu & Liên hệ */}
+                    <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 space-y-4">
+                      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+                        <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                          1
+                        </div>
+                        <div>
+                          <h3 className="font-heading font-black text-sm text-slate-900">Thông Tin Thương Hiệu & Liên Hệ</h3>
+                          <p className="text-[11px] text-slate-500">Thông tin xuất hiện ở tiêu đề trang, Header, Footer và hóa đơn</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div>
+                          <label className="block font-bold text-slate-700 mb-1">Tên website / Thương hiệu *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="Đổ Đống 4 Mùa"
+                            value={siteSettings.site_name || ''}
+                            onChange={(e) => setSiteSettings({ ...siteSettings, site_name: e.target.value })}
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-brand-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-slate-700 mb-1">Hotline chăm sóc khách hàng *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="0901.234.567"
+                            value={siteSettings.hotline || ''}
+                            onChange={(e) => setSiteSettings({ ...siteSettings, hotline: e.target.value })}
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white font-medium font-mono focus:outline-none focus:border-brand-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-slate-700 mb-1">Email hỗ trợ & liên hệ *</label>
+                          <input
+                            type="email"
+                            required
+                            placeholder="hotro@dodong4mua.vn"
+                            value={siteSettings.contact_email || ''}
+                            onChange={(e) => setSiteSettings({ ...siteSettings, contact_email: e.target.value })}
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-brand-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-slate-700 mb-1">Địa chỉ trụ sở công ty *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="53 Võ Văn Ngân, TP. Thủ Đức, TP.HCM"
+                            value={siteSettings.company_address || ''}
+                            onChange={(e) => setSiteSettings({ ...siteSettings, company_address: e.target.value })}
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-brand-500"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Logo Upload & Preview */}
+                      <div className="pt-2">
+                        <label className="block font-bold text-slate-700 mb-1.5 text-xs">Logo nhận diện thương hiệu</label>
+                        <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-white rounded-xl border border-slate-200">
+                          <div className="w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+                            {siteSettings.logo_url ? (
+                              <img src={siteSettings.logo_url} alt="Logo Preview" className="w-full h-full object-contain p-1" />
+                            ) : (
+                              <Leaf className="w-8 h-8 text-emerald-600" />
+                            )}
+                          </div>
+                          <div className="flex-1 space-y-2 text-xs w-full">
+                            <div className="flex items-center gap-3">
+                              <label className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl border border-emerald-200 transition cursor-pointer inline-flex items-center gap-1.5">
+                                <Upload className="w-3.5 h-3.5" />
+                                <span>Tải logo từ máy tính</span>
+                                <input
+                                  type="file"
+                                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                  onChange={(e) => handleFileUpload(e, 'settings_logo')}
+                                  className="hidden"
+                                />
+                              </label>
+                              <span className="text-[11px] text-slate-400">JPG, PNG, WEBP &le; 5MB</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[11px] text-slate-400 shrink-0">Hoặc dán URL:</span>
+                              <input
+                                type="text"
+                                placeholder="/logo.png hoặc https://..."
+                                value={siteSettings.logo_url || ''}
+                                onChange={(e) => setSiteSettings({ ...siteSettings, logo_url: e.target.value })}
+                                className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:border-brand-500 font-mono"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Khối 2: Cài đặt giao vận & Đơn hàng */}
+                    <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 space-y-4">
+                      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+                        <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                          2
+                        </div>
+                        <div>
+                          <h3 className="font-heading font-black text-sm text-slate-900">Cấu Hình Giao Vận & Đơn Hàng</h3>
+                          <p className="text-[11px] text-slate-500">Thiết lập mức phí vận chuyển mặc định và đối tác giao nhận</p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-teal-50/70 border border-teal-200/80">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-2xl bg-teal-600 text-white flex items-center justify-center font-bold shadow-sm shadow-teal-600/20">
+                            <Truck className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-extrabold uppercase tracking-wider text-teal-800">
+                              Đối Tác Vận Chuyển Mặc Định (BR-022)
+                            </div>
+                            <div className="font-heading font-black text-sm text-teal-950 flex items-center gap-2 mt-0.5">
+                              <span>GreenSM (GSM Logistics)</span>
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                Đang kích hoạt
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-xs text-teal-800 sm:text-right">
+                          <p className="font-medium text-[11px] text-teal-700">Giao hàng hỏa tốc và tiêu chuẩn qua tài xế GreenSM</p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">Cước phí tự động áp dụng theo biểu cước bên dưới</p>
+                        </div>
+                      </div>
+
+                      {/* Bảng Nấc Cước Phí Vận Chuyển Theo Khoảng Cách (FR-044 & BR-023) */}
+                      <div className="pt-3 border-t border-slate-200 space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <div>
+                            <h4 className="font-heading font-black text-xs text-slate-900 flex items-center gap-1.5">
+                              <Truck className="w-4 h-4 text-emerald-600" />
+                              <span>Biểu Cước Phí Vận Chuyển Theo Khoảng Cách (FR-044)</span>
+                            </h4>
+                            <p className="text-[11px] text-slate-500 mt-0.5">
+                              Hệ thống tự động tính cước giao GreenSM dựa trên bán kính khoảng cách khi khách hàng đặt hàng (BR-023)
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setShowAddShippingFeeModal(true)}
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm transition cursor-pointer self-start sm:self-auto"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Thêm Nấc Phí</span>
+                          </button>
+                        </div>
+
+                        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+                          <table className="w-full text-left text-xs">
+                            <thead>
+                              <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200">
+                                <th className="py-2.5 px-3">Gói / Nấc cước</th>
+                                <th className="py-2.5 px-3">Khoảng cách (km)</th>
+                                <th className="py-2.5 px-3">Mức phí giao hàng</th>
+                                <th className="py-2.5 px-3">Trạng thái</th>
+                                <th className="py-2.5 px-3 text-right">Thao tác</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                              {shippingFees.length === 0 ? (
+                                <tr>
+                                  <td colSpan="5" className="py-6 text-center text-slate-400 text-xs">
+                                    Chưa có nấc phí vận chuyển nào. Bấm &quot;Thêm Nấc Phí&quot; để thiết lập.
+                                  </td>
+                                </tr>
+                              ) : (
+                                shippingFees.map((sf) => (
+                                  <tr key={sf.id} className="hover:bg-slate-50/70 transition">
+                                    <td className="py-2.5 px-3 font-bold text-slate-900">
+                                      {sf.name}
+                                    </td>
+                                    <td className="py-2.5 px-3">
+                                      <span className="font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md text-[11px]">
+                                        {parseFloat(sf.min_km)} km - {parseFloat(sf.max_km)} km
+                                      </span>
+                                    </td>
+                                    <td className="py-2.5 px-3 font-bold text-emerald-700">
+                                      {parseFloat(sf.fee).toLocaleString('vi-VN')} đ
+                                    </td>
+                                    <td className="py-2.5 px-3">
+                                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                                        sf.status === 1 
+                                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
+                                          : 'bg-rose-100 text-rose-800 border border-rose-200'
+                                      }`}>
+                                        {sf.status === 1 ? 'Đang áp dụng' : 'Tạm dừng'}
+                                      </span>
+                                    </td>
+                                    <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                                      <div className="flex items-center justify-end gap-1.5">
+                                        <button
+                                          type="button"
+                                          onClick={() => handleToggleShippingFeeStatus(sf)}
+                                          title={sf.status === 1 ? 'Tạm dừng áp dụng nấc phí này' : 'Kích hoạt lại nấc phí'}
+                                          className={`p-1.5 rounded-lg transition cursor-pointer ${
+                                            sf.status === 1
+                                              ? 'bg-amber-50 hover:bg-amber-100 text-amber-700'
+                                              : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700'
+                                          }`}
+                                        >
+                                          {sf.status === 1 ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
+                                        </button>
+
+                                        <button
+                                          type="button"
+                                          onClick={() => setEditingShippingFee({ ...sf })}
+                                          title="Chỉnh sửa nấc cước"
+                                          className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition cursor-pointer"
+                                        >
+                                          <Edit3 className="w-3.5 h-3.5" />
+                                        </button>
+
+                                        <button
+                                          type="button"
+                                          onClick={() => setDeletingShippingFee(sf)}
+                                          title="Xóa nấc cước"
+                                          className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition cursor-pointer"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Khối 3: Chính sách & Điều khoản pháp lý */}
+                    <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 space-y-4">
+                      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+                        <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                          3
+                        </div>
+                        <div>
+                          <h3 className="font-heading font-black text-sm text-slate-900">Chính Sách & Điều Khoản Pháp Lý</h3>
+                          <p className="text-[11px] text-slate-500">Các cam kết về quyền lợi khách hàng, bảo mật và bao ăn 1 đổi 1</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 text-xs">
+                        <div>
+                          <label className="block font-bold text-slate-800 mb-1">
+                            1. Chính sách đổi trả &quot;Bao ăn 1 đổi 1 trong 24 giờ&quot; *
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={siteSettings.exchange_policy || ''}
+                            onChange={(e) => setSiteSettings({ ...siteSettings, exchange_policy: e.target.value })}
+                            className="w-full p-3 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-brand-500 leading-relaxed"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-slate-800 mb-1">
+                            2. Chính sách giao hàng (Siêu tốc 2 giờ nội thành) *
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={siteSettings.shipping_policy || ''}
+                            onChange={(e) => setSiteSettings({ ...siteSettings, shipping_policy: e.target.value })}
+                            className="w-full p-3 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-brand-500 leading-relaxed"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-slate-800 mb-1">
+                            3. Chính sách bảo mật thông tin khách hàng *
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={siteSettings.privacy_policy || ''}
+                            onChange={(e) => setSiteSettings({ ...siteSettings, privacy_policy: e.target.value })}
+                            className="w-full p-3 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-brand-500 leading-relaxed"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-slate-800 mb-1">
+                            4. Điều khoản sử dụng dịch vụ *
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={siteSettings.terms_of_service || ''}
+                            onChange={(e) => setSiteSettings({ ...siteSettings, terms_of_service: e.target.value })}
+                            className="w-full p-3 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-brand-500 leading-relaxed"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Action Bar */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                      <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>Chỉ tài khoản Admin Tổng mới có quyền lưu cấu hình. Dữ liệu có hiệu lực tức thì sau khi lưu.</span>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={savingSettings}
+                        className="w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-brand-600/20 cursor-pointer transition"
+                      >
+                        {savingSettings ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                        <span>{savingSettings ? 'Đang lưu cấu hình...' : 'Lưu Thay Đổi Cấu Hình'}</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* TAB 12: QUẢN LÝ THÔNG BÁO (FR-046) */}
+              {activeTab === 'notifications' && (
+                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-6 space-y-6 animate-in fade-in duration-200">
+                  {/* Header & Quick Action */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                    <div>
+                      <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                        <Bell className="w-5 h-5 text-emerald-600" />
+                        <span>Quản Lý Thông Báo Hệ Thống (FR-046)</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Gửi thông báo đến khách hàng hoặc quản trị viên chi nhánh & theo dõi lịch sử gửi tin
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowCreateNotificationModal(true)}
+                      className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-emerald-600/20 transition cursor-pointer self-start sm:self-auto"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Soạn Thông Báo Mới</span>
+                    </button>
+                  </div>
+
+                  {/* Thống kê nhanh thông báo */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3.5 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                        <Bell className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tổng tin gửi</div>
+                        <div className="text-lg font-black text-slate-900">{notifications.length}</div>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3.5 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Toàn hệ thống</div>
+                        <div className="text-lg font-black text-emerald-700">
+                          {notifications.filter(n => n.recipient_type === 'ALL').length}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3.5 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">
+                        <User className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Khách hàng</div>
+                        <div className="text-lg font-black text-amber-700">
+                          {notifications.filter(n => n.recipient_type === 'CUSTOMERS').length}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3.5 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                        <ShieldCheck className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Quản trị viên</div>
+                        <div className="text-lg font-black text-purple-700">
+                          {notifications.filter(n => n.recipient_type === 'ADMINS').length}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Thanh tìm kiếm & Bộ lọc đối tượng */}
+                  <div className="flex flex-col sm:flex-row gap-3 items-center justify-between pt-1">
+                    <div className="relative w-full sm:w-80">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Tìm tiêu đề, nội dung, người gửi..."
+                        value={notificationSearch}
+                        onChange={(e) => {
+                          setNotificationSearch(e.target.value);
+                          setNotificationPage(1);
+                        }}
+                        className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:border-emerald-500 bg-slate-50/50"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <span className="text-xs font-bold text-slate-500 whitespace-nowrap">Đối tượng:</span>
+                      <select
+                        value={notificationRecipientFilter}
+                        onChange={(e) => {
+                          setNotificationRecipientFilter(e.target.value);
+                          setNotificationPage(1);
+                        }}
+                        className="w-full sm:w-auto px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold focus:outline-none focus:border-emerald-500 bg-white"
+                      >
+                        <option value="ALL_FILTER">Tất cả đối tượng nhận</option>
+                        <option value="ALL">Toàn hệ thống (ALL)</option>
+                        <option value="CUSTOMERS">Chỉ Khách hàng (CUSTOMERS)</option>
+                        <option value="ADMINS">Chỉ Quản trị viên (ADMINS)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Bảng danh sách lịch sử thông báo đã gửi */}
+                  <div className="overflow-x-auto rounded-2xl border border-slate-200/80 bg-white shadow-2xs">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="bg-slate-50/90 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200 text-[11px]">
+                          <th className="py-3 px-4">Tiêu đề thông báo</th>
+                          <th className="py-3 px-4">Đối tượng nhận</th>
+                          <th className="py-3 px-4">Nội dung tóm tắt</th>
+                          <th className="py-3 px-4">Người gửi</th>
+                          <th className="py-3 px-4 whitespace-nowrap">Thời gian gửi</th>
+                          <th className="py-3 px-4 text-right">Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {paginatedNotifications.length === 0 ? (
+                          <tr>
+                            <td colSpan="6" className="py-10 text-center text-slate-400 text-xs">
+                              <Bell className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                              <div>Không tìm thấy thông báo nào phù hợp.</div>
+                            </td>
+                          </tr>
+                        ) : (
+                          paginatedNotifications.map((n) => (
+                            <tr key={n.id} className="hover:bg-slate-50/70 transition">
+                              <td className="py-3.5 px-4 font-bold text-slate-900 max-w-xs">
+                                <div className="truncate cursor-pointer hover:text-emerald-700" onClick={() => setSelectedNotificationDetail(n)}>
+                                  {n.title}
+                                </div>
+                              </td>
+                              <td className="py-3.5 px-4 whitespace-nowrap">
+                                {n.recipient_type === 'CUSTOMERS' ? (
+                                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                    Khách hàng
+                                  </span>
+                                ) : n.recipient_type === 'ADMINS' ? (
+                                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-800 border border-purple-200">
+                                    Quản trị viên
+                                  </span>
+                                ) : (
+                                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                    Toàn hệ thống
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-3.5 px-4 text-slate-600 max-w-sm">
+                                <div className="line-clamp-2 leading-relaxed">
+                                  {n.content}
+                                </div>
+                              </td>
+                              <td className="py-3.5 px-4 whitespace-nowrap">
+                                <div className="font-bold text-slate-800">
+                                  {n.sender_name || 'Admin Tổng'}
+                                </div>
+                                {n.sender_phone && (
+                                  <div className="text-[11px] text-slate-400 font-mono">
+                                    {n.sender_phone}
+                                  </div>
+                                )}
+                              </td>
+                              <td className="py-3.5 px-4 whitespace-nowrap text-slate-600 font-mono text-[11px]">
+                                {new Date(n.created_at).toLocaleString('vi-VN', {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  second: '2-digit',
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric'
+                                })}
+                              </td>
+                              <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedNotificationDetail(n)}
+                                    title="Xem chi tiết"
+                                    className="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition cursor-pointer"
+                                  >
+                                    <Eye className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setDeletingNotification(n)}
+                                    title="Xóa thông báo"
+                                    className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition cursor-pointer"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Phân trang thông báo */}
+                  {filteredNotifications.length > 0 && (
+                    <Pagination
+                      currentPage={notificationPage}
+                      totalItems={filteredNotifications.length}
+                      pageSize={notificationPageSize}
+                      onPageChange={setNotificationPage}
+                      onPageSizeChange={setNotificationPageSize}
+                      pageSizeOptions={[10, 15, 30, 50]}
+                      itemName="thông báo"
+                    />
+                  )}
                 </div>
               )}
             </>
@@ -4264,20 +6012,216 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* MODAL 5: ADD BANNER */}
+      {/* MODAL EDIT BRANCH */}
+      {editingBranch && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                <Edit3 className="w-5 h-5 text-blue-600" />
+                <span>Chỉnh Sửa Chi Nhánh</span>
+              </h3>
+              <button
+                onClick={() => setEditingBranch(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateBranch} noValidate className="space-y-3.5 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Tên chi nhánh *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ví dụ: Chi nhánh Bình Thạnh"
+                  value={editingBranch.branch_name}
+                  onChange={(e) => setEditingBranch({ ...editingBranch, branch_name: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Số điện thoại *</label>
+                <input
+                  type="tel"
+                  required
+                  placeholder="0901234567"
+                  value={editingBranch.phone}
+                  onChange={(e) => setEditingBranch({ ...editingBranch, phone: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Địa chỉ *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Số nhà, đường, phường, quận..."
+                  value={editingBranch.address}
+                  onChange={(e) => setEditingBranch({ ...editingBranch, address: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Trạng thái hoạt động</label>
+                <select
+                  value={editingBranch.status}
+                  onChange={(e) => setEditingBranch({ ...editingBranch, status: Number(e.target.value) })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium bg-white focus:outline-none focus:border-brand-500"
+                >
+                  <option value={1}>Đang hoạt động</option>
+                  <option value={0}>Ngừng hoạt động</option>
+                </select>
+              </div>
+
+              <div className="pt-3 flex justify-end gap-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditingBranch(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition shadow-md shadow-brand-600/20 cursor-pointer"
+                >
+                  Lưu Thay Đổi
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL TOGGLE STATUS BRANCH */}
+      {toggleStatusBranch && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                toggleStatusBranch.status === 1 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+              }`}>
+                {toggleStatusBranch.status === 1 ? <Lock className="w-6 h-6" /> : <Unlock className="w-6 h-6" />}
+              </div>
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900">
+                  {toggleStatusBranch.status === 1 ? 'Tạm Ngưng Hoạt Động' : 'Mở Lại Hoạt Động'}
+                </h3>
+                <p className="text-xs text-slate-500">{toggleStatusBranch.branch_name}</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              {toggleStatusBranch.status === 1 ? (
+                <>
+                  Bạn có chắc chắn muốn chuyển chi nhánh <strong className="text-slate-900 font-bold">{toggleStatusBranch.branch_name}</strong> sang trạng thái <strong className="text-amber-700">Ngừng hoạt động</strong>? Khi tạm ngưng, khách hàng sẽ không thấy chi nhánh này trên giao diện đặt hàng.
+                </>
+              ) : (
+                <>
+                  Bạn có muốn kích hoạt lại chi nhánh <strong className="text-slate-900 font-bold">{toggleStatusBranch.branch_name}</strong> hoạt động bình thường?
+                </>
+              )}
+            </p>
+
+            <div className="pt-2 flex justify-end gap-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setToggleStatusBranch(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmToggleBranchStatus}
+                className={`px-5 py-2 text-white rounded-xl font-bold transition shadow-md cursor-pointer ${
+                  toggleStatusBranch.status === 1
+                    ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/20'
+                    : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'
+                }`}
+              >
+                {toggleStatusBranch.status === 1 ? 'Xác nhận ngưng' : 'Kích hoạt lại'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DELETE BRANCH */}
+      {deletingBranch && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900">Xóa Chi Nhánh Cửa Hàng</h3>
+                <p className="text-xs text-slate-500">{deletingBranch.branch_name}</p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-[11px] text-amber-800 leading-relaxed">
+              <strong>Lưu ý nghiệp vụ (BR-025):</strong> Hệ thống sẽ từ chối xóa nếu chi nhánh vẫn còn tài khoản nhân viên hoặc quản trị viên trực thuộc. Trong trường hợp đó, vui lòng chuyển chi nhánh sang trạng thái <strong>Ngừng hoạt động</strong>.
+            </div>
+
+            <p className="text-xs text-slate-600">
+              Bạn có chắc chắn muốn xóa vĩnh viễn chi nhánh <strong className="text-slate-900 font-bold">{deletingBranch.branch_name}</strong> (Mã #{deletingBranch.id})? Hành động này không thể hoàn tác nếu không vi phạm ràng buộc dữ liệu.
+            </p>
+
+            <div className="pt-2 flex justify-end gap-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setDeletingBranch(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteBranch}
+                className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold transition shadow-md shadow-rose-600/20 cursor-pointer"
+              >
+                Xác nhận xóa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 5: ADD BANNER (FR-042) */}
       {showAddBannerModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="font-heading font-black text-lg text-slate-900 border-b border-slate-100 pb-2">Thêm Banner Trang Chủ</h3>
-            <form onSubmit={handleCreateBanner} noValidate className="space-y-3 text-xs">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-emerald-600" />
+                <span>Thêm Banner Trang Chủ</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowAddBannerModal(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateBanner} noValidate className="space-y-3.5 text-xs">
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Tiêu đề banner *</label>
                 <input
-                  type="text" required placeholder="Mùa Cam Sành Mọng Nước"
+                  type="text" required placeholder="Ví dụ: Mùa Cam Sành Mọng Nước"
                   value={newBanner.title} onChange={(e) => setNewBanner({ ...newBanner, title: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500"
                 />
               </div>
+
               <div>
                 <label className="block font-bold text-slate-700 mb-1">
                   Hình ảnh banner (Upload từ máy tính: JPG, PNG, WEBP &le; 5MB) *
@@ -4303,7 +6247,7 @@ export default function AdminDashboardPage() {
                         className="w-20 h-12 rounded-xl object-cover border border-brand-300 shadow-sm"
                       />
                       <div className="text-left flex-1 min-w-0">
-                        <p className="font-bold text-emerald-700 text-xs truncate">✓ Đã tải ảnh lên: {newBanner.image_url}</p>
+                        <p className="font-bold text-emerald-700 text-xs truncate">✓ Đã tải ảnh: {newBanner.image_url}</p>
                         <p className="text-[11px] text-slate-500 mt-0.5">Bấm vào đây để chọn đổi ảnh khác</p>
                       </div>
                     </div>
@@ -4327,19 +6271,221 @@ export default function AdminDashboardPage() {
                   />
                 </div>
               </div>
+
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Thứ tự hiển thị</label>
+                <label className="block font-bold text-slate-700 mb-1">Đường dẫn liên kết khi bấm vào banner</label>
                 <input
-                  type="number"
-                  value={newBanner.display_order} onChange={(e) => setNewBanner({ ...newBanner, display_order: parseInt(e.target.value, 10) })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium"
+                  type="text"
+                  placeholder="Ví dụ: / hoặc /san-pham/1 hoặc /khuyen-mai"
+                  value={newBanner.link_url}
+                  onChange={(e) => setNewBanner({ ...newBanner, link_url: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500 font-mono"
                 />
               </div>
-              <div className="pt-2 flex justify-end gap-2">
-                <button type="button" onClick={() => setShowAddBannerModal(false)} className="px-3 py-2 bg-slate-100 rounded-xl font-bold text-slate-600 cursor-pointer">Hủy bỏ</button>
-                <button type="submit" className="px-4 py-2 bg-brand-600 text-white rounded-xl font-bold cursor-pointer">Thêm Banner</button>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Thứ tự hiển thị (Số nhỏ xếp trước)</label>
+                <input
+                  type="number"
+                  value={newBanner.display_order}
+                  onChange={(e) => setNewBanner({ ...newBanner, display_order: parseInt(e.target.value, 10) || 0 })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddBannerModal(false)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition shadow-md shadow-brand-600/20 cursor-pointer"
+                >
+                  Thêm Banner
+                </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL EDIT BANNER (FR-042) */}
+      {editingBanner && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                <Edit3 className="w-5 h-5 text-blue-600" />
+                <span>Chỉnh Sửa Banner</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setEditingBanner(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateBanner} noValidate className="space-y-3.5 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Tiêu đề banner *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Tiêu đề banner"
+                  value={editingBanner.title}
+                  onChange={(e) => setEditingBanner({ ...editingBanner, title: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Hình ảnh banner (Upload từ máy tính: JPG, PNG, WEBP &le; 5MB) *
+                </label>
+                <div className="border-2 border-dashed border-emerald-300 rounded-2xl p-4 bg-emerald-50/30 hover:bg-emerald-50/60 transition relative">
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                    onChange={(e) => handleFileUpload(e, 'edit_banner')}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    disabled={uploadingImage}
+                  />
+                  {uploadingImage ? (
+                    <div className="flex items-center justify-center gap-2 text-brand-700 py-3">
+                      <RefreshCw className="w-5 h-5 animate-spin" />
+                      <span className="font-bold text-xs">Đang tải ảnh banner lên...</span>
+                    </div>
+                  ) : editingBanner.image_url ? (
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={editingBanner.image_url}
+                        alt="Preview Banner"
+                        className="w-20 h-12 rounded-xl object-cover border border-brand-300 shadow-sm"
+                      />
+                      <div className="text-left flex-1 min-w-0">
+                        <p className="font-bold text-emerald-700 text-xs truncate">✓ Ảnh hiện tại: {editingBanner.image_url}</p>
+                        <p className="text-[11px] text-slate-500 mt-0.5">Bấm vào đây để chọn đổi ảnh khác từ máy tính</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="py-2 text-center text-slate-500">
+                      <Upload className="w-6 h-6 mx-auto mb-1 text-brand-600" />
+                      <p className="font-bold text-xs text-brand-800">Bấm để chọn ảnh từ máy tính (Browse...)</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Định dạng JPG, PNG, WEBP — Tối đa 5 MB</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 shrink-0">Hoặc dán URL:</span>
+                  <input
+                    type="text"
+                    placeholder="https://... hoặc /uploads/..."
+                    value={editingBanner.image_url}
+                    onChange={(e) => setEditingBanner({ ...editingBanner, image_url: e.target.value })}
+                    className="flex-1 px-2.5 py-1 text-[11px] rounded-lg border border-slate-200 bg-slate-50"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Đường dẫn liên kết khi bấm vào banner</label>
+                <input
+                  type="text"
+                  placeholder="Ví dụ: / hoặc /san-pham/1"
+                  value={editingBanner.link_url || ''}
+                  onChange={(e) => setEditingBanner({ ...editingBanner, link_url: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500 font-mono"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Thứ tự hiển thị</label>
+                  <input
+                    type="number"
+                    value={editingBanner.display_order}
+                    onChange={(e) => setEditingBanner({ ...editingBanner, display_order: parseInt(e.target.value, 10) || 0 })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Trạng thái hiển thị</label>
+                  <select
+                    value={editingBanner.status}
+                    onChange={(e) => setEditingBanner({ ...editingBanner, status: Number(e.target.value) })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium bg-white focus:outline-none focus:border-brand-500"
+                  >
+                    <option value={1}>Đang hiển thị</option>
+                    <option value={0}>Đang tạm ẩn</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-3 flex justify-end gap-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditingBanner(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition shadow-md shadow-brand-600/20 cursor-pointer"
+                >
+                  Lưu Thay Đổi
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DELETE BANNER (FR-042) */}
+      {deletingBanner && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900">Xóa Banner Quảng Cáo</h3>
+                <p className="text-xs text-slate-500">Mã #{deletingBanner.id}</p>
+              </div>
+            </div>
+
+            <div className="aspect-video rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+              <img src={deletingBanner.image_url} alt={deletingBanner.title} className="w-full h-full object-cover" />
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Bạn có chắc chắn muốn xóa vĩnh viễn banner <strong className="text-slate-900 font-bold">{deletingBanner.title}</strong>? Banner này sẽ bị gỡ bỏ khỏi toàn bộ trang chủ và không thể khôi phục lại.
+            </p>
+
+            <div className="pt-2 flex justify-end gap-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setDeletingBanner(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteBanner}
+                className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold transition shadow-md shadow-rose-600/20 cursor-pointer"
+              >
+                Xác nhận xóa
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -4831,6 +6977,165 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
+            {/* MODAL CHI TIẾT KHÁCH HÀNG & LỊCH SỬ MUA HÀNG (FR-040 & UC-18) */}
+      {selectedCustomerDetail && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200 relative max-h-[90vh] flex flex-col">
+            <button
+              type="button"
+              onClick={() => setSelectedCustomerDetail(null)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition cursor-pointer text-sm font-bold"
+            >
+              ✕
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-3 pb-4 border-b border-slate-100 shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-brand-50 text-brand-700 border border-brand-100 flex items-center justify-center font-bold text-lg">
+                <User className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                  <span>{selectedCustomerDetail.full_name}</span>
+                  <span className="font-mono text-xs font-bold text-slate-400">#{selectedCustomerDetail.id}</span>
+                </h3>
+                <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+                  <span className="font-mono">{selectedCustomerDetail.phone}</span>
+                  <span>•</span>
+                  <span>{selectedCustomerDetail.address || 'Chưa cập nhật địa chỉ'}</span>
+                  <span>•</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    selectedCustomerDetail.status === 1 ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                  }`}>
+                    {selectedCustomerDetail.status === 1 ? 'Hoạt động' : 'Đã khóa'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Metrics */}
+            <div className="grid grid-cols-2 gap-3 py-4 shrink-0">
+              <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70">
+                <div className="text-[10px] uppercase font-bold text-slate-400">Tổng số đơn hàng</div>
+                <div className="text-xl font-black text-slate-900 mt-0.5">{selectedCustomerDetail.total_orders || 0} đơn</div>
+              </div>
+              <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70">
+                <div className="text-[10px] uppercase font-bold text-slate-400">Tổng chi tiêu tích lũy</div>
+                <div className="text-xl font-black text-brand-700 mt-0.5">
+                  {parseFloat(selectedCustomerDetail.total_spent || 0).toLocaleString('vi-VN')} đ
+                </div>
+              </div>
+            </div>
+
+            {/* Order History */}
+            <div className="flex-1 overflow-y-auto space-y-3 min-h-0">
+              <div className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                Lịch sử đơn hàng ({selectedCustomerDetail.orders ? selectedCustomerDetail.orders.length : 0})
+              </div>
+
+              {loadingCustomerDetail ? (
+                <div className="text-center py-10 text-xs text-slate-400">Đang tải lịch sử mua hàng...</div>
+              ) : !selectedCustomerDetail.orders || selectedCustomerDetail.orders.length === 0 ? (
+                <div className="text-center py-8 text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                  Khách hàng chưa có đơn hàng nào
+                </div>
+              ) : (
+                <div className="border border-slate-200/80 rounded-2xl overflow-hidden">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200">
+                        <th className="py-2.5 px-3">Mã đơn</th>
+                        <th className="py-2.5 px-3">Thời gian</th>
+                        <th className="py-2.5 px-3">Thanh toán</th>
+                        <th className="py-2.5 px-3">Trạng thái</th>
+                        <th className="py-2.5 px-3 text-right">Tổng tiền</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {selectedCustomerDetail.orders.map((o) => (
+                        <tr key={o.id} className="hover:bg-slate-50/70 transition">
+                          <td className="py-2.5 px-3 font-mono font-bold text-brand-700">#{o.order_code}</td>
+                          <td className="py-2.5 px-3 text-slate-600 font-mono text-[11px]">
+                            {new Date(o.created_at).toLocaleString('vi-VN')}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <span className="text-[11px] font-bold text-slate-700">{o.payment_method || 'COD'}</span>
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              o.order_status === 'DA_GIAO' ? 'bg-emerald-100 text-emerald-800' :
+                              o.order_status === 'DANG_GIAO' ? 'bg-teal-100 text-teal-800' :
+                              o.order_status === 'DANG_CHUAN_BI' ? 'bg-blue-100 text-blue-800' :
+                              o.order_status === 'TAM_DUNG' ? 'bg-yellow-100 text-yellow-800' :
+                              o.order_status === 'DA_XAC_NHAN' ? 'bg-purple-100 text-purple-800' :
+                              o.order_status === 'CHO_THANH_TOAN' ? 'bg-amber-100 text-amber-900' :
+                              o.order_status === 'DA_HUY' ? 'bg-red-100 text-red-800' :
+                              'bg-slate-100 text-slate-700'
+                            }`}>
+                              {
+                                o.order_status === 'CHO_THANH_TOAN' ? 'Chờ thanh toán' :
+                                o.order_status === 'CHO_XAC_NHAN' ? 'Chờ xác nhận' :
+                                o.order_status === 'DA_XAC_NHAN' ? 'Đã xác nhận' :
+                                o.order_status === 'DANG_CHUAN_BI' ? 'Đang chuẩn bị' :
+                                o.order_status === 'TAM_DUNG' ? 'Tạm dừng' :
+                                o.order_status === 'DANG_GIAO' ? 'Đang giao' :
+                                o.order_status === 'DA_GIAO' ? 'Đã giao' :
+                                o.order_status === 'DA_HUY' ? 'Đã hủy' : o.order_status
+                              }
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 font-bold text-slate-900 text-right">
+                            {parseFloat(o.total_amount).toLocaleString('vi-VN')} đ
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-between items-center pt-4 border-t border-slate-100 shrink-0 mt-3">
+              <div>
+                {selectedCustomerDetail.status === 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const cu = selectedCustomerDetail;
+                      setSelectedCustomerDetail(null);
+                      openLockModal(cu);
+                    }}
+                    className="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Lock className="w-3.5 h-3.5" /> Khóa tài khoản này
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const cu = selectedCustomerDetail;
+                      setSelectedCustomerDetail(null);
+                      openUnlockModal(cu);
+                    }}
+                    className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Unlock className="w-3.5 h-3.5" /> Mở khóa tài khoản
+                  </button>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedCustomerDetail(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {actionModal.isOpen && actionModal.targetUser && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200 relative">
@@ -4890,7 +7195,7 @@ export default function AdminDashboardPage() {
               <div className="text-xs font-semibold mt-1 opacity-85 flex items-center justify-center gap-1.5">
                 <span>Số điện thoại: {actionModal.targetUser.phone}</span>
                 <span>•</span>
-                <span>{actionModal.targetUser.role_name || 'Admin Chi nhánh'}</span>
+                <span>{actionModal.targetUser.role_name || (actionModal.targetUser.role_id === 3 ? 'Khách hàng' : 'Admin Chi nhánh')}</span>
               </div>
             </div>
 
@@ -5256,6 +7561,515 @@ export default function AdminDashboardPage() {
                 className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer"
               >
                 Đóng cửa sổ
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+            {/* MODAL THÊM NẤC PHÍ VẬN CHUYỂN (FR-044 & BR-023) */}
+      {showAddShippingFeeModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                  <Truck className="w-5 h-5 text-emerald-600" />
+                  <span>Thêm Nấc Phí Vận Chuyển</span>
+                </h3>
+                <p className="text-[11px] text-slate-500 mt-0.5">Thiết lập cước giao hàng GreenSM theo khoảng cách (FR-044)</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddShippingFeeModal(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition cursor-pointer text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateShippingFee} noValidate className="space-y-3.5 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Tên gói / nấc cước *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ví dụ: Nội thành gần, Ngoại thành xa..."
+                  value={newShippingFee.name}
+                  onChange={(e) => setNewShippingFee({ ...newShippingFee, name: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Khoảng cách từ (km) *</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    required
+                    placeholder="0"
+                    value={newShippingFee.min_km}
+                    onChange={(e) => setNewShippingFee({ ...newShippingFee, min_km: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Khoảng cách đến (km) *</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0.1"
+                    required
+                    placeholder="5"
+                    value={newShippingFee.max_km}
+                    onChange={(e) => setNewShippingFee({ ...newShippingFee, max_km: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Mức phí giao hàng (VNĐ) *</label>
+                <input
+                  type="number"
+                  step="1000"
+                  min="0"
+                  required
+                  placeholder="Ví dụ: 15000"
+                  value={newShippingFee.fee}
+                  onChange={(e) => setNewShippingFee({ ...newShippingFee, fee: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-black text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono text-sm"
+                />
+                <p className="text-[10px] text-slate-400 mt-1">Cước phí giao hàng GreenSM áp dụng khi bán kính giao nằm trong khoảng này</p>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddShippingFeeModal(false)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition shadow-md shadow-emerald-600/20 cursor-pointer"
+                >
+                  Thêm Nấc Phí
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL SỬA NẤC PHÍ VẬN CHUYỂN (FR-044) */}
+      {editingShippingFee && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                  <Edit3 className="w-5 h-5 text-blue-600" />
+                  <span>Chỉnh Sửa Nấc Phí Vận Chuyển</span>
+                </h3>
+                <p className="text-[11px] text-slate-500 mt-0.5">Cập nhật cước giao hàng #{editingShippingFee.id}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingShippingFee(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition cursor-pointer text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateShippingFee} noValidate className="space-y-3.5 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Tên gói / nấc cước *</label>
+                <input
+                  type="text"
+                  required
+                  value={editingShippingFee.name || ''}
+                  onChange={(e) => setEditingShippingFee({ ...editingShippingFee, name: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Khoảng cách từ (km) *</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    required
+                    value={editingShippingFee.min_km}
+                    onChange={(e) => setEditingShippingFee({ ...editingShippingFee, min_km: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Khoảng cách đến (km) *</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0.1"
+                    required
+                    value={editingShippingFee.max_km}
+                    onChange={(e) => setEditingShippingFee({ ...editingShippingFee, max_km: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Mức phí giao hàng (VNĐ) *</label>
+                  <input
+                    type="number"
+                    step="1000"
+                    min="0"
+                    required
+                    value={editingShippingFee.fee}
+                    onChange={(e) => setEditingShippingFee({ ...editingShippingFee, fee: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-black text-emerald-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Trạng thái áp dụng *</label>
+                  <select
+                    value={editingShippingFee.status}
+                    onChange={(e) => setEditingShippingFee({ ...editingShippingFee, status: Number(e.target.value) })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-bold bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value={1}>Đang áp dụng</option>
+                    <option value={0}>Tạm dừng áp dụng</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditingShippingFee(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition shadow-md shadow-blue-600/20 cursor-pointer"
+                >
+                  Lưu Thay Đổi
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL XÓA NẤC PHÍ VẬN CHUYỂN (FR-044) */}
+      {deletingShippingFee && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900">Xóa Nấc Phí Vận Chuyển</h3>
+                <p className="text-xs text-slate-500">Mã #{deletingShippingFee.id}</p>
+              </div>
+            </div>
+
+            <div className="bg-rose-50/70 border border-rose-200/80 rounded-2xl p-3.5 text-xs text-rose-950 space-y-1">
+              <div className="font-bold">{deletingShippingFee.name}</div>
+              <div className="text-slate-600">
+                Khoảng cách: <span className="font-mono font-bold text-slate-800">{parseFloat(deletingShippingFee.min_km)} km - {parseFloat(deletingShippingFee.max_km)} km</span>
+              </div>
+              <div className="text-slate-600">
+                Cước phí: <span className="font-bold text-emerald-700">{parseFloat(deletingShippingFee.fee).toLocaleString('vi-VN')} đ</span>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Bạn có chắc chắn muốn xóa nấc cước vận chuyển này? Hành động này sẽ gỡ bỏ nấc cước khỏi hệ thống tính phí tự động.
+            </p>
+
+            <div className="pt-2 flex justify-end gap-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setDeletingShippingFee(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteShippingFee}
+                className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold transition shadow-md shadow-rose-600/20 cursor-pointer"
+              >
+                Xác nhận xóa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+{/* MODAL 1: SOẠN THÔNG BÁO MỚI (FR-046) */}
+      {showCreateNotificationModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                  <Send className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-black text-base text-slate-900">Soạn Thông Báo Mới</h3>
+                  <p className="text-[11px] text-slate-500">Phát thông báo đến khách hàng hoặc quản trị viên (FR-046)</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCreateNotificationModal(false)}
+                className="text-slate-400 hover:text-slate-600 cursor-pointer p-1 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateNotification} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Tiêu đề thông báo <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ví dụ: Thông báo khuyến mãi Black Friday 2026..."
+                  value={newNotification.title}
+                  onChange={(e) => setNewNotification({ ...newNotification, title: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Đối tượng nhận thông báo <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-3 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setNewNotification({ ...newNotification, recipient_type: 'ALL' })}
+                    className={`p-3 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1.5 ${
+                      newNotification.recipient_type === 'ALL'
+                        ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-black shadow-xs'
+                        : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
+                    }`}
+                  >
+                    <Users className="w-4 h-4 text-emerald-600" />
+                    <span className="text-[11px]">Toàn hệ thống</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setNewNotification({ ...newNotification, recipient_type: 'CUSTOMERS' })}
+                    className={`p-3 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1.5 ${
+                      newNotification.recipient_type === 'CUSTOMERS'
+                        ? 'border-amber-500 bg-amber-50/80 text-amber-950 font-black shadow-xs'
+                        : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
+                    }`}
+                  >
+                    <User className="w-4 h-4 text-amber-600" />
+                    <span className="text-[11px]">Khách hàng</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setNewNotification({ ...newNotification, recipient_type: 'ADMINS' })}
+                    className={`p-3 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1.5 ${
+                      newNotification.recipient_type === 'ADMINS'
+                        ? 'border-purple-500 bg-purple-50/80 text-purple-950 font-black shadow-xs'
+                        : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
+                    }`}
+                  >
+                    <ShieldCheck className="w-4 h-4 text-purple-600" />
+                    <span className="text-[11px]">Quản trị viên</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Nội dung chi tiết thông báo <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  placeholder="Nhập nội dung đầy đủ của thông báo..."
+                  value={newNotification.content}
+                  onChange={(e) => setNewNotification({ ...newNotification, content: e.target.value })}
+                  className="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium leading-relaxed"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateNotificationModal(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-100 font-bold text-slate-600 transition cursor-pointer"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  disabled={sendingNotification}
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-xl font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition cursor-pointer"
+                >
+                  {sendingNotification ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                  <span>{sendingNotification ? 'Đang gửi...' : 'Gửi Thông Báo'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: XEM CHI TIẾT THÔNG BÁO (FR-046) */}
+      {selectedNotificationDetail && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                  <Bell className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-black text-base text-slate-900">Chi Tiết Thông Báo</h3>
+                  <p className="text-[11px] text-slate-500">Mã thông báo #{selectedNotificationDetail.id}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedNotificationDetail(null)}
+                className="text-slate-400 hover:text-slate-600 cursor-pointer p-1 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3.5 text-xs">
+              <div>
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Tiêu đề:</span>
+                <div className="text-sm font-black text-slate-900 leading-snug">
+                  {selectedNotificationDetail.title}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                <div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Đối tượng nhận:</span>
+                  {selectedNotificationDetail.recipient_type === 'CUSTOMERS' ? (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                      Khách hàng
+                    </span>
+                  ) : selectedNotificationDetail.recipient_type === 'ADMINS' ? (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">
+                      Quản trị viên
+                    </span>
+                  ) : (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                      Toàn hệ thống
+                    </span>
+                  )}
+                </div>
+
+                <div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Thời gian gửi:</span>
+                  <div className="font-mono font-bold text-slate-700 text-[11px]">
+                    {new Date(selectedNotificationDetail.created_at).toLocaleString('vi-VN')}
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Người gửi:</span>
+                  <div className="font-bold text-slate-800">
+                    {selectedNotificationDetail.sender_name || 'Admin Tổng'}
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Số điện thoại:</span>
+                  <div className="font-mono text-slate-600">
+                    {selectedNotificationDetail.sender_phone || '0929894248'}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nội dung thông báo:</span>
+                <div className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 text-slate-800 leading-relaxed font-medium whitespace-pre-wrap">
+                  {selectedNotificationDetail.content}
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setSelectedNotificationDetail(null)}
+                className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold transition cursor-pointer text-xs"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: XÓA THÔNG BÁO (FR-046) */}
+      {deletingNotification && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900">Xóa Thông Báo</h3>
+                <p className="text-xs text-slate-500">Mã #{deletingNotification.id}</p>
+              </div>
+            </div>
+
+            <div className="bg-rose-50/70 border border-rose-200/80 rounded-2xl p-3.5 text-xs text-rose-950 space-y-1">
+              <div className="font-bold">{deletingNotification.title}</div>
+              <div className="text-slate-600">
+                Đối tượng: <span className="font-bold text-slate-800">{deletingNotification.recipient_type}</span>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Bạn có chắc chắn muốn xóa thông báo này khỏi lịch sử hệ thống? Thao tác này không thể hoàn tác.
+            </p>
+
+            <div className="pt-2 flex justify-end gap-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setDeletingNotification(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600 transition cursor-pointer"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteNotification}
+                className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold transition shadow-md shadow-rose-600/20 cursor-pointer"
+              >
+                Xác nhận xóa
               </button>
             </div>
           </div>

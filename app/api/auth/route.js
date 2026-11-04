@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { getRealClientIp, getUserAgent } from '@/lib/logger';
 
 // Bộ nhớ theo dõi số lần đăng nhập sai theo BR-010 (5 lần sai -> khóa 15 phút)
 if (!global.__failedLogins) {
@@ -73,7 +74,7 @@ export async function POST(request) {
 
     // FR-001: Ghi nhật ký đăng nhập vào system_logs
     try {
-      const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
+      const ip = await getRealClientIp(request);
       const userAgent = request.headers.get('user-agent') || 'NextJS Client';
       await query(
         `INSERT INTO system_logs (user_id, action, description, ip_address, user_agent, created_at)

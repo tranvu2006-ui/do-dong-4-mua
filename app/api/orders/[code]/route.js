@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { logSystemAction } from '@/lib/logger';
 
 export async function GET(request, { params }) {
   try {
@@ -195,12 +196,27 @@ export async function PATCH(request, { params }) {
       );
     }
 
-    // Ghi audit log thay đổi trạng thái
-    await query(
-      `INSERT INTO system_logs (user_id, action, module, description)
-       VALUES (?, 'UPDATE_STATUS', 'ORDER', ?)`,
-      [1, `Cập nhật đơn hàng ${currentOrder.order_code} sang trạng thái: ${order_status || currentOrder.order_status}${reason ? ' (Lý do: ' + reason + ')' : ''}`]
-    );
+    // Ghi audit log thay đổi trạng thái bằng ngôn ngữ tự nhiên tiếng Việt (FR-045)
+    const ORDER_STATUS_LABELS = {
+      'CHO_XAC_NHAN': 'Chờ xác nhận (COD)',
+      'CHO_THANH_TOAN': 'Chờ thanh toán (VietQR)',
+      'DA_XAC_NHAN': 'Đã xác nhận đơn hàng',
+      'DANG_CHUAN_BI': 'Đang chuẩn bị hàng',
+      'TAM_DUNG': 'Tạm dừng xử lý',
+      'DANG_GIAO': 'Đang giao hàng (GreenSM)',
+      'DA_GIAO': 'Giao hàng thành công',
+      'DA_HUY': 'Đã hủy đơn hàng'
+    };
+    const targetStatus = order_status || currentOrder.order_status;
+    const readableStatus = ORDER_STATUS_LABELS[targetStatus] || targetStatus;
+
+    await logSystemAction({
+      request,
+      userId: 1,
+      action: 'UPDATE_STATUS',
+      module: 'ORDER',
+      description: `Cập nhật đơn hàng ${currentOrder.order_code} sang trạng thái: ${readableStatus}${reason ? ' (Lý do: ' + reason + ')' : ''}`
+    });
 
     return NextResponse.json({ success: true, message: 'Cập nhật trạng thái đơn hàng thành công' });
   } catch (error) {
