@@ -6,18 +6,8 @@ import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
 export default function GlobalErrorBoundary({ error, reset }) {
   useEffect(() => {
-    console.error('Captured Application Error:', error);
-    try {
-      fetch('/api/system/logs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'CLIENT_ERROR',
-          module: 'STOREFRONT',
-          description: `Sự cố giao diện người dùng: ${error?.message || String(error)} | Trang: ${typeof window !== 'undefined' ? window.location.pathname : ''}`
-        })
-      }).catch(() => {});
-    } catch (e) {}
+    // Chỉ báo lỗi ở màn hình dòng lệnh Terminal máy chủ, không hiển thị ra ngoài giao diện
+    console.error('[Terminal Error Log]:', error);
   }, [error]);
 
   return (
@@ -32,17 +22,9 @@ export default function GlobalErrorBoundary({ error, reset }) {
             Có lỗi xảy ra khi tải trang
           </h2>
           <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-            Hệ thống đã tự động ghi nhận sự cố. Bạn có thể nhấn thử lại hoặc quay về trang chủ.
+            Hệ thống đang gặp gián đoạn tạm thời. Vui lòng bấm thử lại hoặc quay về trang chủ.
           </p>
         </div>
-
-        {error?.message && (
-          <div className="p-3.5 bg-slate-100 rounded-xl text-left border border-slate-200">
-            <p className="text-[11px] font-mono text-slate-700 break-words line-clamp-3">
-              {error.message}
-            </p>
-          </div>
-        )}
 
         <div className="flex items-center gap-3 pt-2">
           <button
@@ -65,4 +47,3 @@ export default function GlobalErrorBoundary({ error, reset }) {
     </div>
   );
 }
-
