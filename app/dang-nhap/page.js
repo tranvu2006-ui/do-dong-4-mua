@@ -6,7 +6,7 @@ import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import { auth, formatPhoneForE164, initRecaptchaVerifier, resetRecaptchaVerifier, signInWithPhoneNumber } from '@/lib/firebase';
 
 import AuthBrandHeader from '@/components/auth/AuthBrandHeader';
-import QuickTestAccountsCard from '@/components/auth/QuickTestAccountsCard';
+
 import LoginForm from '@/components/auth/LoginForm';
 import ForgotPasswordWizard from '@/components/auth/ForgotPasswordWizard';
 
@@ -49,11 +49,6 @@ function AuthContent() {
     return () => clearTimeout(timer);
   }, [forgotCountdown]);
 
-  const fillQuickAccount = (phone, pass) => {
-    setLoginPhone(phone);
-    setLoginPassword(pass);
-    setErrorMsg('');
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -132,15 +127,15 @@ function AuthContent() {
       console.error('Firebase send OTP forgot password error:', err);
       resetRecaptchaVerifier('recaptcha-container');
       if (err.code === 'auth/billing-not-enabled') {
-        setErrorMsg('Dự án Firebase chưa kích hoạt gói Blaze (Cloud Billing). Vui lòng nâng cấp gói Blaze trên Firebase Console để gửi SMS thật.');
+        setErrorMsg('Dịch vụ gửi mã OTP qua SMS tạm thời không khả dụng. Vui lòng liên hệ hotline hỗ trợ hoặc thử lại sau ít phút.');
       } else if (err.code === 'auth/operation-not-allowed') {
-        setErrorMsg('Vùng Việt Nam (+84) chưa được cấp phép trong Firebase SMS Region Policy hoặc chưa bật Phone Auth.');
+        setErrorMsg('Dịch vụ xác thực SMS tạm thời bị gián đoạn. Vui lòng thử lại sau ít phút.');
       } else if (err.code === 'auth/invalid-phone-number') {
         setErrorMsg('Số điện thoại không hợp lệ đối với mạng viễn thông.');
       } else if (err.code === 'auth/too-many-requests') {
         setErrorMsg('Bạn đã yêu cầu gửi mã quá nhiều lần trong thời gian ngắn. Vui lòng thử lại sau ít phút.');
       } else if (err.code === 'auth/quota-exceeded') {
-        setErrorMsg('Hạn mức gửi tin nhắn SMS của dự án đã tạm hết trong ngày.');
+        setErrorMsg('Hệ thống gửi tin nhắn SMS tạm thời quá tải trong ngày. Vui lòng liên hệ hotline hỗ trợ.');
       } else {
         setErrorMsg(err.message || 'Không thể gửi mã SMS xác thực. Vui lòng thử lại!');
       }
@@ -236,9 +231,7 @@ function AuthContent() {
       {/* Brand Header */}
       <AuthBrandHeader />
 
-      {/* Quick Test Accounts Card */}
-      <QuickTestAccountsCard onSelectAccount={fillQuickAccount} />
-
+      
       {/* Messages */}
       {errorMsg && (
         <div className="bg-red-50 text-red-700 p-3.5 rounded-2xl border border-red-200 text-xs flex items-center gap-2">

@@ -29,7 +29,7 @@ export default function ForgotPasswordWizard({
             <KeyRound className="w-4 h-4 text-brand-600" />
             <span>Khôi Phục Mật Khẩu</span>
           </h3>
-          <p className="text-[11px] text-gray-400 mt-0.5">Xác thực an toàn qua mã OTP SMS từ Firebase</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">Xác thực an toàn qua mã OTP gửi về tin nhắn SMS</p>
         </div>
         <div className="flex items-center gap-1 text-[11px] font-bold text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200">
           <span>Bước {forgotStep}/3</span>

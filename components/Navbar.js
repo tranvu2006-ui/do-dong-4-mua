@@ -464,7 +464,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Top 4 danh mục nhiều sản phẩm nhất (100% động từ CSDL, không hard code) */}
+        {/* Danh mục sản phẩm nổi bật */}
         <div className="mt-2.5 pt-2 border-t border-gray-100 hidden sm:flex items-center justify-between gap-3 overflow-x-auto text-xs pb-0.5">
           <div className="flex items-center gap-1.5 shrink-0">
             <span className="font-extrabold text-brand-900 uppercase tracking-wider mr-1 text-[11px]">Danh Mục:</span>

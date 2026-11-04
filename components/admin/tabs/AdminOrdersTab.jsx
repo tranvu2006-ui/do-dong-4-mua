@@ -104,14 +104,14 @@ export default function AdminOrdersTab({
           </div>
           <h4 className="font-heading font-black text-slate-900 text-lg">Chưa có đơn hàng nào</h4>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Hệ thống CSDL hiện đang sạch (0 dữ liệu mẫu). Khách hàng đặt mua trên trang chủ sẽ xuất hiện ngay tại đây theo thời gian thực!
+            Chưa có đơn hàng nào trong hệ thống. Đơn hàng mới của khách sẽ tự động hiển thị tại đây khi được đặt mua.
           </p>
           <Link
             href="/"
             target="_blank"
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition cursor-pointer"
           >
-            <span>Mở cửa hàng để đặt thử</span>
+            <span>Xem cửa hàng</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </Link>
         </div>

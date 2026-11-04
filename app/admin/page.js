@@ -3206,7 +3206,7 @@ export default function AdminDashboardPage() {
                         </h3>
                         <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-2 bg-emerald-50 px-2 py-0.5 rounded-md inline-flex">
                           <TrendingUp className="w-3.5 h-3.5" />
-                          <span>Dữ liệu thực tế CSDL</span>
+                          <span>Cập nhật trực tiếp</span>
                         </div>
                       </div>
                       <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shrink-0">
@@ -3223,7 +3223,7 @@ export default function AdminDashboardPage() {
                         </h3>
                         <div className="flex items-center gap-1 text-[11px] font-bold text-blue-600 mt-2 bg-blue-50 px-2 py-0.5 rounded-md inline-flex">
                           <Truck className="w-3.5 h-3.5" />
-                          <span>Vận đơn GreenSM</span>
+                          <span>Đơn hàng toàn hệ thống</span>
                         </div>
                       </div>
                       <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shrink-0">
@@ -3240,7 +3240,7 @@ export default function AdminDashboardPage() {
                         </h3>
                         <div className="flex items-center gap-1 text-[11px] font-bold text-amber-600 mt-2 bg-amber-50 px-2 py-0.5 rounded-md inline-flex">
                           <Sparkles className="w-3.5 h-3.5" />
-                          <span>Xuân - Hạ - Thu - Đông</span>
+                          <span>Đang kinh doanh</span>
                         </div>
                       </div>
                       <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 shrink-0">

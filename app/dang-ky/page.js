@@ -73,15 +73,15 @@ export default function RegisterPage() {
       console.error('Firebase send OTP error:', err);
       resetRecaptchaVerifier('recaptcha-container');
       if (err.code === 'auth/billing-not-enabled') {
-        setErrorMsg('Dự án Firebase chưa kích hoạt gói Blaze (Cloud Billing) để gửi SMS thật ra viễn thông. Để test không cần thẻ: Thêm SĐT này vào "Phone numbers for testing" trên Firebase Console với mã 123456.');
+        setErrorMsg('Dịch vụ gửi mã OTP qua SMS tạm thời không khả dụng. Vui lòng liên hệ hotline hỗ trợ hoặc thử lại sau ít phút.');
       } else if (err.code === 'auth/operation-not-allowed') {
-        setErrorMsg('Vùng Việt Nam (+84) chưa được cấp phép trong Firebase SMS Region Policy hoặc chưa bật Phone Auth.');
+        setErrorMsg('Dịch vụ xác thực SMS tạm thời bị gián đoạn. Vui lòng thử lại sau ít phút.');
       } else if (err.code === 'auth/invalid-phone-number') {
         setErrorMsg('Số điện thoại không hợp lệ với dịch vụ viễn thông. Vui lòng kiểm tra lại số điện thoại.');
       } else if (err.code === 'auth/too-many-requests') {
         setErrorMsg('Bạn đã yêu cầu gửi mã quá nhiều lần trong thời gian ngắn. Vui lòng thử lại sau ít phút.');
       } else if (err.code === 'auth/quota-exceeded') {
-        setErrorMsg('Hạn mức gửi tin nhắn SMS của dự án đã tạm hết trong ngày.');
+        setErrorMsg('Hệ thống gửi tin nhắn SMS tạm thời quá tải trong ngày. Vui lòng liên hệ hotline hỗ trợ.');
       } else {
         setErrorMsg(err.message || 'Không thể gửi mã SMS xác thực. Vui lòng thử lại!');
       }

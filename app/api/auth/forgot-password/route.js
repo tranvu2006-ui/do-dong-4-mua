@@ -36,7 +36,7 @@ export async function POST(request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Mã xác thực OTP đã được gửi đến số điện thoại của bạn (Mã thử nghiệm: 123456)',
+      message: 'Mã xác thực OTP đã được gửi đến số điện thoại của bạn.',
       expiresIn: 300
     });
   } catch (error) {
