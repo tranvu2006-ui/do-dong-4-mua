@@ -230,6 +230,15 @@ export default function AdminDashboardPage() {
         if (tab) setActiveTab(tab);
       }
       // SRS NFR-006: Kiểm tra phiên đăng nhập tự động hết hạn sau 24h
+      // Khôi phục cấu hình website từ cache nếu có để tránh giật lag hiển thị
+      try {
+        const cachedSettings = localStorage.getItem('dodong4mua_site_settings');
+        if (cachedSettings) {
+          const parsed = JSON.parse(cachedSettings);
+          if (parsed && parsed.site_name) setSiteSettings(parsed);
+        }
+      } catch (e) {}
+
       const u = getAuthSession();
       if (u && (u.isAdmin || u.role_id === 1 || u.role_id === 2)) {
         setCurrentUser(u);
@@ -815,7 +824,10 @@ export default function AdminDashboardPage() {
         if (logsData.stats) setLogStats(logsData.stats);
       }
       if (usersData.success) setAdminUsers(usersData.data);
-      if (settingsData && settingsData.success) setSiteSettings(settingsData.data);
+      if (settingsData && settingsData.success) {
+        setSiteSettings(settingsData.data);
+        try { localStorage.setItem('dodong4mua_site_settings', JSON.stringify(settingsData.data)); } catch (e) {}
+      }
       if (shippingFeesData && shippingFeesData.success) setShippingFees(shippingFeesData.data);
       if (notificationsData && notificationsData.success) setNotifications(notificationsData.data);
       if (revenueDataRes && revenueDataRes.success) setRevenueData(revenueDataRes.data);
@@ -1906,6 +1918,7 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (data.success) {
         setSiteSettings(data.data);
+        try { localStorage.setItem('dodong4mua_site_settings', JSON.stringify(data.data)); } catch (e) {}
         showToast('Cập nhật cấu hình website thành công!');
         loadData();
         if (typeof window !== 'undefined') {
@@ -2718,7 +2731,7 @@ export default function AdminDashboardPage() {
               <ShieldCheck className="w-9 h-9 text-slate-950" />
             </div>
             <h1 className="text-2xl font-black tracking-tight font-heading text-white">CỔNG QUẢN TRỊ VIÊN</h1>
-            <p className="text-xs text-emerald-300/80 font-medium">Hệ Thống Bán Trái Cây Đổ Đống 4 Mùa </p>
+            <p className="text-xs text-emerald-300/80 font-medium">{siteSettings?.site_name ? `Hệ Thống Bán Trái Cây ${siteSettings.site_name}` : "Hệ Thống Quản Trị Trái Cây Đặc Sản"}</p>
           </div>
 
           {loginError && (
@@ -2982,26 +2995,40 @@ export default function AdminDashboardPage() {
       {/* 1. LEFT SIDEBAR (MODERN ENTERPRISE STUDIO) */}
       <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 h-screen sticky top-0 z-30 shadow-2xl">
         <div className="flex flex-col h-full overflow-hidden">
-          {/* Brand Logo Header */}
+          {/* Brand Logo Header (Có hiệu ứng làm mờ khi chưa có dữ liệu để tránh hardcode) */}
           <div className="p-5 border-b border-slate-800/80 flex items-center gap-3 shrink-0">
-            {siteSettings?.logo_url ? (
-              <div className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20 border border-emerald-500/30">
-                <img src={siteSettings.logo_url} alt="Logo" className="w-full h-full object-cover" />
-              </div>
+            {siteSettings?.site_name ? (
+              <>
+                {siteSettings.logo_url ? (
+                  <div className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20 border border-emerald-500/30">
+                    <img src={siteSettings.logo_url} alt="Logo" className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/25 shrink-0">
+                    <Leaf className="w-6 h-6 text-slate-950" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="font-heading font-black text-white text-lg tracking-tight leading-none truncate">
+                    <span>{siteSettings.site_name.trim()}</span>
+                  </div>
+                  <div className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider mt-1 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Admin Studio Pro</span>
+                  </div>
+                </div>
+              </>
             ) : (
-              <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/25 shrink-0">
-                <Leaf className="w-6 h-6 text-slate-950" />
+              <div className="flex items-center gap-3 w-full filter blur-[1.5px] opacity-40 animate-pulse transition-all duration-300">
+                <div className="w-11 h-11 rounded-full bg-slate-800 border border-slate-700/60 flex items-center justify-center shrink-0">
+                  <Leaf className="w-5 h-5 text-slate-600" />
+                </div>
+                <div className="space-y-1.5 flex-1 py-1">
+                  <div className="h-4 w-28 bg-slate-700 rounded-md"></div>
+                  <div className="h-2.5 w-20 bg-slate-800 rounded-md"></div>
+                </div>
               </div>
             )}
-            <div>
-              <div className="font-heading font-black text-white text-lg tracking-tight leading-none flex items-center gap-1.5">
-                <span>{siteSettings?.site_name?.trim() || 'ĐỔ ĐỐNG 4 MÙA'}</span>
-              </div>
-              <div className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider mt-1 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Admin Studio Pro</span>
-              </div>
-            </div>
           </div>
 
           {/* Navigation Items (Grouped) */}
@@ -3788,7 +3815,7 @@ export default function AdminDashboardPage() {
       <LogoCropperModal
         isOpen={logoCropperModal.isOpen}
         imageSrc={logoCropperModal.imageSrc}
-        siteName={siteSettings?.site_name || 'ĐỒ ĐỒNG 4 MÙA'}
+        siteName={siteSettings?.site_name || ''}
         siteSlogan={siteSettings?.site_slogan || ''}
         initialShape={logoCropperModal.shape}
         onClose={() => setLogoCropperModal(prev => ({ ...prev, isOpen: false }))}
