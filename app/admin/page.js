@@ -2914,7 +2914,7 @@ export default function AdminDashboardPage() {
     return matchSearch && matchStatus;
   });
 
-  const isSuperAdmin = currentUser?.role_id === 1 || currentUser?.isAdmin;
+  const isSuperAdmin = currentUser?.role_id === 1;
 
   return (
     <div className="min-h-screen bg-slate-50/80 flex font-sans">
@@ -3028,7 +3028,7 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-3">
             {/* Branch Selector Badge */}
             {(() => {
-              const currentBranch = branches?.find((b) => b.id === currentUser?.branch_id);
+              const currentBranch = branches?.find((b) => Number(b.id) === Number(currentUser?.branch_id));
               const branchBadgeText = isSuperAdmin
                 ? 'Toàn hệ thống'
                 : (currentBranch?.branch_name || (currentUser?.branch_id ? `Chi nhánh ${currentUser.branch_id}` : 'Chi nhánh trực thuộc'));
