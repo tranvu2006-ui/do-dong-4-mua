@@ -3025,10 +3025,23 @@ export default function AdminDashboardPage() {
 
           <div className="flex items-center gap-3">
             {/* Branch Selector Badge */}
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
-              <Store className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Hệ thống {branches?.filter(b => b.status === 1)?.length || branches?.length || 2} Chi nhánh</span>
-            </div>
+            {(() => {
+              const isSuperAdmin = currentUser?.role_id === 1 || currentUser?.isAdmin || !currentUser;
+              const currentBranch = branches?.find((b) => b.id === currentUser?.branch_id);
+              const branchBadgeText = isSuperAdmin
+                ? 'Toàn hệ thống'
+                : (currentBranch?.branch_name || (currentUser?.branch_id ? `Chi nhánh ${currentUser.branch_id}` : 'Chi nhánh trực thuộc'));
+
+              return (
+                <div
+                  title={isSuperAdmin ? `Admin Tổng - Quản lý toàn bộ hệ thống (${branches?.length || 0} chi nhánh)` : `Admin Chi nhánh: ${branchBadgeText}`}
+                  className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold"
+                >
+                  <Store className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{branchBadgeText}</span>
+                </div>
+              );
+            })()}
 
             {/* Refresh Button */}
             <button
