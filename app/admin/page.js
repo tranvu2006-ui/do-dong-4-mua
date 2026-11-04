@@ -2918,14 +2918,14 @@ export default function AdminDashboardPage() {
               <button
                 type="button"
                 onClick={() => setAdminNotifOpen(!adminNotifOpen)}
-                className="relative p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center justify-center cursor-pointer shadow-2xs"
+                className="relative w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center justify-center cursor-pointer shadow-2xs border border-slate-200/60"
                 title="Thông báo hệ thống"
                 aria-label="Xem thông báo quản trị"
               >
-                <Bell className="w-4 h-4 text-slate-700" />
+                <Bell className="w-4.5 h-4.5 text-slate-700" />
                 {notifications.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-emerald-600 text-white font-black text-[10px] w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-md">
-                    {notifications.length > 9 ? '9+' : notifications.length}
+                  <span className="absolute -top-1.5 -right-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
+                    {notifications.length > 99 ? '99+' : notifications.length}
                   </span>
                 )}
               </button>

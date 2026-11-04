@@ -248,14 +248,14 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsNotifOpen(!isNotifOpen)}
-                className="relative p-2.5 rounded-xl bg-gray-50 hover:bg-brand-50 text-gray-700 hover:text-brand-700 transition flex items-center justify-center border border-gray-200 cursor-pointer shadow-xs"
+                className="relative w-10 h-10 rounded-xl bg-gray-50 hover:bg-brand-50 text-gray-700 hover:text-brand-700 transition flex items-center justify-center border border-gray-200 cursor-pointer shadow-xs"
                 title="Thông báo hệ thống"
                 aria-label="Xem thông báo"
               >
                 <Bell className="w-5 h-5 text-gray-700" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-pulse">
-                    {unreadCount > 9 ? '9+' : unreadCount}
+                  <span className="absolute -top-1.5 -right-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
+                    {unreadCount > 99 ? '99+' : unreadCount}
                   </span>
                 )}
               </button>
