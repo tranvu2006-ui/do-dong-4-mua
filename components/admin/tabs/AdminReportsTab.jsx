@@ -262,7 +262,18 @@ export default function AdminReportsTab({
                     </div>
 
                     {/* 5 CHỈ SỐ KẾT QUẢ BẮT BUỘC THEO SRS FR-047 & BR-028 */}
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-1">
+                    {revenueLoading && !revenueData ? (
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-1 animate-pulse">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          <div key={i} className="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 space-y-3">
+                            <div className="h-3 w-20 bg-slate-200 rounded" />
+                            <div className="h-6 w-28 bg-slate-300 rounded" />
+                            <div className="h-2 w-24 bg-slate-200 rounded" />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className={`grid grid-cols-2 md:grid-cols-5 gap-3 pt-1 transition-all duration-300 ${revenueLoading ? 'opacity-50 blur-[0.5px] pointer-events-none' : ''}`}>
                       {/* 1. Tổng doanh thu (BR-028: Chỉ tính đơn Đã giao) */}
                       <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 flex flex-col justify-between col-span-2 md:col-span-1 shadow-2xs">
                         <div className="flex items-center justify-between text-emerald-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
@@ -333,6 +344,7 @@ export default function AdminReportsTab({
                         </div>
                       </div>
                     </div>
+                  )}
                   </div>
 
                   {/* BẢNG DIỄN BIẾN DOANH THU THEO THỜI GIAN (TIMELINE) */}
@@ -617,7 +629,18 @@ export default function AdminReportsTab({
                         </div>
 
                         {/* 4 CHỈ SỐ KẾT QUẢ BẮT BUỘC THEO SRS FR-048 */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-1">
+                        {customerReportLoading && !customerReportData ? (
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-1 animate-pulse">
+                            {[1, 2, 3, 4].map((i) => (
+                              <div key={i} className="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 space-y-3">
+                                <div className="h-3 w-24 bg-slate-200 rounded" />
+                                <div className="h-6 w-20 bg-slate-300 rounded" />
+                                <div className="h-2 w-28 bg-slate-200 rounded" />
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 pt-1 transition-all duration-300 ${customerReportLoading ? 'opacity-50 blur-[0.5px] pointer-events-none' : ''}`}>
                           {/* 1. Tổng số khách hàng */}
                           <div className="bg-indigo-50/70 border border-indigo-200/80 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
                             <div className="flex items-center justify-between text-indigo-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
@@ -674,6 +697,7 @@ export default function AdminReportsTab({
                             </div>
                           </div>
                         </div>
+                      )}
                       </div>
 
                       {/* TOP 5 KHÁCH HÀNG TIÊU BIỂU */}
@@ -1106,9 +1130,16 @@ export default function AdminReportsTab({
                         </div>
 
                         {inventoryReportLoading ? (
-                          <div className="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
-                            <RotateCcw className="w-8 h-8 animate-spin text-amber-600" />
-                            <span className="text-xs font-semibold">Đang tổng hợp dữ liệu tồn kho...</span>
+                          <div className="py-6 space-y-3 animate-pulse">
+                            <div className="h-10 bg-slate-100 rounded-xl w-full" />
+                            {[...Array(6)].map((_, i) => (
+                              <div key={i} className="h-12 bg-slate-50 border border-slate-100 rounded-xl w-full flex items-center px-4 gap-4">
+                                <div className="h-4 w-16 bg-slate-200 rounded" />
+                                <div className="h-4 w-40 bg-slate-200 rounded" />
+                                <div className="h-4 w-24 bg-slate-200 rounded" />
+                                <div className="h-4 w-20 bg-slate-200 rounded ml-auto" />
+                              </div>
+                            ))}
                           </div>
                         ) : !inventoryReportData || inventoryReportData.products?.length === 0 ? (
                           <div className="py-12 text-center text-slate-400 space-y-2">
@@ -1553,9 +1584,16 @@ export default function AdminReportsTab({
                         </div>
 
                         {orderReportLoading ? (
-                          <div className="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
-                            <RotateCcw className="w-8 h-8 animate-spin text-blue-600" />
-                            <span className="text-xs font-semibold">Đang tổng hợp dữ liệu đơn hàng...</span>
+                          <div className="py-6 space-y-3 animate-pulse">
+                            <div className="h-10 bg-slate-100 rounded-xl w-full" />
+                            {[...Array(6)].map((_, i) => (
+                              <div key={i} className="h-12 bg-slate-50 border border-slate-100 rounded-xl w-full flex items-center px-4 gap-4">
+                                <div className="h-4 w-20 bg-slate-200 rounded" />
+                                <div className="h-4 w-32 bg-slate-200 rounded" />
+                                <div className="h-4 w-24 bg-slate-200 rounded" />
+                                <div className="h-4 w-20 bg-slate-200 rounded ml-auto" />
+                              </div>
+                            ))}
                           </div>
                         ) : !orderReportData || orderReportData.orders?.length === 0 ? (
                           <div className="py-12 text-center text-slate-400 space-y-2">

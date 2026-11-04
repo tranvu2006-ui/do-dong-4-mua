@@ -2914,6 +2914,8 @@ export default function AdminDashboardPage() {
     return matchSearch && matchStatus;
   });
 
+  const isSuperAdmin = currentUser?.role_id === 1 || currentUser?.isAdmin;
+
   return (
     <div className="min-h-screen bg-slate-50/80 flex font-sans">
       {/* 1. LEFT SIDEBAR (MODERN ENTERPRISE STUDIO) */}
@@ -3026,7 +3028,6 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-3">
             {/* Branch Selector Badge */}
             {(() => {
-              const isSuperAdmin = currentUser?.role_id === 1 || currentUser?.isAdmin || !currentUser;
               const currentBranch = branches?.find((b) => b.id === currentUser?.branch_id);
               const branchBadgeText = isSuperAdmin
                 ? 'Toàn hệ thống'
@@ -3171,81 +3172,120 @@ export default function AdminDashboardPage() {
             </div>
           ) : (
             <>
-              {/* 4 MODERN KPI CARDS ROW */}
-              {stats && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {/* Card 1: Doanh thu */}
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng doanh thu</p>
-                      <h3 className="text-2xl font-black text-slate-900 mt-1 font-heading">
-                        {parseFloat(stats.totalRevenue).toLocaleString('vi-VN')} đ
-                      </h3>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-2 bg-emerald-50 px-2 py-0.5 rounded-md inline-flex">
-                        <TrendingUp className="w-3.5 h-3.5" />
-                        <span>Dữ liệu thực tế CSDL</span>
+              {/* 4 MODERN KPI CARDS ROW (DÀNH RIÊNG CHO ADMIN TỔNG, SKELETON KHI CHƯA LOAD) */}
+              {isSuperAdmin && (
+                loading && !stats ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 animate-pulse">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-start justify-between">
+                        <div className="space-y-3 w-3/4">
+                          <div className="h-3 w-24 bg-slate-200 rounded-md" />
+                          <div className="h-7 w-32 bg-slate-300 rounded-lg" />
+                          <div className="h-4 w-28 bg-slate-200 rounded-md" />
+                        </div>
+                        <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 shrink-0" />
+                      </div>
+                    ))}
+                  </div>
+                ) : stats ? (
+                  <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 transition-all duration-300 ${loading ? 'opacity-50 blur-[0.5px] pointer-events-none' : ''}`}>
+                    {/* Card 1: Doanh thu */}
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng doanh thu</p>
+                        <h3 className="text-2xl font-black text-slate-900 mt-1 font-heading">
+                          {parseFloat(stats.totalRevenue).toLocaleString('vi-VN')} đ
+                        </h3>
+                        <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-2 bg-emerald-50 px-2 py-0.5 rounded-md inline-flex">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span>Dữ liệu thực tế CSDL</span>
+                        </div>
+                      </div>
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shrink-0">
+                        <TrendingUp className="w-6 h-6 stroke-[2.2]" />
                       </div>
                     </div>
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shrink-0">
-                      <TrendingUp className="w-6 h-6 stroke-[2.2]" />
-                    </div>
-                  </div>
 
-                  {/* Card 2: Đơn hàng */}
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng đơn hàng</p>
-                      <h3 className="text-2xl font-black text-slate-900 mt-1 font-heading">
-                        {orders.length} đơn
-                      </h3>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-blue-600 mt-2 bg-blue-50 px-2 py-0.5 rounded-md inline-flex">
-                        <Truck className="w-3.5 h-3.5" />
-                        <span>Vận đơn GreenSM</span>
+                    {/* Card 2: Đơn hàng */}
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng đơn hàng</p>
+                        <h3 className="text-2xl font-black text-slate-900 mt-1 font-heading">
+                          {orders.length} đơn
+                        </h3>
+                        <div className="flex items-center gap-1 text-[11px] font-bold text-blue-600 mt-2 bg-blue-50 px-2 py-0.5 rounded-md inline-flex">
+                          <Truck className="w-3.5 h-3.5" />
+                          <span>Vận đơn GreenSM</span>
+                        </div>
+                      </div>
+                      <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shrink-0">
+                        <ShoppingCart className="w-6 h-6 stroke-[2.2]" />
                       </div>
                     </div>
-                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shrink-0">
-                      <ShoppingCart className="w-6 h-6 stroke-[2.2]" />
-                    </div>
-                  </div>
 
-                  {/* Card 3: Sản phẩm */}
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sản phẩm 4 mùa</p>
-                      <h3 className="text-2xl font-black text-slate-900 mt-1 font-heading">
-                        {stats.totalProducts} mặt hàng
-                      </h3>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-amber-600 mt-2 bg-amber-50 px-2 py-0.5 rounded-md inline-flex">
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>Xuân - Hạ - Thu - Đông</span>
+                    {/* Card 3: Sản phẩm */}
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sản phẩm 4 mùa</p>
+                        <h3 className="text-2xl font-black text-slate-900 mt-1 font-heading">
+                          {stats.totalProducts} mặt hàng
+                        </h3>
+                        <div className="flex items-center gap-1 text-[11px] font-bold text-amber-600 mt-2 bg-amber-50 px-2 py-0.5 rounded-md inline-flex">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Xuân - Hạ - Thu - Đông</span>
+                        </div>
+                      </div>
+                      <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 shrink-0">
+                        <Package className="w-6 h-6 stroke-[2.2]" />
                       </div>
                     </div>
-                    <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 shrink-0">
-                      <Package className="w-6 h-6 stroke-[2.2]" />
-                    </div>
-                  </div>
 
-                  {/* Card 4: Tồn kho ít */}
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Cảnh báo tồn kho (&le;10)</p>
-                      <h3 className={`text-2xl font-black mt-1 font-heading ${stats.lowStockCount > 0 ? 'text-red-600' : 'text-slate-900'}`}>
-                        {stats.lowStockCount} sản phẩm
-                      </h3>
-                      <div className={`flex items-center gap-1 text-[11px] font-bold mt-2 px-2 py-0.5 rounded-md inline-flex ${stats.lowStockCount > 0 ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-600'
+                    {/* Card 4: Tồn kho ít */}
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Cảnh báo tồn kho (&le;10)</p>
+                        <h3 className={`text-2xl font-black mt-1 font-heading ${stats.lowStockCount > 0 ? 'text-red-600' : 'text-slate-900'}`}>
+                          {stats.lowStockCount} sản phẩm
+                        </h3>
+                        <div className={`flex items-center gap-1 text-[11px] font-bold mt-2 px-2 py-0.5 rounded-md inline-flex ${stats.lowStockCount > 0 ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-600'
+                          }`}>
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          <span>{stats.lowStockCount > 0 ? 'Cần nhập thêm' : 'Tồn kho ổn định'}</span>
+                        </div>
+                      </div>
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shrink-0 ${stats.lowStockCount > 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-slate-100 text-slate-600 border-slate-200'
                         }`}>
-                        <AlertTriangle className="w-3.5 h-3.5" />
-                        <span>{stats.lowStockCount > 0 ? 'Cần nhập thêm' : 'Tồn kho ổn định'}</span>
+                        <AlertTriangle className="w-6 h-6 stroke-[2.2]" />
                       </div>
                     </div>
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shrink-0 ${stats.lowStockCount > 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-slate-100 text-slate-600 border-slate-200'
-                      }`}>
-                      <AlertTriangle className="w-6 h-6 stroke-[2.2]" />
-                    </div>
                   </div>
-                </div>
+                ) : null
               )}
 
+              {/* TAB CONTENT (SKELETON KHI CHƯA LOAD XONG & LÀM MỜ KHI LÀM MỚI DỮ LIỆU) */}
+              {loading && !stats && orders.length === 0 ? (
+                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-6 animate-pulse">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div className="h-9 w-64 bg-slate-200 rounded-xl" />
+                    <div className="flex gap-2 w-full sm:w-auto">
+                      <div className="h-9 w-32 bg-slate-200 rounded-xl" />
+                      <div className="h-9 w-28 bg-slate-200 rounded-xl" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="h-10 bg-slate-100 rounded-xl w-full" />
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="h-14 bg-slate-50/70 border border-slate-100 rounded-xl w-full flex items-center px-4 gap-4">
+                        <div className="h-4 w-20 bg-slate-200 rounded" />
+                        <div className="h-4 w-40 bg-slate-200 rounded" />
+                        <div className="h-4 w-24 bg-slate-200 rounded ml-auto" />
+                        <div className="h-4 w-20 bg-slate-200 rounded" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className={`transition-all duration-300 ${loading ? 'opacity-50 blur-[0.5px] pointer-events-none' : ''}`}>
               {/* TAB 1: QUẢN LÝ ĐƠN HÀNG & GREENSM */}
 
               {/* TAB 1: QUẢN LÝ ĐƠN HÀNG & GREENSM */}
@@ -3519,6 +3559,8 @@ export default function AdminDashboardPage() {
                   onSelectNotificationDetail={(n) => setSelectedNotificationDetail(n)}
                   onDeleteNotification={(n) => setDeletingNotification(n)}
                 />
+              )}
+                </div>
               )}
             </>
           )}
