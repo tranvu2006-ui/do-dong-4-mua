@@ -10,7 +10,7 @@ export default function BannerModals({
   newBanner,
   setNewBanner,
   handleFileUpload,
-  uploadingBanner,
+  uploadingImage,
   editingBanner,
   setEditingBanner,
   handleUpdateBanner,

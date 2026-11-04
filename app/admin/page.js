@@ -3548,7 +3548,7 @@ export default function AdminDashboardPage() {
         newBanner={newBanner}
         setNewBanner={setNewBanner}
         handleFileUpload={handleFileUpload}
-        uploadingBanner={uploadingBanner}
+        uploadingImage={uploadingImage}
         editingBanner={editingBanner}
         setEditingBanner={setEditingBanner}
         handleUpdateBanner={handleUpdateBanner}
