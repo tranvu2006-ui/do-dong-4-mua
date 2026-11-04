@@ -334,7 +334,7 @@ export default function AdminLogsTab({
         <div className="flex items-center gap-2">
           <Lock className="w-4 h-4 text-slate-400" />
           <span>
-            <strong className="text-slate-800 font-bold">Quy tắc nghiệp vụ:</strong> Nhật ký kiểm toán được lưu vĩnh viễn, không cho phép sửa hoặc xóa dưới mọi hình thức.
+            <strong className="text-slate-800 font-bold">Lưu ý bảo mật:</strong> Nhật ký kiểm toán được lưu vĩnh viễn, không cho phép sửa hoặc xóa dưới mọi hình thức.
           </span>
         </div>
         <span className="text-[11px] font-bold text-slate-400">

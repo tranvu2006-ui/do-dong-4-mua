@@ -124,7 +124,7 @@ export default function ProfilePage() {
       return;
     }
     if (!newPassword || newPassword.length < 8) {
-      setErrorMsg('Mật khẩu mới phải có tối thiểu 8 ký tự theo quy tắc BR-010.');
+      setErrorMsg('Mật khẩu mới phải có tối thiểu 8 ký tự.');
       return;
     }
     if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {

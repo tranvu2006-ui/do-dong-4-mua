@@ -182,7 +182,7 @@ function AuthContent() {
       return;
     }
     if (forgotNewPassword.length < 8) {
-      setErrorMsg('Mật khẩu mới phải có tối thiểu 8 ký tự theo quy định BR-010.');
+      setErrorMsg('Mật khẩu mới phải có tối thiểu 8 ký tự.');
       return;
     }
     if (!/[A-Z]/.test(forgotNewPassword) || !/[a-z]/.test(forgotNewPassword) || !/[0-9]/.test(forgotNewPassword)) {

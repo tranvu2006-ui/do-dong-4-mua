@@ -84,7 +84,7 @@ function OrderDetailContent({ code }) {
     setChangePwdError('');
 
     if (!newPwdInput || newPwdInput.length < 8) {
-      setChangePwdError('Mật khẩu mới phải có tối thiểu 8 ký tự theo quy tắc BR-010.');
+      setChangePwdError('Mật khẩu mới phải có tối thiểu 8 ký tự.');
       return;
     }
     if (!/[A-Z]/.test(newPwdInput) || !/[a-z]/.test(newPwdInput) || !/[0-9]/.test(newPwdInput)) {

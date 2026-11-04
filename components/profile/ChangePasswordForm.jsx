@@ -20,7 +20,7 @@ export default function ChangePasswordForm({
           <KeyRound className="w-5 h-5 text-brand-600" />
           <span>Đổi Mật Khẩu Tài Khoản</span>
         </h3>
-        <p className="text-xs text-gray-400 mt-0.5">Mật khẩu mới phải có tối thiểu 8 ký tự, gồm chữ in hoa, in thường và số (BR-010)</p>
+        <p className="text-xs text-gray-400 mt-0.5">Mật khẩu mới phải có tối thiểu 8 ký tự, bao gồm ít nhất 1 chữ hoa, 1 chữ thường và 1 chữ số</p>
       </div>
 
       {/* Mật khẩu hiện tại */}

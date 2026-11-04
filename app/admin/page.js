@@ -2341,7 +2341,7 @@ export default function AdminDashboardPage() {
       return;
     }
     if (!newAdmin.password || newAdmin.password.length < 8) {
-      showToast('Mật khẩu quản trị phải có tối thiểu 8 ký tự theo quy tắc BR-010!', 'warning');
+      showToast('Mật khẩu quản trị phải có tối thiểu 8 ký tự!', 'warning');
       return;
     }
     if (!/[A-Z]/.test(newAdmin.password) || !/[a-z]/.test(newAdmin.password) || !/[0-9]/.test(newAdmin.password)) {
@@ -2427,7 +2427,7 @@ export default function AdminDashboardPage() {
     e.preventDefault();
     if (!resetPasswordModal.admin) return;
     if (!resetPasswordModal.password || resetPasswordModal.password.length < 8) {
-      showToast('Mật khẩu mới phải có tối thiểu 8 ký tự theo quy tắc BR-010!', 'error');
+      showToast('Mật khẩu mới phải có tối thiểu 8 ký tự!', 'error');
       return;
     }
     if (!/[A-Z]/.test(resetPasswordModal.password) || !/[a-z]/.test(resetPasswordModal.password) || !/[0-9]/.test(resetPasswordModal.password)) {

@@ -135,7 +135,7 @@ export default function RegisterPage() {
     }
 
     if (!password || password.length < 8) {
-      setErrorMsg('Mật khẩu phải có tối thiểu 8 ký tự theo quy định BR-010.');
+      setErrorMsg('Mật khẩu phải có tối thiểu 8 ký tự.');
       return;
     }
     if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
