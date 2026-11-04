@@ -19,7 +19,7 @@ export default function Navbar() {
   const [currentUser, setCurrentUser] = useState(null);
   const [siteSettings, setSiteSettings] = useState(null);
   const [branches, setBranches] = useState([]);
-  const [activeBranchCount, setActiveBranchCount] = useState(0);
+  const [activeBranchCount, setActiveBranchCount] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -38,11 +38,16 @@ export default function Navbar() {
       ]);
       if (settingsData.success && settingsData.data) {
         setSiteSettings(settingsData.data);
+        try { localStorage.setItem('dodong4mua_site_settings', JSON.stringify(settingsData.data)); } catch (e) {}
       }
       if (branchesData.success && Array.isArray(branchesData.data)) {
         setBranches(branchesData.data);
         const activeCount = branchesData.data.filter(b => b.status === 1).length;
         setActiveBranchCount(activeCount);
+        try {
+          localStorage.setItem('dodong4mua_active_branch_count', String(activeCount));
+          localStorage.setItem('dodong4mua_branches', JSON.stringify(branchesData.data));
+        } catch (e) {}
       }
     } catch (e) {
       console.warn('Lỗi tải cấu hình động navbar:', e);
@@ -104,6 +109,12 @@ export default function Navbar() {
   };
 
   useEffect(() => {
+    try {
+      const cachedSettings = localStorage.getItem('dodong4mua_site_settings');
+      if (cachedSettings) setSiteSettings(JSON.parse(cachedSettings));
+      const cachedCount = localStorage.getItem('dodong4mua_active_branch_count');
+      if (cachedCount !== null) setActiveBranchCount(parseInt(cachedCount, 10));
+    } catch (e) {}
     loadUser();
     loadNotifications();
     loadSettingsAndBranches();
@@ -170,10 +181,17 @@ export default function Navbar() {
       <div className="bg-brand-900 text-white py-1.5 px-4 border-b border-brand-800 text-xs">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
           <div className="flex items-center gap-3">
-            <Link href="/chi-nhanh" className="flex items-center gap-1 font-semibold hover:text-brand-200 transition cursor-pointer">
-              <MapPin className="w-3.5 h-3.5 text-accent-400 shrink-0" />
-              <span>Hệ thống {activeBranchCount > 0 ? activeBranchCount : (branches.filter(b => b.status === 1).length || branches.length || 0)} Chi nhánh</span>
-            </Link>
+            {activeBranchCount === null ? (
+              <div className="flex items-center gap-1.5 py-0.5">
+                <MapPin className="w-3.5 h-3.5 text-accent-400 shrink-0 opacity-60" />
+                <div className="h-3 w-32 bg-white/20 rounded-md animate-pulse"></div>
+              </div>
+            ) : (
+              <Link href="/chi-nhanh" className="flex items-center gap-1 font-semibold hover:text-brand-200 transition cursor-pointer">
+                <MapPin className="w-3.5 h-3.5 text-accent-400 shrink-0" />
+                <span>Hệ thống {activeBranchCount} Chi nhánh</span>
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center gap-4">
@@ -187,7 +205,12 @@ export default function Navbar() {
                 <span>Cổng Quản Trị</span>
               </Link>
             )}
-            {siteSettings?.hotline ? (() => {
+            {siteSettings === null ? (
+              <div className="flex items-center gap-1.5 py-0.5">
+                <Phone className="w-3.5 h-3.5 text-yellow-300 shrink-0 opacity-60" />
+                <div className="h-3 w-24 bg-white/20 rounded-md animate-pulse"></div>
+              </div>
+            ) : siteSettings?.hotline ? (() => {
               const hotlineRaw = siteSettings.hotline;
               const cleanPhone = hotlineRaw.replace(/\D/g, '');
               const formattedPhone = cleanPhone.length === 10
@@ -210,36 +233,46 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6">
         <div className="flex items-center justify-between gap-4">
           {/* Logo & Thuong hieu dong 100% (FR-043) */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0 cursor-pointer">
-            {siteSettings?.logo_url ? (
-              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md border border-gray-100 flex items-center justify-center bg-white p-0.5 group-hover:scale-105 transition-transform shrink-0">
-                <img
-                  src={siteSettings.logo_url}
-                  alt={siteSettings?.site_name || "Logo"}
-                  className="w-full h-full object-contain"
-                />
+          {siteSettings === null ? (
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 rounded-xl bg-gray-200 animate-pulse shrink-0"></div>
+              <div className="space-y-1.5">
+                <div className="h-4 w-28 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-2.5 w-36 bg-gray-100 rounded animate-pulse"></div>
               </div>
-            ) : (
-              <div className="w-10 h-10 bg-gradient-to-br from-brand-600 to-brand-800 rounded-xl flex items-center justify-center text-white shadow-md shadow-brand-600/20 group-hover:scale-105 transition-transform shrink-0">
-                <Leaf className="w-6 h-6 text-white" />
-              </div>
-            )}
-            <div>
-              <div className="text-xl font-black tracking-tight text-brand-900 flex items-center gap-1">
-                {siteSettings?.site_name?.trim() ? (
-                  <span>{siteSettings.site_name.trim()}</span>
-                ) : (
-                  <>
-                    <span>ĐỔ ĐỐNG</span>
-                    <span className="text-accent-500 font-extrabold">4 MÙA</span>
-                  </>
-                )}
-              </div>
-              <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">
-                {siteSettings?.site_slogan || 'Trái Cây Tươi Ngon Chuẩn Vị'}
-              </p>
             </div>
-          </Link>
+          ) : (
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0 cursor-pointer">
+              {siteSettings?.logo_url ? (
+                <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md border border-gray-100 flex items-center justify-center bg-white p-0.5 group-hover:scale-105 transition-transform shrink-0">
+                  <img
+                    src={siteSettings.logo_url}
+                    alt={siteSettings?.site_name || "Logo"}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              ) : (
+                <div className="w-10 h-10 bg-gradient-to-br from-brand-600 to-brand-800 rounded-xl flex items-center justify-center text-white shadow-md shadow-brand-600/20 group-hover:scale-105 transition-transform shrink-0">
+                  <Leaf className="w-6 h-6 text-white" />
+                </div>
+              )}
+              <div>
+                <div className="text-xl font-black tracking-tight text-brand-900 flex items-center gap-1">
+                  {siteSettings?.site_name?.trim() ? (
+                    <span>{siteSettings.site_name.trim()}</span>
+                  ) : (
+                    <>
+                      <span>ĐỔ ĐỐNG</span>
+                      <span className="text-accent-500 font-extrabold">4 MÙA</span>
+                    </>
+                  )}
+                </div>
+                <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                  {siteSettings?.site_slogan || 'Trái Cây Tươi Ngon Chuẩn Vị'}
+                </p>
+              </div>
+            </Link>
+          )}
 
           {/* Search bar */}
           <form onSubmit={handleSearch} className="hidden lg:flex flex-1 max-w-lg relative">
@@ -493,7 +526,11 @@ export default function Navbar() {
               </Link>
               <Link href="/chi-nhanh" onClick={() => setMobileMenuOpen(false)} className="p-2.5 bg-gray-50 rounded-xl text-gray-800 font-bold flex items-center gap-2 cursor-pointer">
                 <MapPin className="w-4 h-4 text-accent-500" />
-                <span>Hệ thống {activeBranchCount > 0 ? activeBranchCount : (branches.filter(b => b.status === 1).length || branches.length || 0)} chi nhánh</span>
+                {activeBranchCount === null ? (
+                  <div className="h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
+                ) : (
+                  <span>Hệ thống {activeBranchCount} chi nhánh</span>
+                )}
               </Link>
               {currentUser ? (
                 <button onClick={handleLogout} className="p-2.5 text-red-600 font-bold text-left flex items-center gap-2 cursor-pointer">

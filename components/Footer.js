@@ -20,14 +20,26 @@ export default function Footer() {
         settingsRes.json(),
         branchesRes.json()
       ]);
-      if (settingsData.success && settingsData.data) setSiteSettings(settingsData.data);
-      if (branchesData.success && Array.isArray(branchesData.data)) setBranches(branchesData.data);
+      if (settingsData.success && settingsData.data) {
+        setSiteSettings(settingsData.data);
+        try { localStorage.setItem('dodong4mua_site_settings', JSON.stringify(settingsData.data)); } catch (e) {}
+      }
+      if (branchesData.success && Array.isArray(branchesData.data)) {
+        setBranches(branchesData.data);
+        try { localStorage.setItem('dodong4mua_branches', JSON.stringify(branchesData.data)); } catch (e) {}
+      }
     } catch (e) {
       console.warn('Lỗi tải footer data:', e);
     }
   };
 
   useEffect(() => {
+    try {
+      const cachedSettings = localStorage.getItem('dodong4mua_site_settings');
+      if (cachedSettings) setSiteSettings(JSON.parse(cachedSettings));
+      const cachedBranches = localStorage.getItem('dodong4mua_branches');
+      if (cachedBranches) setBranches(JSON.parse(cachedBranches));
+    } catch (e) {}
     loadData();
     window.addEventListener('settings-change', loadData);
     window.addEventListener('branches-change', loadData);
@@ -168,7 +180,7 @@ export default function Footer() {
               href="/chi-nhanh"
               className="inline-flex items-center gap-1.5 text-xs text-yellow-300 hover:text-white font-extrabold hover:underline cursor-pointer"
             >
-              <span>Xem tất cả {activeBranches.length > 0 ? activeBranches.length : ''} chi nhánh trên bản đồ</span>
+              <span>Xem tất cả {activeBranches.length > 0 ? activeBranches.length : ''} chi nhánh</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
