@@ -1,4 +1,4 @@
-﻿﻿-- MySQL dump 10.13  Distrib 8.4.7, for Win64 (x86_64)
+﻿-- MySQL dump 10.13  Distrib 8.4.7, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: do_dong_4_mua
 -- ------------------------------------------------------
@@ -8,6 +8,13 @@
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!50503 SET NAMES utf8mb4 */;
+--
+-- Tự động tạo và chọn cơ sở dữ liệu để tránh lỗi No database selected (#1046)
+--
+CREATE DATABASE IF NOT EXISTS `do_dong_4_mua` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `do_dong_4_mua`;
+
+
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -619,7 +626,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1,NULL,'Trần Vũ (Admin Tổng)','0929894248','123456','53 Võ Văn Ngân, Thủ Đức',1,'2026-10-28 06:30:18','2026-10-30 21:50:46',NULL);
+INSERT INTO `users` VALUES (1,1,NULL,'Trần Vũ (Admin Tổng)','0929894248','$2a$10$6Wq6V7Zc9S9jG4rWJc9H2eF5qJ3kL7mN9pQ1rS3tU5vW7xY9zA1bC','53 Võ Văn Ngân, Thủ Đức',1,'2026-10-28 06:30:18','2026-10-30 21:50:46',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
