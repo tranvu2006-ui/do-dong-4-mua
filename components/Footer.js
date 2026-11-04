@@ -175,9 +175,12 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar: Copyright */}
+      {/* Bottom Bar: Copyright, Admin Portal, Academic Note */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 text-center text-emerald-400/90 text-xs font-medium">
-        {siteSettings?.site_name ? `© 2026 ${siteSettings.site_name}. Tất cả các quyền được bảo lưu.` : '© 2026. Tất cả các quyền được bảo lưu.'}
+        <div>
+          {siteSettings?.site_name ? `© 2026 ${siteSettings.site_name}. Tất cả các quyền được bảo lưu.` : '© 2026. Tất cả các quyền được bảo lưu.'}
+        </div>
+
       </div>
     </footer>
   );
