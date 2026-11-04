@@ -426,6 +426,35 @@ export default function AdminDashboardPage() {
 
   // Quản lý thông báo hệ thống (FR-046)
   const [notifications, setNotifications] = useState([]);
+  const [readAdminNotifIds, setReadAdminNotifIds] = useState([]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('dodong4mua_admin_read_notifs');
+      if (stored) setReadAdminNotifIds(JSON.parse(stored));
+    } catch (e) {}
+  }, []);
+
+  const unreadAdminNotifCount = notifications.filter((n) => !readAdminNotifIds.includes(n.id)).length;
+
+  const markAllAdminNotifsAsRead = () => {
+    const allIds = notifications.map((n) => n.id);
+    const updated = Array.from(new Set([...readAdminNotifIds, ...allIds]));
+    setReadAdminNotifIds(updated);
+    try {
+      localStorage.setItem('dodong4mua_admin_read_notifs', JSON.stringify(updated));
+    } catch (e) {}
+  };
+
+  const markSingleAdminNotifAsRead = (id) => {
+    if (!readAdminNotifIds.includes(id)) {
+      const updated = [...readAdminNotifIds, id];
+      setReadAdminNotifIds(updated);
+      try {
+        localStorage.setItem('dodong4mua_admin_read_notifs', JSON.stringify(updated));
+      } catch (e) {}
+    }
+  };
   const [notificationSearch, setNotificationSearch] = useState('');
   const [notificationRecipientFilter, setNotificationRecipientFilter] = useState('ALL_FILTER');
   const [notificationPage, setNotificationPage] = useState(1);
@@ -3015,15 +3044,21 @@ export default function AdminDashboardPage() {
             <div id="admin-notif-container" className="relative">
               <button
                 type="button"
-                onClick={() => setAdminNotifOpen(!adminNotifOpen)}
+                onClick={() => {
+                  const nextState = !adminNotifOpen;
+                  setAdminNotifOpen(nextState);
+                  if (nextState) {
+                    markAllAdminNotifsAsRead();
+                  }
+                }}
                 className="relative w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center justify-center cursor-pointer shadow-2xs border border-slate-200/60"
                 title="Thông báo hệ thống"
                 aria-label="Xem thông báo quản trị"
               >
                 <Bell className="w-4.5 h-4.5 text-slate-700" />
-                {notifications.length > 0 && (
+                {unreadAdminNotifCount > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
-                    {notifications.length > 99 ? '99+' : notifications.length}
+                    {unreadAdminNotifCount > 99 ? '99+' : unreadAdminNotifCount}
                   </span>
                 )}
               </button>
@@ -3042,7 +3077,7 @@ export default function AdminDashboardPage() {
                     <button
                       type="button"
                       onClick={() => setAdminNotifOpen(false)}
-                      className="text-slate-400 hover:text-slate-600 text-xs p-1"
+                      className="text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer"
                     >
                       ✕
                     </button>
@@ -3059,6 +3094,7 @@ export default function AdminDashboardPage() {
                         <div
                           key={n.id}
                           onClick={() => {
+                            markSingleAdminNotifAsRead(n.id);
                             setSelectedNotificationDetail(n);
                             setAdminNotifOpen(false);
                           }}
@@ -3078,20 +3114,6 @@ export default function AdminDashboardPage() {
                         </div>
                       ))
                     )}
-                  </div>
-
-                  <div className="pt-2.5 px-4 border-t border-slate-100">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveTab('notifications');
-                        setAdminNotifOpen(false);
-                      }}
-                      className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                      <span>Đến Quản Lý Thông Báo (Tab 8)</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
                   </div>
                 </div>
               )}
