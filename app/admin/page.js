@@ -410,6 +410,9 @@ export default function AdminDashboardPage() {
   const [sendingNotification, setSendingNotification] = useState(false);
   const [deletingNotification, setDeletingNotification] = useState(null);
   const [selectedNotificationDetail, setSelectedNotificationDetail] = useState(null);
+  const [selectedRecipientIds, setSelectedRecipientIds] = useState([]);
+  const [userPickerSearch, setUserPickerSearch] = useState('');
+  const [userPickerRoleFilter, setUserPickerRoleFilter] = useState('ALL');
   const [showAddBannerModal, setShowAddBannerModal] = useState(false);
   const [showAddAdminModal, setShowAddAdminModal] = useState(false);
 
@@ -1875,6 +1878,13 @@ export default function AdminDashboardPage() {
       return;
     }
 
+    if (newNotification.recipient_type === 'SPECIFIC') {
+      if (!selectedRecipientIds || selectedRecipientIds.length === 0) {
+        showToast('Vui lòng tích chọn ít nhất 1 người nhận cụ thể!', 'warning');
+        return;
+      }
+    }
+
     setSendingNotification(true);
     try {
       const res = await fetch('/api/admin/notifications', {
@@ -1884,6 +1894,7 @@ export default function AdminDashboardPage() {
           title: newNotification.title.trim(),
           content: newNotification.content.trim(),
           recipient_type: newNotification.recipient_type,
+          recipient_ids: newNotification.recipient_type === 'SPECIFIC' ? selectedRecipientIds : [],
           sender_id: currentUser?.id || 1,
         }),
       });
@@ -1892,6 +1903,7 @@ export default function AdminDashboardPage() {
         showToast('Gửi thông báo thành công!');
         setShowCreateNotificationModal(false);
         setNewNotification({ title: '', content: '', recipient_type: 'ALL' });
+        setSelectedRecipientIds([]);
         loadData();
       } else {
         showToast(data.message || 'Lỗi gửi thông báo', 'error');
@@ -2462,7 +2474,22 @@ export default function AdminDashboardPage() {
     return matchSearch && matchStatus;
   });
 
-    const filteredNotifications = notifications.filter((n) => {
+      // Danh sách người dùng để chọn người nhận thông báo đích danh (FR-046)
+  const allAvailableUsers = [
+    ...adminUsers.map(a => ({ id: a.id, full_name: a.full_name, phone: a.phone, role_name: a.role_name || 'Admin Chi nhánh', type: 'ADMIN' })),
+    ...customers.map(c => ({ id: c.id, full_name: c.full_name, phone: c.phone, role_name: 'Khách hàng', type: 'CUSTOMER' }))
+  ].filter((u, idx, arr) => arr.findIndex(x => x.id === u.id) === idx);
+
+  const filteredPickerUsers = allAvailableUsers.filter(u => {
+    const matchRole = userPickerRoleFilter === 'ALL' || u.type === userPickerRoleFilter;
+    const term = userPickerSearch.toLowerCase().trim();
+    const matchSearch = !term ||
+      (u.full_name && u.full_name.toLowerCase().includes(term)) ||
+      (u.phone && u.phone.includes(term));
+    return matchRole && matchSearch;
+  });
+
+  const filteredNotifications = notifications.filter((n) => {
     const matchType = notificationRecipientFilter === 'ALL_FILTER' || n.recipient_type === notificationRecipientFilter;
     const term = notificationSearch.toLowerCase().trim();
     const matchSearch = !term ||
@@ -4955,7 +4982,7 @@ export default function AdminDashboardPage() {
                   </div>
 
                   {/* Thống kê nhanh thông báo */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                     <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3.5 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
                         <Bell className="w-5 h-5" />
@@ -5001,6 +5028,18 @@ export default function AdminDashboardPage() {
                         </div>
                       </div>
                     </div>
+
+                    <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3.5 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black">
+                        <UserPlus className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Đích danh</div>
+                        <div className="text-lg font-black text-indigo-700">
+                          {notifications.filter(n => n.recipient_type === 'SPECIFIC').length}
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Thanh tìm kiếm & Bộ lọc đối tượng */}
@@ -5033,6 +5072,7 @@ export default function AdminDashboardPage() {
                         <option value="ALL">Toàn hệ thống (ALL)</option>
                         <option value="CUSTOMERS">Chỉ Khách hàng (CUSTOMERS)</option>
                         <option value="ADMINS">Chỉ Quản trị viên (ADMINS)</option>
+                        <option value="SPECIFIC">Đích danh 1 hoặc nhiều người (SPECIFIC)</option>
                       </select>
                     </div>
                   </div>
@@ -5075,6 +5115,24 @@ export default function AdminDashboardPage() {
                                   <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-800 border border-purple-200">
                                     Quản trị viên
                                   </span>
+                                ) : n.recipient_type === 'SPECIFIC' ? (
+                                  <div>
+                                    <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200 inline-flex items-center gap-1">
+                                      <UserPlus className="w-3 h-3" />
+                                      <span>Đích danh ({(() => {
+                                        try {
+                                          return JSON.parse(n.recipient_ids || '[]').length;
+                                        } catch {
+                                          return '1+';
+                                        }
+                                      })()} người)</span>
+                                    </span>
+                                    {n.recipient_names && (
+                                      <div className="text-[10px] text-slate-500 font-medium max-w-[180px] truncate mt-0.5" title={n.recipient_names}>
+                                        {n.recipient_names}
+                                      </div>
+                                    )}
+                                  </div>
                                 ) : (
                                   <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
                                     Toàn hệ thống
@@ -7861,11 +7919,11 @@ export default function AdminDashboardPage() {
                 <label className="block font-bold text-slate-700 mb-1">
                   Đối tượng nhận thông báo <span className="text-red-500">*</span>
                 </label>
-                <div className="grid grid-cols-3 gap-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <button
                     type="button"
                     onClick={() => setNewNotification({ ...newNotification, recipient_type: 'ALL' })}
-                    className={`p-3 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1.5 ${
+                    className={`p-2.5 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1 ${
                       newNotification.recipient_type === 'ALL'
                         ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-black shadow-xs'
                         : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
@@ -7878,7 +7936,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={() => setNewNotification({ ...newNotification, recipient_type: 'CUSTOMERS' })}
-                    className={`p-3 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1.5 ${
+                    className={`p-2.5 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1 ${
                       newNotification.recipient_type === 'CUSTOMERS'
                         ? 'border-amber-500 bg-amber-50/80 text-amber-950 font-black shadow-xs'
                         : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
@@ -7891,7 +7949,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={() => setNewNotification({ ...newNotification, recipient_type: 'ADMINS' })}
-                    className={`p-3 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1.5 ${
+                    className={`p-2.5 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1 ${
                       newNotification.recipient_type === 'ADMINS'
                         ? 'border-purple-500 bg-purple-50/80 text-purple-950 font-black shadow-xs'
                         : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
@@ -7900,7 +7958,129 @@ export default function AdminDashboardPage() {
                     <ShieldCheck className="w-4 h-4 text-purple-600" />
                     <span className="text-[11px]">Quản trị viên</span>
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setNewNotification({ ...newNotification, recipient_type: 'SPECIFIC' })}
+                    className={`p-2.5 rounded-xl border text-center transition cursor-pointer flex flex-col items-center gap-1 ${
+                      newNotification.recipient_type === 'SPECIFIC'
+                        ? 'border-indigo-500 bg-indigo-50/80 text-indigo-950 font-black shadow-xs'
+                        : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
+                    }`}
+                  >
+                    <UserPlus className="w-4 h-4 text-indigo-600" />
+                    <span className="text-[11px]">Người nhận cụ thể</span>
+                  </button>
                 </div>
+
+                {/* BỘ CHỌN NGƯỜI NHẬN ĐÍCH DANH (FR-046: 1 HOẶC NHIỀU NGƯỜI) */}
+                {newNotification.recipient_type === 'SPECIFIC' && (
+                  <div className="mt-3 p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2.5 animate-in fade-in duration-200">
+                    <div className="flex flex-col sm:flex-row gap-2 items-center justify-between">
+                      <div className="relative w-full sm:w-56">
+                        <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          placeholder="Tìm tên, SĐT..."
+                          value={userPickerSearch}
+                          onChange={(e) => setUserPickerSearch(e.target.value)}
+                          className="w-full pl-8 pr-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-medium bg-white focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                        <select
+                          value={userPickerRoleFilter}
+                          onChange={(e) => setUserPickerRoleFilter(e.target.value)}
+                          className="px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold bg-white focus:outline-none"
+                        >
+                          <option value="ALL">Tất cả vai trò</option>
+                          <option value="CUSTOMER">Khách hàng</option>
+                          <option value="ADMIN">Quản trị viên</option>
+                        </select>
+
+                        <div className="flex items-center gap-1.5 text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const idsToSelect = filteredPickerUsers.map(u => u.id);
+                              setSelectedRecipientIds(Array.from(new Set([...selectedRecipientIds, ...idsToSelect])));
+                            }}
+                            className="text-indigo-600 hover:underline font-bold cursor-pointer"
+                          >
+                            Chọn tất cả
+                          </button>
+                          <span className="text-slate-300">|</span>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedRecipientIds([])}
+                            className="text-slate-500 hover:underline font-bold cursor-pointer"
+                          >
+                            Bỏ chọn
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 px-1">
+                      <span>Danh sách tài khoản ({filteredPickerUsers.length})</span>
+                      <span className="text-indigo-600">Đã chọn: {selectedRecipientIds.length} người nhận</span>
+                    </div>
+
+                    {/* Danh sách người dùng để tích chọn */}
+                    <div className="max-h-48 overflow-y-auto rounded-xl border border-slate-200 bg-white divide-y divide-slate-100">
+                      {filteredPickerUsers.length === 0 ? (
+                        <div className="p-4 text-center text-slate-400 text-xs">
+                          Không tìm thấy tài khoản người dùng phù hợp.
+                        </div>
+                      ) : (
+                        filteredPickerUsers.map(user => {
+                          const isSelected = selectedRecipientIds.includes(user.id);
+                          return (
+                            <div
+                              key={user.id}
+                              onClick={() => {
+                                if (isSelected) {
+                                  setSelectedRecipientIds(selectedRecipientIds.filter(id => id !== user.id));
+                                } else {
+                                  setSelectedRecipientIds([...selectedRecipientIds, user.id]);
+                                }
+                              }}
+                              className={`p-2.5 flex items-center justify-between gap-3 cursor-pointer transition ${
+                                isSelected ? 'bg-indigo-50/70' : 'hover:bg-slate-50'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <input
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={() => {}} // Handle by parent div
+                                  className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                />
+                                <div className="min-w-0">
+                                  <div className="font-bold text-slate-900 truncate text-xs">
+                                    {user.full_name}
+                                  </div>
+                                  <div className="text-[11px] text-slate-400 font-mono">
+                                    {user.phone}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${
+                                user.type === 'ADMIN'
+                                  ? 'bg-purple-100 text-purple-800'
+                                  : 'bg-amber-100 text-amber-800'
+                              }`}>
+                                {user.role_name}
+                              </span>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div>
@@ -7981,6 +8161,16 @@ export default function AdminDashboardPage() {
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">
                       Quản trị viên
                     </span>
+                  ) : selectedNotificationDetail.recipient_type === 'SPECIFIC' ? (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">
+                      Đích danh ({(() => {
+                        try {
+                          return JSON.parse(selectedNotificationDetail.recipient_ids || '[]').length;
+                        } catch {
+                          return 'Nhiều';
+                        }
+                      })()} người)
+                    </span>
                   ) : (
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                       Toàn hệ thống
@@ -8009,6 +8199,15 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               </div>
+
+              {selectedNotificationDetail.recipient_type === 'SPECIFIC' && selectedNotificationDetail.recipient_names && (
+                <div>
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Danh sách người nhận cụ thể:</span>
+                  <div className="p-3 rounded-xl bg-indigo-50/50 border border-indigo-100 text-indigo-950 font-medium text-xs leading-relaxed">
+                    {selectedNotificationDetail.recipient_names}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nội dung thông báo:</span>

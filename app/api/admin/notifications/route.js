@@ -9,6 +9,8 @@ async function ensureNotificationsTable() {
       title VARCHAR(255) NOT NULL,
       content TEXT NOT NULL,
       recipient_type VARCHAR(50) NOT NULL DEFAULT 'ALL',
+      recipient_ids TEXT NULL,
+      recipient_names TEXT NULL,
       sender_id BIGINT UNSIGNED NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -17,6 +19,19 @@ async function ensureNotificationsTable() {
       CONSTRAINT fk_notifications_sender FOREIGN KEY (sender_id) REFERENCES users (id) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
   `);
+
+  try {
+    const cols = await query("DESCRIBE notifications");
+    const colNames = cols.map((c) => c.Field);
+    if (!colNames.includes('recipient_ids')) {
+      await query("ALTER TABLE notifications ADD COLUMN recipient_ids TEXT NULL AFTER recipient_type");
+    }
+    if (!colNames.includes('recipient_names')) {
+      await query("ALTER TABLE notifications ADD COLUMN recipient_names TEXT NULL AFTER recipient_ids");
+    }
+  } catch (e) {
+    // Already exists
+  }
 }
 
 export async function GET(request) {
@@ -40,9 +55,9 @@ export async function GET(request) {
     }
 
     if (search && search.trim() !== '') {
-      sql += ` AND (n.title LIKE ? OR n.content LIKE ?)`;
+      sql += ` AND (n.title LIKE ? OR n.content LIKE ? OR n.recipient_names LIKE ?)`;
       const term = `%${search.trim()}%`;
-      params.push(term, term);
+      params.push(term, term, term);
     }
 
     sql += ` ORDER BY n.created_at DESC, n.id DESC`;
@@ -59,7 +74,13 @@ export async function POST(request) {
   try {
     await ensureNotificationsTable();
     const body = await request.json();
-    const { title, content, recipient_type = 'ALL', sender_id = 1 } = body;
+    const {
+      title,
+      content,
+      recipient_type = 'ALL',
+      recipient_ids = [],
+      sender_id = 1
+    } = body;
 
     if (!title || title.trim() === '') {
       return NextResponse.json(
@@ -75,23 +96,52 @@ export async function POST(request) {
       );
     }
 
-    const validRecipients = ['ALL', 'CUSTOMERS', 'ADMINS'];
+    const validRecipients = ['ALL', 'CUSTOMERS', 'ADMINS', 'SPECIFIC'];
     const finalRecipient = validRecipients.includes(recipient_type) ? recipient_type : 'ALL';
 
+    let storedRecipientIds = null;
+    let storedRecipientNames = null;
+    let recipientLabel = 'Toàn hệ thống (Khách hàng & Quản trị viên)';
+
+    if (finalRecipient === 'SPECIFIC') {
+      if (!Array.isArray(recipient_ids) || recipient_ids.length === 0) {
+        return NextResponse.json(
+          { success: false, message: 'Vui lòng chọn ít nhất 1 người nhận cụ thể!' },
+          { status: 400 }
+        );
+      }
+
+      // Query names of selected users
+      const placeholders = recipient_ids.map(() => '?').join(',');
+      const selectedUsers = await query(
+        `SELECT id, full_name, phone FROM users WHERE id IN (${placeholders})`,
+        recipient_ids
+      );
+
+      const nameList = selectedUsers.map((u) => `${u.full_name} (${u.phone})`);
+      storedRecipientIds = JSON.stringify(recipient_ids);
+      storedRecipientNames = nameList.join(', ');
+      recipientLabel = `Đích danh ${recipient_ids.length} người nhận: ${storedRecipientNames}`;
+    } else if (finalRecipient === 'CUSTOMERS') {
+      recipientLabel = 'Khách hàng';
+    } else if (finalRecipient === 'ADMINS') {
+      recipientLabel = 'Quản trị viên chi nhánh';
+    }
+
     const result = await query(
-      `INSERT INTO notifications (title, content, recipient_type, sender_id, created_at)
-       VALUES (?, ?, ?, ?, NOW())`,
-      [title.trim(), content.trim(), finalRecipient, sender_id || 1]
+      `INSERT INTO notifications (title, content, recipient_type, recipient_ids, recipient_names, sender_id, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+      [
+        title.trim(),
+        content.trim(),
+        finalRecipient,
+        storedRecipientIds,
+        storedRecipientNames,
+        sender_id || 1
+      ]
     );
 
-    const recipientLabelMap = {
-      ALL: 'Tất cả (Khách hàng & Quản trị viên)',
-      CUSTOMERS: 'Khách hàng',
-      ADMINS: 'Quản trị viên chi nhánh'
-    };
-    const recipientLabel = recipientLabelMap[finalRecipient] || finalRecipient;
-
-    // Log action to system_logs with real IP and natural language (FR-045)
+    // Ghi nhật ký hệ thống kiểm toán (FR-045 & BR-030)
     await logSystemAction({
       request,
       userId: sender_id || 1,
@@ -109,6 +159,8 @@ export async function POST(request) {
           title: title.trim(),
           content: content.trim(),
           recipient_type: finalRecipient,
+          recipient_ids: storedRecipientIds,
+          recipient_names: storedRecipientNames,
           sender_id: sender_id || 1,
           created_at: new Date().toISOString()
         }
@@ -150,4 +202,3 @@ export async function DELETE(request) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
-
