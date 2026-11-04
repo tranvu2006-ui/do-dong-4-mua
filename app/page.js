@@ -9,13 +9,7 @@ import {
 } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 
-const DEFAULT_BANNER = {
-  id: 0,
-  title: 'Đổ Đống 4 Mùa - Tươi Sạch Tận Tay',
-  description: 'Thưởng thức hương vị trái cây thơm ngọt tự nhiên theo từng thời điểm trong năm. 100% chín cây, cam kết bao ăn 1 đổi 1 và giao nhanh 2 giờ bằng GreenSM.',
-  image_url: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=1200&auto=format&fit=crop&q=80',
-  link_url: '#product-section'
-};
+
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -35,7 +29,8 @@ function HomeContent() {
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [banners, setBanners] = useState([DEFAULT_BANNER]);
+  const [banners, setBanners] = useState([]);
+  const [bannersLoaded, setBannersLoaded] = useState(false);
   const [activeBannerIdx, setActiveBannerIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState('newest');
@@ -45,8 +40,19 @@ function HomeContent() {
     setCustomMax(maxPriceParam);
   }, [minPriceParam, maxPriceParam]);
 
-  // Load Categories & Banners Metadata on mount
+  // Load Categories & Banners Metadata on mount (voi localStorage Cache 0ms)
   useEffect(() => {
+    try {
+      const cachedBanners = localStorage.getItem('dodong4mua_home_banners');
+      if (cachedBanners) {
+        const parsed = JSON.parse(cachedBanners);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setBanners(parsed);
+          setBannersLoaded(true);
+        }
+      }
+    } catch (e) {}
+
     let isMounted = true;
     async function loadMeta() {
       try {
@@ -58,8 +64,12 @@ function HomeContent() {
         const banData = await banRes.json();
         if (isMounted) {
           if (catData.success && Array.isArray(catData.data)) setCategories(catData.data);
-          if (banData.success && Array.isArray(banData.data) && banData.data.length > 0) {
+          if (banData.success && Array.isArray(banData.data)) {
             setBanners(banData.data);
+            setBannersLoaded(true);
+            try {
+              localStorage.setItem('dodong4mua_home_banners', JSON.stringify(banData.data));
+            } catch (e) {}
           }
         }
       } catch (err) {
@@ -173,82 +183,104 @@ function HomeContent() {
     router.replace('/', { scroll: false });
   };
 
-  const currentBanner = banners[activeBannerIdx] || DEFAULT_BANNER;
+  const currentBanner = banners[activeBannerIdx] || null;
 
   return (
     <div className="space-y-12 pb-20">
-      {/* 1. Hero Section (Fixed height container to eliminate layout shift) */}
-      <section className="relative bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white overflow-hidden shadow-xl min-h-[480px] lg:min-h-[520px] flex items-center">
-        <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10 w-full">
-          <div className="lg:col-span-7 space-y-5">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/20 border border-accent-500/40 text-accent-300 font-extrabold uppercase tracking-wider backdrop-blur-md text-xs sm:text-sm">
-              <Sparkles className="w-4 h-4 text-accent-400" />
-              <span>Nông Sản Tận Vườn • Chuẩn VietGAP</span>
+      {/* 1. Hero Section (100% dong tu CSDL + Cache localStorage 0ms, khong hard code) */}
+      {!bannersLoaded && banners.length === 0 ? (
+        <section className="bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 min-h-[480px] lg:min-h-[520px] flex items-center animate-pulse">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+            <div className="lg:col-span-7 space-y-5">
+              <div className="w-48 h-8 rounded-full bg-white/15" />
+              <div className="w-3/4 h-12 rounded-2xl bg-white/20" />
+              <div className="w-full h-16 rounded-xl bg-white/10" />
+              <div className="w-56 h-12 rounded-2xl bg-white/20" />
             </div>
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white font-heading">
-              {currentBanner.title}
-            </h1>
-
-            <p className="text-emerald-100 max-w-2xl leading-relaxed font-medium text-sm sm:text-base">
-              {currentBanner.description || DEFAULT_BANNER.description}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-3.5 pt-2">
-              <button
-                onClick={() => {
-                  const el = document.getElementById('product-section');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="btn-primary cursor-pointer text-sm font-bold"
-              >
-                <span>Xem Bảng Giá Hôm Nay</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => document.getElementById('product-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-bold border border-white/20 transition-all backdrop-blur-md flex items-center gap-2 cursor-pointer hover:border-white/40 text-sm"
-              >
-                <Sparkles className="w-4 h-4 text-amber-300" />
-                <span>Khám Phá Sản Phẩm</span>
-              </button>
+            <div className="lg:col-span-5">
+              <div className="aspect-[4/3] rounded-3xl bg-white/10" />
             </div>
           </div>
+        </section>
+      ) : currentBanner ? (
+        <section className="relative bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white overflow-hidden shadow-xl min-h-[480px] lg:min-h-[520px] flex items-center">
+          <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10 w-full">
+            <div className="lg:col-span-7 space-y-5">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/20 border border-accent-500/40 text-accent-300 font-extrabold uppercase tracking-wider backdrop-blur-md text-xs sm:text-sm">
+                <Sparkles className="w-4 h-4 text-accent-400" />
+                <span>Nông Sản Tận Vườn • Chuẩn VietGAP</span>
+              </div>
 
-          <div className="lg:col-span-5 relative">
-            <div className="relative aspect-video sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/15 group bg-slate-800">
-              <img
-                src={currentBanner.image_url}
-                alt={currentBanner.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-5">
-                <div className="text-white font-bold flex items-center gap-2 text-xs sm:text-sm">
-                  <span className="bg-brand-600 px-2.5 py-0.5 rounded-lg text-white font-black uppercase text-xs">Hot</span>
-                  <span>Bao ăn từng quả • Giao tươi tận nhà</span>
-                </div>
+              {currentBanner.title && (
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white font-heading">
+                  {currentBanner.title}
+                </h1>
+              )}
+
+              {currentBanner.description ? (
+                <p className="text-emerald-100 max-w-2xl leading-relaxed font-medium text-sm sm:text-base">
+                  {currentBanner.description}
+                </p>
+              ) : null}
+
+              <div className="flex flex-wrap items-center gap-3.5 pt-2">
+                <button
+                  onClick={() => {
+                    const el = document.getElementById('product-section');
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="btn-primary cursor-pointer text-sm font-bold"
+                >
+                  <span>Xem Bảng Giá Hôm Nay</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => document.getElementById('product-section')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-bold border border-white/20 transition-all backdrop-blur-md flex items-center gap-2 cursor-pointer hover:border-white/40 text-sm"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <span>Khám Phá Sản Phẩm</span>
+                </button>
               </div>
             </div>
 
-            {/* Dots navigation */}
-            {banners.length > 1 && (
-              <div className="flex justify-center gap-2 mt-4">
-                {banners.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveBannerIdx(idx)}
-                    className={`h-2 rounded-full transition-all cursor-pointer ${
-                      idx === activeBannerIdx ? 'w-8 bg-accent-500' : 'w-2 bg-white/40 hover:bg-white/60'
-                    }`}
-                    aria-label={`Chuyển tới banner ${idx + 1}`}
+            <div className="lg:col-span-5 relative">
+              {currentBanner.image_url ? (
+                <div className="relative aspect-video sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/15 group bg-slate-800">
+                  <img
+                    src={currentBanner.image_url}
+                    alt={currentBanner.title || 'Banner'}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                ))}
-              </div>
-            )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-5">
+                    <div className="text-white font-bold flex items-center gap-2 text-xs sm:text-sm">
+                      <span className="bg-brand-600 px-2.5 py-0.5 rounded-lg text-white font-black uppercase text-xs">Hot</span>
+                      <span>Bao ăn từng quả • Giao tươi tận nhà</span>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {/* Dots navigation */}
+              {banners.length > 1 && (
+                <div className="flex justify-center gap-2 mt-4">
+                  {banners.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveBannerIdx(idx)}
+                      className={`h-2 rounded-full transition-all cursor-pointer ${
+                        idx === activeBannerIdx ? 'w-8 bg-accent-500' : 'w-2 bg-white/40 hover:bg-white/60'
+                      }`}
+                      aria-label={`Chuyển tới banner ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {/* 2. Feature Value Proposition Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
