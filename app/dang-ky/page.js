@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, User, Phone, Lock, MapPin, ArrowRight, CheckCircle2, AlertCircle, Sparkles, KeyRound, MessageSquare, Loader2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
 import { auth, formatPhoneForE164, initRecaptchaVerifier, resetRecaptchaVerifier, signInWithPhoneNumber } from '@/lib/firebase';
+
+import RegisterForm from '@/components/auth/RegisterForm';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -51,7 +53,6 @@ export default function RegisterPage() {
 
     setSendingOtp(true);
     try {
-      // 1. Kiểm tra xem SĐT đã tồn tại chưa
       const checkRes = await fetch(`/api/auth/check-phone?phone=${encodeURIComponent(cleanPhone)}`);
       const checkData = await checkRes.json();
       if (checkData.exists) {
@@ -60,7 +61,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // 2. Khởi tạo reCAPTCHA verifier và gửi SMS qua Firebase
       const verifier = initRecaptchaVerifier('recaptcha-container');
       const e164Phone = formatPhoneForE164(cleanPhone);
 
@@ -90,7 +90,7 @@ export default function RegisterPage() {
     }
   };
 
-  // Xác thực mã OTP người dùng nhập (100% Firebase confirmationResult)
+  // Xác thực mã OTP người dùng nhập
   const handleVerifyOtp = async () => {
     setErrorMsg('');
     setSuccessMsg('');
@@ -176,7 +176,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Container ẩn dành cho reCAPTCHA của Firebase */}
+      {/* Hidden container for Firebase reCAPTCHA */}
       <div id="recaptcha-container"></div>
 
       <div className="max-w-md w-full space-y-6 bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100">
@@ -215,222 +215,30 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmitRegister} noValidate className="space-y-4">
-          {/* Họ và tên */}
-          <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1">
-              Họ và tên của bạn <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-              <input
-                type="text"
-                required
-                placeholder="Ví dụ: Nguyễn Văn An"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full text-xs pl-10 pr-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600 bg-gray-50/50"
-              />
-            </div>
-          </div>
-
-          {/* Số điện thoại + Nhận mã OTP */}
-          <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1">
-              Số điện thoại nhận mã OTP <span className="text-red-500">*</span>
-            </label>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Phone className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-                <input
-                  type="tel"
-                  required
-                  disabled={otpVerified}
-                  placeholder="Ví dụ: 0912345678"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    if (otpVerified) setOtpVerified(false);
-                    if (otpSent) setOtpSent(false);
-                  }}
-                  className={`w-full text-xs pl-10 pr-3.5 py-2.5 rounded-xl border ${
-                    otpVerified ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-bold' : 'border-gray-200 bg-gray-50/50'
-                  } focus:outline-none focus:ring-2 focus:ring-brand-600`}
-                />
-              </div>
-
-              {!otpVerified && (
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={sendingOtp || countdown > 0 || phone.trim().length < 10}
-                  className="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 disabled:bg-gray-300 text-white rounded-xl text-xs font-black whitespace-nowrap transition cursor-pointer shadow-sm flex items-center justify-center gap-1.5"
-                >
-                  {sendingOtp ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Đang gửi SMS...</span>
-                    </>
-                  ) : countdown > 0 ? (
-                    `Gửi lại (${countdown}s)`
-                  ) : (otpSent ? 'Gửi lại mã' : 'Nhận mã OTP')}
-                </button>
-              )}
-            </div>
-            {phone.trim().length > 0 && phone.trim().length < 10 && (
-              <p className="text-[11px] text-amber-600 font-medium mt-1">
-                ⚠️ Số điện thoại phải gồm 10 chữ số (Ví dụ: 0912345678)
-              </p>
-            )}
-          </div>
-
-          {/* Ô nhập mã OTP (LUÔN HIỆN ĐỂ NGƯỜI DÙNG THẤY CHỖ NHẬP) */}
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-bold text-gray-700">
-                Mã xác thực OTP (6 chữ số) <span className="text-red-500">*</span>
-              </label>
-              {otpSent && countdown > 0 && !otpVerified && (
-                <span className="text-[11px] text-amber-600 font-bold animate-pulse">
-                  Hiệu lực trong {countdown}s
-                </span>
-              )}
-            </div>
-
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <MessageSquare className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-                <input
-                  type="text"
-                  maxLength={6}
-                  disabled={!otpSent || otpVerified}
-                  placeholder={
-                    otpVerified 
-                      ? "Đã xác thực thành công" 
-                      : otpSent 
-                        ? "Nhập 6 số từ SMS (ví dụ: 123456)..." 
-                        : "Bấm nút 'Nhận mã OTP' ở trên để lấy mã..."
-                  }
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                  className={`w-full text-xs pl-10 pr-3.5 py-2.5 rounded-xl border ${
-                    otpVerified 
-                      ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-black' 
-                      : !otpSent 
-                        ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed' 
-                        : 'bg-white border-brand-500 ring-2 ring-brand-100 font-black tracking-widest text-sm text-gray-900'
-                  } focus:outline-none focus:ring-2 focus:ring-brand-600`}
-                />
-              </div>
-
-              {!otpVerified && (
-                <button
-                  type="button"
-                  onClick={handleVerifyOtp}
-                  disabled={!otpSent || verifyingOtp || otpCode.length < 6}
-                  className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white rounded-xl text-xs font-black whitespace-nowrap transition cursor-pointer shadow-sm flex items-center justify-center gap-1.5"
-                >
-                  {verifyingOtp && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>{verifyingOtp ? 'Đang kiểm tra...' : 'Xác nhận OTP'}</span>
-                </button>
-              )}
-            </div>
-
-            {/* Thông báo trạng thái OTP */}
-            {otpVerified ? (
-              <p className="text-[11px] text-emerald-600 font-bold mt-1.5 flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Số điện thoại đã được xác thực an toàn!
-              </p>
-            ) : otpSent ? (
-              <p className="text-[11px] text-emerald-700 font-semibold mt-1.5 flex items-center gap-1">
-                📲 Đã gửi tin nhắn SMS! Bạn vui lòng nhập mã 6 số vào ô trên rồi bấm <strong>Xác nhận OTP</strong>.
-              </p>
-            ) : (
-              <p className="text-[11px] text-gray-400 mt-1">
-                💡 Nhập đủ 10 số điện thoại & bấm <strong>"Nhận mã OTP"</strong> ở trên để nhận tin nhắn SMS.
-              </p>
-            )}
-          </div>
-
-          {/* Mật khẩu */}
-          <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1">
-              Mật khẩu <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-              <input
-                type="password"
-                required
-                placeholder="Tối thiểu 6 ký tự"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full text-xs pl-10 pr-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600 bg-gray-50/50"
-              />
-            </div>
-          </div>
-
-          {/* Nhập lại mật khẩu */}
-          <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1">
-              Nhập lại mật khẩu <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <KeyRound className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-              <input
-                type="password"
-                required
-                placeholder="Nhập lại chính xác mật khẩu"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full text-xs pl-10 pr-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600 bg-gray-50/50"
-              />
-            </div>
-          </div>
-
-          {/* Địa chỉ giao hàng mặc định (tùy chọn) */}
-          <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1">
-              Địa chỉ nhận hàng mặc định (tùy chọn)
-            </label>
-            <div className="relative">
-              <MapPin className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-              <input
-                type="text"
-                placeholder="Số nhà, tên đường, phường, quận..."
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full text-xs pl-10 pr-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600 bg-gray-50/50"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading || !otpVerified}
-            className="w-full py-3 bg-brand-600 hover:bg-brand-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-extrabold rounded-xl transition shadow-md flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm mt-3"
-          >
-            {loading ? (
-              <span>Đang tạo tài khoản...</span>
-            ) : (
-              <>
-                <span>Hoàn Tất Đăng Ký</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </button>
-        </form>
-
-        <div className="border-t border-gray-100 pt-4 text-center">
-          <p className="text-xs text-gray-500 font-medium">
-            Đã có tài khoản?{' '}
-            <Link href="/dang-nhap" className="font-extrabold text-brand-700 hover:underline">
-              Đăng nhập ngay
-            </Link>
-          </p>
-        </div>
+        <RegisterForm
+          fullName={fullName}
+          setFullName={setFullName}
+          phone={phone}
+          setPhone={setPhone}
+          password={password}
+          setPassword={setPassword}
+          confirmPassword={confirmPassword}
+          setConfirmPassword={setConfirmPassword}
+          address={address}
+          setAddress={setAddress}
+          otpCode={otpCode}
+          setOtpCode={setOtpCode}
+          otpSent={otpSent}
+          otpVerified={otpVerified}
+          sendingOtp={sendingOtp}
+          verifyingOtp={verifyingOtp}
+          countdown={countdown}
+          loading={loading}
+          onSendOtp={handleSendOtp}
+          onVerifyOtp={handleVerifyOtp}
+          onSubmit={handleSubmitRegister}
+        />
       </div>
     </div>
   );
 }
-
