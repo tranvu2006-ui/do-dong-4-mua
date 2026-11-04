@@ -17,6 +17,83 @@ const DEFAULT_BANNER = {
   link_url: '#product-section'
 };
 
+function HeroBanner({ banner = DEFAULT_BANNER, banners = [], activeBannerIdx = 0, onSelectBanner = null }) {
+  const currentBanner = banner || DEFAULT_BANNER;
+  return (
+    <section className="relative bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white overflow-hidden shadow-xl min-h-[480px] lg:min-h-[520px] flex items-center">
+      <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10 w-full">
+        <div className="lg:col-span-7 space-y-5">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/20 border border-accent-500/40 text-accent-300 font-extrabold uppercase tracking-wider backdrop-blur-md text-xs sm:text-sm">
+            <Sparkles className="w-4 h-4 text-accent-400" />
+            <span>Nông Sản Tận Vườn • Chuẩn VietGAP</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white font-heading">
+            {currentBanner.title}
+          </h1>
+
+          <p className="text-emerald-100 max-w-2xl leading-relaxed font-medium text-sm sm:text-base">
+            {currentBanner.description || DEFAULT_BANNER.description}
+          </p>
+
+          <div className="flex flex-wrap items-center gap-3.5 pt-2">
+            <button
+              onClick={() => {
+                const el = document.getElementById('product-section');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="btn-primary cursor-pointer text-sm font-bold"
+            >
+              <span>Xem Bảng Giá Hôm Nay</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => document.getElementById('product-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-bold border border-white/20 transition-all backdrop-blur-md flex items-center gap-2 cursor-pointer hover:border-white/40 text-sm"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span>Khám Phá Sản Phẩm</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="lg:col-span-5 relative">
+          <div className="relative aspect-video sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/15 group bg-slate-800">
+            <img
+              src={currentBanner.image_url}
+              alt={currentBanner.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-5">
+              <div className="text-white font-bold flex items-center gap-2 text-xs sm:text-sm">
+                <span className="bg-brand-600 px-2.5 py-0.5 rounded-lg text-white font-black uppercase text-xs">Hot</span>
+                <span>Bao ăn từng quả • Giao tươi tận nhà</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Dots navigation */}
+          {banners && banners.length > 1 && onSelectBanner && (
+            <div className="flex justify-center gap-2 mt-4">
+              {banners.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => onSelectBanner(idx)}
+                  className={`h-2 rounded-full transition-all cursor-pointer ${
+                    idx === activeBannerIdx ? 'w-8 bg-accent-500' : 'w-2 bg-white/40 hover:bg-white/60'
+                  }`}
+                  aria-label={`Chuyển tới banner ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function HomeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -177,78 +254,13 @@ function HomeContent() {
 
   return (
     <div className="space-y-12 pb-20">
-      {/* 1. Hero Section (Fixed height container to eliminate layout shift) */}
-      <section className="relative bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white overflow-hidden shadow-xl min-h-[480px] lg:min-h-[520px] flex items-center">
-        <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10 w-full">
-          <div className="lg:col-span-7 space-y-5">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/20 border border-accent-500/40 text-accent-300 font-extrabold uppercase tracking-wider backdrop-blur-md text-xs sm:text-sm">
-              <Sparkles className="w-4 h-4 text-accent-400" />
-              <span>Nông Sản Tận Vườn • Chuẩn VietGAP</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white font-heading">
-              {currentBanner.title}
-            </h1>
-
-            <p className="text-emerald-100 max-w-2xl leading-relaxed font-medium text-sm sm:text-base">
-              {currentBanner.description || DEFAULT_BANNER.description}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-3.5 pt-2">
-              <button
-                onClick={() => {
-                  const el = document.getElementById('product-section');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="btn-primary cursor-pointer text-sm font-bold"
-              >
-                <span>Xem Bảng Giá Hôm Nay</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => document.getElementById('product-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-bold border border-white/20 transition-all backdrop-blur-md flex items-center gap-2 cursor-pointer hover:border-white/40 text-sm"
-              >
-                <Sparkles className="w-4 h-4 text-amber-300" />
-                <span>Khám Phá Sản Phẩm</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="lg:col-span-5 relative">
-            <div className="relative aspect-video sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/15 group bg-slate-800">
-              <img
-                src={currentBanner.image_url}
-                alt={currentBanner.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-5">
-                <div className="text-white font-bold flex items-center gap-2 text-xs sm:text-sm">
-                  <span className="bg-brand-600 px-2.5 py-0.5 rounded-lg text-white font-black uppercase text-xs">Hot</span>
-                  <span>Bao ăn từng quả • Giao tươi tận nhà</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Dots navigation */}
-            {banners.length > 1 && (
-              <div className="flex justify-center gap-2 mt-4">
-                {banners.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveBannerIdx(idx)}
-                    className={`h-2 rounded-full transition-all cursor-pointer ${
-                      idx === activeBannerIdx ? 'w-8 bg-accent-500' : 'w-2 bg-white/40 hover:bg-white/60'
-                    }`}
-                    aria-label={`Chuyển tới banner ${idx + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+      {/* 1. Hero Section (Dynamic + Hardcoded Fallback) */}
+      <HeroBanner
+        banner={currentBanner}
+        banners={banners}
+        activeBannerIdx={activeBannerIdx}
+        onSelectBanner={setActiveBannerIdx}
+      />
 
       {/* 2. Feature Value Proposition Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -646,24 +658,57 @@ function HomeContent() {
 // Seamless Skeleton Fallback (Mirrors exact page structure so there is ZERO layout shift or flicker)
 function HomeSkeleton() {
   return (
-    <div className="space-y-12 pb-20 animate-pulse">
-      {/* Hero Skeleton */}
-      <section className="bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 min-h-[480px] lg:min-h-[520px] flex items-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
-          <div className="lg:col-span-7 space-y-5">
-            <div className="w-48 h-8 rounded-full bg-white/15" />
-            <div className="w-3/4 h-12 rounded-2xl bg-white/20" />
-            <div className="w-full h-16 rounded-xl bg-white/10" />
-            <div className="w-56 h-12 rounded-2xl bg-white/20" />
+    <div className="space-y-12 pb-20">
+      {/* 1. Hero Banner hardcoded lúc tải trang - hiển thị ngay tức thì 0ms, không làm mờ */}
+      <HeroBanner banner={DEFAULT_BANNER} />
+
+      {/* 2. Feature Value Proposition Grid (Hardcoded cố định lúc tải trang) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-brand-600 flex items-center justify-center shrink-0 border border-emerald-100">
+              <CheckCircle2 className="w-6 h-6 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-gray-900 mb-0.5 text-sm sm:text-base">100% Chín Tự Nhiên</h3>
+              <p className="text-gray-500 font-medium text-xs sm:text-sm">Không hóa chất ủ ép, thu hái tươi tại các nhà vườn VietGAP.</p>
+            </div>
           </div>
-          <div className="lg:col-span-5">
-            <div className="aspect-[4/3] rounded-3xl bg-white/10" />
+
+          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 text-accent-500 flex items-center justify-center shrink-0 border border-amber-100">
+              <Truck className="w-6 h-6 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-gray-900 mb-0.5 text-sm sm:text-base">Giao Hỏa Tốc 2H</h3>
+              <p className="text-gray-500 font-medium text-xs sm:text-sm">Đội xe điện GreenSM vận chuyển bọc xốp cẩn thận không dập nát.</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 border border-sky-100">
+              <ShieldCheck className="w-6 h-6 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-gray-900 mb-0.5 text-sm sm:text-base">Bao Ăn 1 Đổi 1</h3>
+              <p className="text-gray-500 font-medium text-xs sm:text-sm">Bảo hành vị ngọt trong 24 giờ. Đổi ngay hoặc hoàn tiền nếu sượng/hỏng.</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100">
+              <Zap className="w-6 h-6 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-gray-900 mb-0.5 text-sm sm:text-base">Giá Rẻ Tận Vườn</h3>
+              <p className="text-gray-500 font-medium text-xs sm:text-sm">Mô hình thu mua trực tiếp, giá sỉ lẻ cạnh tranh tốt nhất thị trường.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Product Grid Skeleton */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+      {/* 3. Product Grid Skeleton (Chỉ làm mờ shimmer danh sách sản phẩm trong lúc đợi API) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6 animate-pulse">
         <div className="h-10 w-48 bg-slate-200 rounded-xl" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
