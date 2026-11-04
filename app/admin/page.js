@@ -440,6 +440,17 @@ export default function AdminDashboardPage() {
   const [inventoryReportEndDate, setInventoryReportEndDate] = useState('');
   const [inventoryReportPage, setInventoryReportPage] = useState(1);
   const [inventoryReportPageSize, setInventoryReportPageSize] = useState(10);
+
+  // Báo cáo đơn hàng (FR-050 & BR-030)
+  const [orderReportData, setOrderReportData] = useState(null);
+  const [orderReportLoading, setOrderReportLoading] = useState(false);
+  const [orderReportSearch, setOrderReportSearch] = useState('');
+  const [orderReportStatus, setOrderReportStatus] = useState('all');
+  const [orderReportPaymentStatus, setOrderReportPaymentStatus] = useState('all');
+  const [orderReportStartDate, setOrderReportStartDate] = useState('');
+  const [orderReportEndDate, setOrderReportEndDate] = useState('');
+  const [orderReportPage, setOrderReportPage] = useState(1);
+  const [orderReportPageSize, setOrderReportPageSize] = useState(10);
   const [showAddBannerModal, setShowAddBannerModal] = useState(false);
   const [showAddAdminModal, setShowAddAdminModal] = useState(false);
 
@@ -642,7 +653,7 @@ export default function AdminDashboardPage() {
     try {
       const [
         statsRes, ordersRes, prodsRes, catsRes,
-        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes, settingsRes, shippingFeesRes, notificationsRes, revenueRes, customerReportRes, inventoryReportRes
+        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes, settingsRes, shippingFeesRes, notificationsRes, revenueRes, customerReportRes, inventoryReportRes, orderReportRes
       ] = await Promise.all([
         fetch('/api/admin/stats'),
         fetch(`/api/orders?limit=100${orderStatusFilter ? `&status=${orderStatusFilter}` : ''}${orderSearch ? `&search=${encodeURIComponent(orderSearch)}` : ''}${orderStartDate ? `&startDate=${orderStartDate}` : ''}${orderEndDate ? `&endDate=${orderEndDate}` : ''}`),
@@ -660,15 +671,16 @@ export default function AdminDashboardPage() {
         fetch('/api/admin/reports/revenue'),
         fetch('/api/admin/reports/customers'),
         fetch('/api/admin/reports/inventory'),
+        fetch('/api/admin/reports/orders'),
       ]);
 
       const [
         statsData, ordersData, prodsData, catsData,
         promosData, branchesData, bannersData, custsData, logsData, usersData,
-        settingsData, shippingFeesData, notificationsData, revenueDataRes, customerReportDataRes, inventoryReportDataRes
+        settingsData, shippingFeesData, notificationsData, revenueDataRes, customerReportDataRes, inventoryReportDataRes, orderReportDataRes
       ] = await Promise.all([
         statsRes.json(), ordersRes.json(), prodsRes.json(), catsRes.json(),
-        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json(), settingsRes.json(), shippingFeesRes.json(), notificationsRes.json(), revenueRes.json(), customerReportRes.json(), inventoryReportRes.json()
+        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json(), settingsRes.json(), shippingFeesRes.json(), notificationsRes.json(), revenueRes.json(), customerReportRes.json(), inventoryReportRes.json(), orderReportRes.json()
       ]);
 
       if (statsData.success) setStats(statsData.data);
@@ -690,6 +702,7 @@ export default function AdminDashboardPage() {
       if (revenueDataRes && revenueDataRes.success) setRevenueData(revenueDataRes.data);
       if (customerReportDataRes && customerReportDataRes.success) setCustomerReportData(customerReportDataRes.data);
       if (inventoryReportDataRes && inventoryReportDataRes.success) setInventoryReportData(inventoryReportDataRes.data);
+      if (orderReportDataRes && orderReportDataRes.success) setOrderReportData(orderReportDataRes.data);
     } catch (err) {
       console.error('Failed to load admin data', err);
     } finally {
@@ -2024,6 +2037,53 @@ export default function AdminDashboardPage() {
     if (inventoryReportEndDate) url += `&endDate=${encodeURIComponent(inventoryReportEndDate)}`;
     window.open(url, '_blank');
     showToast('Đang tạo và tải tệp Excel báo cáo hàng tồn kho...', 'success');
+  };
+
+  // Quản lý báo cáo đơn hàng (FR-050 & BR-030)
+  const loadOrderReport = async (overrideStatus, overridePay, overrideSearch, overrideStart, overrideEnd) => {
+    const sStatus = overrideStatus !== undefined ? overrideStatus : orderReportStatus;
+    const sPay = overridePay !== undefined ? overridePay : orderReportPaymentStatus;
+    const sTerm = overrideSearch !== undefined ? overrideSearch : orderReportSearch;
+    const sDate = overrideStart !== undefined ? overrideStart : orderReportStartDate;
+    const eDate = overrideEnd !== undefined ? overrideEnd : orderReportEndDate;
+
+    if (sDate && eDate && sDate > eDate) {
+      showToast('Ngày bắt đầu không được lớn hơn ngày kết thúc!', 'warning');
+      return;
+    }
+
+    setOrderReportLoading(true);
+    try {
+      let url = '/api/admin/reports/orders?';
+      if (sStatus && sStatus !== 'all') url += `orderStatus=${encodeURIComponent(sStatus)}&`;
+      if (sPay && sPay !== 'all') url += `paymentStatus=${encodeURIComponent(sPay)}&`;
+      if (sTerm) url += `search=${encodeURIComponent(sTerm)}&`;
+      if (sDate) url += `startDate=${encodeURIComponent(sDate)}&`;
+      if (eDate) url += `endDate=${encodeURIComponent(eDate)}&`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success) {
+        setOrderReportData(data.data);
+      } else {
+        showToast(data.message || 'Lỗi tải báo cáo đơn hàng', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi kết nối máy chủ: ' + err.message, 'error');
+    } finally {
+      setOrderReportLoading(false);
+    }
+  };
+
+  const exportOrderReportCsv = () => {
+    let url = '/api/admin/reports/orders?format=excel';
+    if (orderReportStatus && orderReportStatus !== 'all') url += `&orderStatus=${encodeURIComponent(orderReportStatus)}`;
+    if (orderReportPaymentStatus && orderReportPaymentStatus !== 'all') url += `&paymentStatus=${encodeURIComponent(orderReportPaymentStatus)}`;
+    if (orderReportSearch) url += `&search=${encodeURIComponent(orderReportSearch)}`;
+    if (orderReportStartDate) url += `&startDate=${encodeURIComponent(orderReportStartDate)}`;
+    if (orderReportEndDate) url += `&endDate=${encodeURIComponent(orderReportEndDate)}`;
+    window.open(url, '_blank');
+    showToast('Đang tạo và tải tệp Excel báo cáo đơn hàng...', 'success');
   };
 
   const handleQuickCustomerDateFilter = (days) => {
@@ -4808,6 +4868,22 @@ export default function AdminDashboardPage() {
                       <Box className="w-4 h-4 text-amber-600" />
                       <span>Báo Cáo Hàng Tồn Kho (FR-049)</span>
                     </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReportSubTab('orders');
+                        if (!orderReportData) loadOrderReport();
+                      }}
+                      className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition cursor-pointer ${
+                        reportSubTab === 'orders'
+                          ? 'bg-white text-blue-950 shadow-sm'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <ShoppingCart className="w-4 h-4 text-blue-600" />
+                      <span>Báo Cáo Đơn Hàng (FR-050)</span>
+                    </button>
                   </div>
 
                   {reportSubTab === 'revenue' && (
@@ -5890,6 +5966,450 @@ export default function AdminDashboardPage() {
                             onPageSizeChange={setInventoryReportPageSize}
                             pageSizeOptions={[10, 15, 30, 50]}
                             itemName="sản phẩm tồn kho"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* BÁO CÁO ĐƠN HÀNG (FR-050) */}
+                  {reportSubTab === 'orders' && (
+                    <div className="space-y-6 animate-in fade-in duration-200">
+                      {/* Tiêu đề & Bộ lọc đơn hàng */}
+                      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                          <div>
+                            <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                              <ShoppingCart className="w-5 h-5 text-blue-600" />
+                              <span>Báo Cáo Thống Kê Đơn Hàng (FR-050)</span>
+                            </h2>
+                            <p className="text-xs text-slate-500 mt-1">
+                              Thống kê số lượng, tiến độ xử lý và diễn biến đơn hàng theo khoảng thời gian (SRS FR-050)
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <button
+                              type="button"
+                              onClick={() => loadOrderReport()}
+                              disabled={orderReportLoading}
+                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 flex items-center gap-1.5 transition cursor-pointer"
+                            >
+                              <RotateCcw className={`w-3.5 h-3.5 ${orderReportLoading ? 'animate-spin' : ''}`} />
+                              <span>Làm mới</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={exportOrderReportCsv}
+                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm flex items-center gap-1.5 transition cursor-pointer"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                              <span>Xuất Excel / CSV (TC_REPORT_003)</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Thanh lọc nâng cao */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1">
+                          <div className="relative">
+                            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="text"
+                              placeholder="Tìm mã đơn, tên, SĐT..."
+                              value={orderReportSearch}
+                              onChange={(e) => {
+                                setOrderReportSearch(e.target.value);
+                                setOrderReportPage(1);
+                              }}
+                              className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+                            />
+                          </div>
+
+                          <div>
+                            <select
+                              value={orderReportStatus}
+                              onChange={(e) => {
+                                setOrderReportStatus(e.target.value);
+                                setOrderReportPage(1);
+                                loadOrderReport(e.target.value, orderReportPaymentStatus, orderReportSearch);
+                              }}
+                              className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition bg-white font-medium"
+                            >
+                              <option value="all">Tất cả trạng thái đơn</option>
+                              <option value="PENDING_GROUP">⏳ Đơn chờ xử lý (Nhóm)</option>
+                              <option value="CHO_XAC_NHAN">Chờ xác nhận (COD)</option>
+                              <option value="CHO_THANH_TOAN">Chờ thanh toán (VietQR)</option>
+                              <option value="DA_XAC_NHAN">Đã xác nhận</option>
+                              <option value="DANG_CHUAN_BI">Đang chuẩn bị hàng</option>
+                              <option value="DANG_GIAO">🚚 Đang giao hàng</option>
+                              <option value="DA_GIAO">✅ Đã giao thành công</option>
+                              <option value="TAM_DUNG">⏸️ Tạm dừng xử lý</option>
+                              <option value="DA_HUY">❌ Đã hủy</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <select
+                              value={orderReportPaymentStatus}
+                              onChange={(e) => {
+                                setOrderReportPaymentStatus(e.target.value);
+                                setOrderReportPage(1);
+                                loadOrderReport(orderReportStatus, e.target.value, orderReportSearch);
+                              }}
+                              className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition bg-white"
+                            >
+                              <option value="all">Tất cả thanh toán</option>
+                              <option value="PAID">Đã thanh toán</option>
+                              <option value="UNPAID">Chưa thanh toán</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <input
+                              type="date"
+                              value={orderReportStartDate}
+                              onChange={(e) => setOrderReportStartDate(e.target.value)}
+                              placeholder="Từ ngày"
+                              className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="date"
+                              value={orderReportEndDate}
+                              onChange={(e) => setOrderReportEndDate(e.target.value)}
+                              placeholder="Đến ngày"
+                              className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOrderReportPage(1);
+                                loadOrderReport();
+                              }}
+                              className="px-3 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer shrink-0"
+                            >
+                              Lọc
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOrderReportSearch('');
+                                setOrderReportStatus('all');
+                                setOrderReportPaymentStatus('all');
+                                setOrderReportStartDate('');
+                                setOrderReportEndDate('');
+                                setOrderReportPage(1);
+                                loadOrderReport('all', 'all', '', '', '');
+                              }}
+                              title="Đặt lại bộ lọc"
+                              className="p-2 rounded-xl text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition cursor-pointer shrink-0"
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 6 Thẻ chỉ số tổng hợp đơn hàng theo kết quả SRS FR-050 */}
+                      {orderReportData && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                          {/* 1. Tổng đơn hàng */}
+                          <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-bold text-slate-500 uppercase">Tổng số đơn</span>
+                              <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                <ShoppingCart className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-xl font-black text-slate-900 tracking-tight">
+                                {orderReportData.summary?.total_orders || 0}
+                              </div>
+                              <p className="text-[11px] text-slate-500">
+                                Hoàn tất: <strong className="text-emerald-700">{orderReportData.summary?.completion_rate || 0}%</strong>
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* 2. Đơn chờ xử lý */}
+                          <div className="bg-white p-4 rounded-2xl border border-amber-200 shadow-2xs space-y-2 bg-gradient-to-br from-white to-amber-50/20">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-bold text-amber-700 uppercase">Chờ xử lý</span>
+                              <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+                                <Clock className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-xl font-black text-amber-700 tracking-tight">
+                                {orderReportData.summary?.pending_orders || 0}
+                              </div>
+                              <p className="text-[11px] text-amber-600 font-medium">Chờ xác nhận & chuẩn bị</p>
+                            </div>
+                          </div>
+
+                          {/* 3. Đơn đang giao */}
+                          <div className="bg-white p-4 rounded-2xl border border-sky-200 shadow-2xs space-y-2 bg-gradient-to-br from-white to-sky-50/20">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-bold text-sky-700 uppercase">Đang giao</span>
+                              <div className="w-7 h-7 rounded-lg bg-sky-100 flex items-center justify-center text-sky-600">
+                                <Truck className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-xl font-black text-sky-700 tracking-tight">
+                                {orderReportData.summary?.shipping_orders || 0}
+                              </div>
+                              <p className="text-[11px] text-sky-600 font-medium">Đang trên đường vận chuyển</p>
+                            </div>
+                          </div>
+
+                          {/* 4. Đơn đã giao */}
+                          <div className="bg-white p-4 rounded-2xl border border-emerald-200 shadow-2xs space-y-2 bg-gradient-to-br from-white to-emerald-50/20">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-bold text-emerald-700 uppercase">Đã giao</span>
+                              <div className="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                <CheckCircle2 className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-xl font-black text-emerald-700 tracking-tight">
+                                {orderReportData.summary?.delivered_orders || 0}
+                              </div>
+                              <p className="text-[11px] text-emerald-700 font-bold truncate">
+                                +{(orderReportData.summary?.total_revenue || 0).toLocaleString('vi-VN')} đ
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* 5. Đơn tạm dừng */}
+                          <div className="bg-white p-4 rounded-2xl border border-purple-200 shadow-2xs space-y-2 bg-gradient-to-br from-white to-purple-50/20">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-bold text-purple-700 uppercase">Tạm dừng</span>
+                              <div className="w-7 h-7 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+                                <Pause className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-xl font-black text-purple-700 tracking-tight">
+                                {orderReportData.summary?.on_hold_orders || 0}
+                              </div>
+                              <p className="text-[11px] text-purple-600 font-medium">Chờ đối soát / thông tin</p>
+                            </div>
+                          </div>
+
+                          {/* 6. Đơn hủy */}
+                          <div className="bg-white p-4 rounded-2xl border border-rose-200 shadow-2xs space-y-2 bg-gradient-to-br from-white to-rose-50/20">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-bold text-rose-700 uppercase">Đơn hủy</span>
+                              <div className="w-7 h-7 rounded-lg bg-rose-100 flex items-center justify-center text-rose-600">
+                                <XCircle className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-xl font-black text-rose-700 tracking-tight">
+                                {orderReportData.summary?.cancelled_orders || 0}
+                              </div>
+                              <p className="text-[11px] text-rose-600 font-medium">Khách hủy / không liên lạc</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Phân bổ theo trạng thái và Phương thức thanh toán */}
+                      {orderReportData && (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          {/* Phân bổ theo trạng thái */}
+                          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-3">
+                            <h3 className="font-heading font-black text-sm text-slate-900 flex items-center gap-2">
+                              <BarChart3 className="w-4 h-4 text-blue-600" />
+                              <span>Cơ Cấu Trạng Thái Đơn Hàng</span>
+                            </h3>
+                            <div className="space-y-2.5 pt-1">
+                              {orderReportData.status_breakdown?.map((st) => {
+                                const total = orderReportData.summary?.total_orders || 1;
+                                const pct = Math.round((st.count / total) * 100);
+                                return (
+                                  <div key={st.status} className="space-y-1">
+                                    <div className="flex items-center justify-between text-xs">
+                                      <span className="font-bold text-slate-800">{st.label}</span>
+                                      <div className="flex items-center gap-2">
+                                        <span className="font-black text-slate-900">{st.count} đơn</span>
+                                        <span className="text-slate-400 text-[11px]">({pct}%)</span>
+                                      </div>
+                                    </div>
+                                    <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                      <div
+                                        className="h-full bg-blue-600 rounded-full transition-all duration-300"
+                                        style={{ width: `${pct}%` }}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Phân bổ theo phương thức thanh toán */}
+                          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-3">
+                            <h3 className="font-heading font-black text-sm text-slate-900 flex items-center gap-2">
+                              <Tag className="w-4 h-4 text-emerald-600" />
+                              <span>Phương Thức Thanh Toán Sử Dụng</span>
+                            </h3>
+                            <div className="space-y-3 pt-1">
+                              {orderReportData.payment_breakdown?.map((pm) => (
+                                <div key={pm.method} className="p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/40 flex items-center justify-between">
+                                  <div>
+                                    <p className="font-bold text-xs text-slate-900">{pm.label}</p>
+                                    <span className="text-[11px] text-slate-500 font-medium">
+                                      {pm.order_count} đơn hàng sử dụng
+                                    </span>
+                                  </div>
+                                  <span className="font-black text-xs text-emerald-700">
+                                    {Math.round(pm.total_amount).toLocaleString('vi-VN')} đ
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Bảng chi tiết toàn bộ đơn hàng (FR-050) */}
+                      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-6 space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                          <div>
+                            <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
+                              <ShoppingCart className="w-4 h-4 text-blue-600" />
+                              <span>Danh Sách Chi Tiết Đơn Hàng (FR-050)</span>
+                            </h3>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              Thống kê đầy đủ thông tin: Mã đơn, Thời gian đặt, Khách hàng, Địa chỉ giao, Số món, Tổng tiền và Trạng thái
+                            </p>
+                          </div>
+                          <span className="text-xs px-3 py-1 rounded-xl bg-slate-100 text-slate-600 font-bold self-start sm:self-auto">
+                            Tổng cộng: {orderReportData?.orders?.length || 0} đơn hàng
+                          </span>
+                        </div>
+
+                        {orderReportLoading ? (
+                          <div className="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
+                            <RotateCcw className="w-8 h-8 animate-spin text-blue-600" />
+                            <span className="text-xs font-semibold">Đang tổng hợp dữ liệu đơn hàng...</span>
+                          </div>
+                        ) : !orderReportData || orderReportData.orders?.length === 0 ? (
+                          <div className="py-12 text-center text-slate-400 space-y-2">
+                            <ShoppingCart className="w-10 h-10 mx-auto text-slate-300" />
+                            <p className="text-sm font-semibold text-slate-600">Không có đơn hàng nào phù hợp với bộ lọc (TC_REPORT_005)</p>
+                            <p className="text-xs text-slate-400">Vui lòng thử chọn khoảng thời gian hoặc trạng thái đơn hàng khác.</p>
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-left text-xs text-slate-600 border-collapse">
+                              <thead>
+                                <tr className="border-b border-slate-200 bg-slate-50/70 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                  <th className="py-3 px-3">Mã đơn</th>
+                                  <th className="py-3 px-3">Thời gian đặt</th>
+                                  <th className="py-3 px-3">Khách hàng / SĐT</th>
+                                  <th className="py-3 px-3">Địa chỉ giao hàng</th>
+                                  <th className="py-3 px-3 text-center">Số món</th>
+                                  <th className="py-3 px-3 text-right">Tổng tiền</th>
+                                  <th className="py-3 px-3 text-center">Thanh toán</th>
+                                  <th className="py-3 px-3 text-center">Trạng thái đơn hàng</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100">
+                                {(() => {
+                                  const ordList = orderReportData.orders || [];
+                                  const startIdx = (orderReportPage - 1) * orderReportPageSize;
+                                  const pageItems = ordList.slice(startIdx, startIdx + orderReportPageSize);
+
+                                  return pageItems.map((ord) => {
+                                    const isDelivered = ord.order_status === 'DA_GIAO';
+                                    const isCancelled = ord.order_status === 'DA_HUY';
+                                    const isShipping = ord.order_status === 'DANG_GIAO';
+                                    const isOnHold = ord.order_status === 'TAM_DUNG';
+
+                                    return (
+                                      <tr key={ord.id} className="hover:bg-slate-50/60 transition">
+                                        <td className="py-3 px-3 font-mono font-bold text-slate-900">
+                                          <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[11px]">
+                                            {ord.order_code}
+                                          </span>
+                                        </td>
+                                        <td className="py-3 px-3 text-slate-500 text-[11px]">
+                                          {ord.created_at ? new Date(ord.created_at).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '—'}
+                                        </td>
+                                        <td className="py-3 px-3">
+                                          <p className="font-bold text-slate-900">{ord.receiver_name || 'Khách vãng lai'}</p>
+                                          <span className="text-[11px] text-slate-500">{ord.phone}</span>
+                                        </td>
+                                        <td className="py-3 px-3 max-w-[200px] truncate text-slate-600" title={ord.address}>
+                                          {ord.address}
+                                        </td>
+                                        <td className="py-3 px-3 text-center font-bold text-slate-800">
+                                          {ord.item_count} món
+                                        </td>
+                                        <td className="py-3 px-3 text-right font-black text-slate-900">
+                                          {ord.total_amount.toLocaleString('vi-VN')} đ
+                                        </td>
+                                        <td className="py-3 px-3 text-center">
+                                          <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                            ord.payment_status === 'PAID'
+                                              ? 'bg-emerald-100 text-emerald-800'
+                                              : 'bg-amber-100 text-amber-800'
+                                          }`}>
+                                            {ord.payment_status === 'PAID' ? 'Đã trả' : 'Chưa trả'}
+                                          </span>
+                                          <span className="text-[10px] text-slate-400 block mt-0.5">{ord.payment_method}</span>
+                                        </td>
+                                        <td className="py-3 px-3 text-center">
+                                          {isDelivered ? (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                              <span>Đã giao thành công</span>
+                                            </span>
+                                          ) : isCancelled ? (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-100 text-rose-700 border border-rose-200">
+                                              <XCircle className="w-3 h-3 text-rose-600" />
+                                              <span>Đã hủy</span>
+                                            </span>
+                                          ) : isShipping ? (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-sky-100 text-sky-800 border border-sky-200">
+                                              <Truck className="w-3 h-3 text-sky-600" />
+                                              <span>Đang giao</span>
+                                            </span>
+                                          ) : isOnHold ? (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-purple-100 text-purple-800 border border-purple-200">
+                                              <Pause className="w-3 h-3 text-purple-600" />
+                                              <span>Tạm dừng</span>
+                                            </span>
+                                          ) : (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-100 text-amber-800 border border-amber-200">
+                                              <Clock className="w-3 h-3 text-amber-600" />
+                                              <span>{ord.order_status_label}</span>
+                                            </span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    );
+                                  });
+                                })()}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+
+                        {/* Phân trang danh sách đơn hàng */}
+                        {orderReportData && orderReportData.orders?.length > 0 && (
+                          <Pagination
+                            currentPage={orderReportPage}
+                            totalItems={orderReportData.orders.length}
+                            pageSize={orderReportPageSize}
+                            onPageChange={setOrderReportPage}
+                            onPageSizeChange={setOrderReportPageSize}
+                            pageSizeOptions={[10, 15, 30, 50]}
+                            itemName="đơn hàng"
                           />
                         )}
                       </div>
