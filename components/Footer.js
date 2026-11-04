@@ -175,21 +175,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar: Copyright, Admin Portal, Academic Note */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-emerald-400/90 text-xs font-medium">
-        <div>
-          {siteSettings?.site_name ? `© 2026 ${siteSettings.site_name}. Tất cả các quyền được bảo lưu.` : '© 2026. Tất cả các quyền được bảo lưu.'}
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-4 text-[11px]">
-          <Link href="/admin" className="hover:text-yellow-300 transition cursor-pointer font-bold">
-            Cổng quản trị nội bộ
-          </Link>
-          <span>•</span>
-          <span className="text-emerald-300">
-            SRS V1.0 • Đồ án tốt nghiệp: Trần Vũ & Hồ Thị Vân Anh
-          </span>
-        </div>
+      {/* Bottom Bar: Copyright */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 text-center text-emerald-400/90 text-xs font-medium">
+        {siteSettings?.site_name ? `© 2026 ${siteSettings.site_name}. Tất cả các quyền được bảo lưu.` : '© 2026. Tất cả các quyền được bảo lưu.'}
       </div>
     </footer>
   );
