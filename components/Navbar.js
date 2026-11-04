@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { 
   ShoppingBag, Search, Phone, ShieldCheck, MapPin, 
   Sparkles, Menu, X, User, LogOut, Package,
-  Leaf, Sun, Flower2, Wind, Snowflake
+  Leaf, Sun, Flower2, Wind, Snowflake, Bell
 } from 'lucide-react';
 import { useCart } from './CartContext';
 
@@ -17,6 +17,52 @@ export default function Navbar() {
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [selectedNotif, setSelectedNotif] = useState(null);
+  const [readNotifIds, setReadNotifIds] = useState([]);
+
+  const loadNotifications = async () => {
+    try {
+      const savedUserStr = localStorage.getItem('dodong4mua_user');
+      const u = savedUserStr ? JSON.parse(savedUserStr) : null;
+      let url = '/api/notifications?role=customer';
+      if (u?.id) {
+        url += `&userId=${u.id}`;
+      }
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setNotifications(data.data);
+        const storedRead = JSON.parse(localStorage.getItem('dodong4mua_read_notifs') || '[]');
+        setReadNotifIds(storedRead);
+        const unread = data.data.filter(n => !storedRead.includes(n.id)).length;
+        setUnreadCount(unread);
+      }
+    } catch (e) {
+      console.warn('Lỗi tải thông báo navbar:', e);
+    }
+  };
+
+  const handleOpenNotification = (notif) => {
+    setSelectedNotif(notif);
+    setIsNotifOpen(false);
+    if (!readNotifIds.includes(notif.id)) {
+      const updated = [...readNotifIds, notif.id];
+      setReadNotifIds(updated);
+      localStorage.setItem('dodong4mua_read_notifs', JSON.stringify(updated));
+      const unread = notifications.filter(n => !updated.includes(n.id)).length;
+      setUnreadCount(unread);
+    }
+  };
+
+  const handleMarkAllRead = () => {
+    const allIds = notifications.map(n => n.id);
+    setReadNotifIds(allIds);
+    localStorage.setItem('dodong4mua_read_notifs', JSON.stringify(allIds));
+    setUnreadCount(0);
+  };
 
   const loadUser = () => {
     try {
@@ -33,8 +79,22 @@ export default function Navbar() {
 
   useEffect(() => {
     loadUser();
+    loadNotifications();
     window.addEventListener('auth-change', loadUser);
-    return () => window.removeEventListener('auth-change', loadUser);
+    window.addEventListener('auth-change', loadNotifications);
+
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('#notif-dropdown-container')) {
+        setIsNotifOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('auth-change', loadUser);
+      window.removeEventListener('auth-change', loadNotifications);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -183,6 +243,102 @@ export default function Navbar() {
               </div>
             )}
 
+            {/* Notification Bell Dropdown (FR-046 - Trung tâm thông báo) */}
+            <div id="notif-dropdown-container" className="relative">
+              <button
+                type="button"
+                onClick={() => setIsNotifOpen(!isNotifOpen)}
+                className="relative p-2.5 rounded-xl bg-gray-50 hover:bg-brand-50 text-gray-700 hover:text-brand-700 transition flex items-center justify-center border border-gray-200 cursor-pointer shadow-xs"
+                title="Thông báo hệ thống"
+                aria-label="Xem thông báo"
+              >
+                <Bell className="w-5 h-5 text-gray-700" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-pulse">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Bảng thả xuống thông báo (Dropdown) */}
+              {isNotifOpen && (
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="px-4 pb-3 border-b border-gray-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Bell className="w-4 h-4 text-brand-600" />
+                      <span className="font-extrabold text-sm text-gray-900">Thông Báo Hệ Thống</span>
+                      {unreadCount > 0 && (
+                        <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold text-[10px]">
+                          {unreadCount} mới
+                        </span>
+                      )}
+                    </div>
+                    {unreadCount > 0 && (
+                      <button
+                        type="button"
+                        onClick={handleMarkAllRead}
+                        className="text-[11px] text-brand-700 hover:text-brand-900 font-bold cursor-pointer"
+                      >
+                        Đã đọc tất cả
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="max-h-80 overflow-y-auto divide-y divide-gray-50">
+                    {notifications.length === 0 ? (
+                      <div className="py-8 text-center text-gray-400 space-y-1">
+                        <Bell className="w-7 h-7 mx-auto text-gray-300 mb-1" />
+                        <p className="text-xs font-semibold text-gray-500">Chưa có thông báo nào</p>
+                        <p className="text-[11px] text-gray-400">Các thông báo mới sẽ xuất hiện tại đây</p>
+                      </div>
+                    ) : (
+                      notifications.map((n) => {
+                        const isRead = readNotifIds.includes(n.id);
+                        return (
+                          <div
+                            key={n.id}
+                            onClick={() => handleOpenNotification(n)}
+                            className={`p-3.5 hover:bg-gray-50 transition cursor-pointer flex items-start gap-3 ${
+                              !isRead ? 'bg-brand-50/40' : ''
+                            }`}
+                          >
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${
+                              !isRead ? 'bg-brand-100 text-brand-700 font-bold' : 'bg-gray-100 text-gray-500'
+                            }`}>
+                              <Bell className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between gap-2">
+                                <p className={`text-xs truncate ${!isRead ? 'font-black text-gray-900' : 'font-semibold text-gray-700'}`}>
+                                  {n.title}
+                                </p>
+                                {!isRead && (
+                                  <span className="w-2 h-2 rounded-full bg-brand-600 shrink-0"></span>
+                                )}
+                              </div>
+                              <p className="text-[11px] text-gray-500 line-clamp-2 mt-0.5 leading-relaxed">
+                                {n.content}
+                              </p>
+                              <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1.5">
+                                <span>{n.sender_name || 'Hệ thống Đồ Đồng 4 Mùa'}</span>
+                                <span>{new Date(n.created_at).toLocaleDateString('vi-VN')}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+
+                  <div className="pt-2 px-4 border-t border-gray-100 text-center">
+                    <span className="text-[10px] text-gray-400 font-medium">
+                      Đồ Đồng 4 Mùa luôn đồng hành và hỗ trợ bạn 24/7
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Cart Trigger */}
             <button
               onClick={() => setIsCartOpen(true)}
@@ -298,6 +454,64 @@ export default function Navbar() {
           </div>
         )}
       </div>
+      {/* Modal xem chi tiết thông báo cho khách hàng */}
+      {selectedNotif && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-gray-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold">
+                  <Bell className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-black text-base text-gray-900">Chi Tiết Thông Báo</h3>
+                  <p className="text-[11px] text-gray-400">
+                    Gửi lúc {new Date(selectedNotif.created_at).toLocaleString('vi-VN')}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedNotif(null)}
+                className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="p-3 bg-brand-50/50 rounded-xl border border-brand-100">
+                <span className="text-[10px] uppercase font-extrabold text-brand-700 tracking-wider block mb-1">Tiêu đề thông báo</span>
+                <p className="font-black text-sm text-gray-900">{selectedNotif.title}</p>
+              </div>
+
+              <div>
+                <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block mb-1">Nội dung chi tiết</span>
+                <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200/80 text-gray-700 leading-relaxed font-medium whitespace-pre-wrap">
+                  {selectedNotif.content}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 text-[11px] text-gray-500 border-t border-gray-100">
+                <span>Người gửi: <strong className="text-gray-800">{selectedNotif.sender_name || 'Admin Tổng'}</strong></span>
+                <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-600 font-semibold">
+                  Hệ thống 4 Mùa
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setSelectedNotif(null)}
+                className="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs transition cursor-pointer shadow-sm"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

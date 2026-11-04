@@ -410,6 +410,7 @@ export default function AdminDashboardPage() {
   const [sendingNotification, setSendingNotification] = useState(false);
   const [deletingNotification, setDeletingNotification] = useState(null);
   const [selectedNotificationDetail, setSelectedNotificationDetail] = useState(null);
+  const [adminNotifOpen, setAdminNotifOpen] = useState(false);
   const [selectedRecipientIds, setSelectedRecipientIds] = useState([]);
   const [userPickerSearch, setUserPickerSearch] = useState('');
   const [userPickerRoleFilter, setUserPickerRoleFilter] = useState('ALL');
@@ -2911,6 +2912,92 @@ export default function AdminDashboardPage() {
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-emerald-600' : ''}`} />
               <span>Làm mới</span>
             </button>
+
+            {/* Admin Notification Bell Dropdown (FR-046) */}
+            <div id="admin-notif-container" className="relative">
+              <button
+                type="button"
+                onClick={() => setAdminNotifOpen(!adminNotifOpen)}
+                className="relative p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center justify-center cursor-pointer shadow-2xs"
+                title="Thông báo hệ thống"
+                aria-label="Xem thông báo quản trị"
+              >
+                <Bell className="w-4 h-4 text-slate-700" />
+                {notifications.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-emerald-600 text-white font-black text-[10px] w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-md">
+                    {notifications.length > 9 ? '9+' : notifications.length}
+                  </span>
+                )}
+              </button>
+
+              {/* Admin Notification Dropdown */}
+              {adminNotifOpen && (
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-100 py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="px-4 pb-3 border-b border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Bell className="w-4 h-4 text-emerald-600" />
+                      <span className="font-extrabold text-sm text-slate-900">Thông Báo Hệ Thống</span>
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">
+                        {notifications.length} bản tin
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setAdminNotifOpen(false)}
+                      className="text-slate-400 hover:text-slate-600 text-xs p-1"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <div className="max-h-80 overflow-y-auto divide-y divide-slate-50">
+                    {notifications.length === 0 ? (
+                      <div className="py-8 text-center text-slate-400 space-y-1">
+                        <Bell className="w-7 h-7 mx-auto text-slate-300 mb-1" />
+                        <p className="text-xs font-semibold text-slate-600">Chưa có thông báo nào</p>
+                      </div>
+                    ) : (
+                      notifications.slice(0, 10).map((n) => (
+                        <div
+                          key={n.id}
+                          onClick={() => {
+                            setSelectedNotificationDetail(n);
+                            setAdminNotifOpen(false);
+                          }}
+                          className="p-3.5 hover:bg-slate-50 transition cursor-pointer flex items-start gap-3"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shrink-0 mt-0.5">
+                            <Bell className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-bold text-slate-900 truncate">{n.title}</p>
+                            <p className="text-[11px] text-slate-500 line-clamp-2 mt-0.5 leading-relaxed">{n.content}</p>
+                            <div className="flex items-center justify-between text-[10px] text-slate-400 mt-1.5">
+                              <span>Gửi tới: {n.recipient_type}</span>
+                              <span>{new Date(n.created_at).toLocaleDateString('vi-VN')}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <div className="pt-2.5 px-4 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('notifications');
+                        setAdminNotifOpen(false);
+                      }}
+                      className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <span>Đến Quản Lý Thông Báo (Tab 8)</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Open Storefront */}
             <Link
