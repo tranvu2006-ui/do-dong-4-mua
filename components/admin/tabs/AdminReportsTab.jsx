@@ -273,7 +273,7 @@ export default function AdminReportsTab({
                         ))}
                       </div>
                     ) : (
-                      <div className={`grid grid-cols-2 md:grid-cols-5 gap-3 pt-1 transition-all duration-300 ${revenueLoading ? 'opacity-50 blur-[0.5px] pointer-events-none' : ''}`}>
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-1">
                       {/* 1. Tổng doanh thu (BR-028: Chỉ tính đơn Đã giao) */}
                       <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 flex flex-col justify-between col-span-2 md:col-span-1 shadow-2xs">
                         <div className="flex items-center justify-between text-emerald-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
@@ -640,7 +640,7 @@ export default function AdminReportsTab({
                             ))}
                           </div>
                         ) : (
-                          <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 pt-1 transition-all duration-300 ${customerReportLoading ? 'opacity-50 blur-[0.5px] pointer-events-none' : ''}`}>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-1">
                           {/* 1. Tổng số khách hàng */}
                           <div className="bg-indigo-50/70 border border-indigo-200/80 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
                             <div className="flex items-center justify-between text-indigo-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">

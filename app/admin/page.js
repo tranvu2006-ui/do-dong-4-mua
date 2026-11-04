@@ -755,8 +755,10 @@ export default function AdminDashboardPage() {
     });
   };
 
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = async (forceLoading = false) => {
+    if (forceLoading || !stats) {
+      setLoading(true);
+    }
     try {
       const [
         statsRes, ordersRes, prodsRes, catsRes,
@@ -3054,7 +3056,7 @@ export default function AdminDashboardPage() {
 
             {/* Refresh Button */}
             <button
-              onClick={loadData}
+              onClick={() => loadData(true)}
               disabled={loading}
               className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
             >
@@ -3196,7 +3198,7 @@ export default function AdminDashboardPage() {
                     ))}
                   </div>
                 ) : stats ? (
-                  <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 transition-all duration-300 ${loading ? 'opacity-50 blur-[0.5px] pointer-events-none' : ''}`}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     {/* Card 1: Doanh thu */}
                     <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between">
                       <div>
@@ -3293,7 +3295,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               ) : (
-                <div className={`transition-all duration-300 ${loading ? 'opacity-50 blur-[0.5px] pointer-events-none' : ''}`}>
+                <div>
               {/* TAB 1: QUẢN LÝ ĐƠN HÀNG & GREENSM */}
 
               {/* TAB 1: QUẢN LÝ ĐƠN HÀNG & GREENSM */}
