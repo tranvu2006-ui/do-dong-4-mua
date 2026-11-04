@@ -186,8 +186,12 @@ function AuthContent() {
       setErrorMsg('Vui lòng nhập mật khẩu mới.');
       return;
     }
-    if (forgotNewPassword.length < 6) {
-      setErrorMsg('Mật khẩu mới phải có tối thiểu 6 ký tự.');
+    if (forgotNewPassword.length < 8) {
+      setErrorMsg('Mật khẩu mới phải có tối thiểu 8 ký tự theo quy định BR-010.');
+      return;
+    }
+    if (!/[A-Z]/.test(forgotNewPassword) || !/[a-z]/.test(forgotNewPassword) || !/[0-9]/.test(forgotNewPassword)) {
+      setErrorMsg('Mật khẩu mới phải gồm ít nhất 1 chữ in hoa, 1 chữ in thường và 1 chữ số.');
       return;
     }
     if (forgotNewPassword !== forgotConfirmPassword) {

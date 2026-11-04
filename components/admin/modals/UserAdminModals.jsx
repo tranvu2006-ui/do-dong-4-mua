@@ -62,7 +62,7 @@ export default function UserAdminModals({
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Mật khẩu khởi tạo *</label>
                 <input
-                  type="password" required placeholder="Mật khẩu ít nhất 6 ký tự"
+                  type="password" required placeholder="Tối thiểu 8 ký tự, gồm hoa, thường và số"
                   value={newAdmin.password} onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
@@ -248,7 +248,7 @@ export default function UserAdminModals({
                 <input
                   type="text"
                   required
-                  placeholder="Nhập mật khẩu mới ít nhất 6 ký tự"
+                  placeholder="Tối thiểu 8 ký tự, gồm hoa, thường và số"
                   value={resetPasswordModal.password}
                   onChange={(e) => setResetPasswordModal({ ...resetPasswordModal, password: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono font-medium focus:outline-none focus:ring-2 focus:ring-purple-500"

@@ -154,14 +154,14 @@ export default function RegisterForm({
       {/* Mật khẩu */}
       <div>
         <label className="block text-xs font-bold text-gray-700 mb-1">
-          Mật khẩu tài khoản (tối thiểu 6 ký tự) <span className="text-red-500">*</span>
+          Mật khẩu tài khoản (tối thiểu 8 ký tự, gồm hoa, thường & số) <span className="text-red-500">*</span>
         </label>
         <div className="relative">
           <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
           <input
             type="password"
             required
-            minLength={6}
+            minLength={8}
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -180,7 +180,7 @@ export default function RegisterForm({
           <input
             type="password"
             required
-            minLength={6}
+            minLength={8}
             placeholder="••••••••"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
-import { verifyPassword, hashPassword } from '@/lib/auth-passwords';
+import { verifyPassword, hashPassword, validatePasswordBR010 } from '@/lib/auth-passwords';
 
 export async function POST(request) {
   try {
@@ -13,8 +13,9 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: 'Vui lòng nhập đầy đủ mật khẩu cũ và mật khẩu mới.' }, { status: 400 });
     }
 
-    if (new_password.length < 6) {
-      return NextResponse.json({ success: false, message: 'Mật khẩu mới phải có ít nhất 6 ký tự.' }, { status: 400 });
+    const pwValidation = validatePasswordBR010(new_password);
+    if (!pwValidation.isValid) {
+      return NextResponse.json({ success: false, message: pwValidation.message }, { status: 400 });
     }
 
     const users = await query('SELECT id, password FROM users WHERE id = ?', [user_id]);

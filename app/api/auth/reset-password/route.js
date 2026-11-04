@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
-import { verifyPassword, hashPassword } from '@/lib/auth-passwords';
+import { verifyPassword, hashPassword, validatePasswordBR010 } from '@/lib/auth-passwords';
 
 if (!global.__otpCache) {
   global.__otpCache = new Map();
@@ -20,8 +20,9 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: 'Hai mật khẩu không trùng nhau.' }, { status: 400 });
     }
 
-    if (new_password.length < 6) {
-      return NextResponse.json({ success: false, message: 'Mật khẩu mới phải có tối thiểu 6 ký tự.' }, { status: 400 });
+    const pwValidation = validatePasswordBR010(new_password);
+    if (!pwValidation.isValid) {
+      return NextResponse.json({ success: false, message: pwValidation.message }, { status: 400 });
     }
 
     const users = await query('SELECT id, password FROM users WHERE phone = ?', [cleanPhone]);

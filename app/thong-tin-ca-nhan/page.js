@@ -123,8 +123,12 @@ export default function ProfilePage() {
       setErrorMsg('Vui lòng nhập mật khẩu hiện tại.');
       return;
     }
-    if (!newPassword || newPassword.length < 6) {
-      setErrorMsg('Mật khẩu mới phải có tối thiểu 6 ký tự.');
+    if (!newPassword || newPassword.length < 8) {
+      setErrorMsg('Mật khẩu mới phải có tối thiểu 8 ký tự theo quy tắc BR-010.');
+      return;
+    }
+    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+      setErrorMsg('Mật khẩu mới phải chứa ít nhất 1 chữ in hoa, 1 chữ in thường và 1 chữ số.');
       return;
     }
     if (newPassword !== confirmPassword) {

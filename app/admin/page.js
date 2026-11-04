@@ -2340,8 +2340,12 @@ export default function AdminDashboardPage() {
       showToast('Vui lòng nhập số điện thoại quản trị viên!', 'warning');
       return;
     }
-    if (!newAdmin.password || newAdmin.password.length < 6) {
-      showToast('Mật khẩu quản trị phải có ít nhất 6 ký tự!', 'warning');
+    if (!newAdmin.password || newAdmin.password.length < 8) {
+      showToast('Mật khẩu quản trị phải có tối thiểu 8 ký tự theo quy tắc BR-010!', 'warning');
+      return;
+    }
+    if (!/[A-Z]/.test(newAdmin.password) || !/[a-z]/.test(newAdmin.password) || !/[0-9]/.test(newAdmin.password)) {
+      showToast('Mật khẩu quản trị phải gồm ít nhất 1 chữ in hoa, 1 chữ in thường và 1 chữ số!', 'warning');
       return;
     }
     try {
@@ -2422,8 +2426,12 @@ export default function AdminDashboardPage() {
   const handleResetPasswordSubmit = async (e) => {
     e.preventDefault();
     if (!resetPasswordModal.admin) return;
-    if (!resetPasswordModal.password || resetPasswordModal.password.length < 6) {
-      showToast('Mật khẩu mới phải có ít nhất 6 ký tự!', 'error');
+    if (!resetPasswordModal.password || resetPasswordModal.password.length < 8) {
+      showToast('Mật khẩu mới phải có tối thiểu 8 ký tự theo quy tắc BR-010!', 'error');
+      return;
+    }
+    if (!/[A-Z]/.test(resetPasswordModal.password) || !/[a-z]/.test(resetPasswordModal.password) || !/[0-9]/.test(resetPasswordModal.password)) {
+      showToast('Mật khẩu mới phải gồm ít nhất 1 chữ in hoa, 1 chữ in thường và 1 chữ số!', 'error');
       return;
     }
     if (!resetPasswordModal.confirm_password) {

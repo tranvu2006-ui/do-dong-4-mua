@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
-import { hashPassword } from '@/lib/auth-passwords';
+import { hashPassword, validatePasswordBR010 } from '@/lib/auth-passwords';
 
 // API 54: Danh sách tài khoản quản trị
 export async function GET() {
@@ -28,6 +28,11 @@ export async function POST(request) {
 
     if (!full_name || !phone || !password) {
       return NextResponse.json({ success: false, message: 'Vui lòng nhập họ tên, số điện thoại và mật khẩu.' }, { status: 400 });
+    }
+
+    const pwValidation = validatePasswordBR010(password);
+    if (!pwValidation.isValid) {
+      return NextResponse.json({ success: false, message: pwValidation.message }, { status: 400 });
     }
 
     const cleanPhone = phone.trim();

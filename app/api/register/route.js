@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
-import { hashPassword } from '@/lib/auth-passwords';
+import { hashPassword, validatePasswordBR010 } from '@/lib/auth-passwords';
 
 export async function POST(request) {
   try {
@@ -23,10 +23,11 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    if (password.length < 6) {
+    const pwValidation = validatePasswordBR010(password);
+    if (!pwValidation.isValid) {
       return NextResponse.json({
         success: false,
-        message: 'Mật khẩu phải có tối thiểu 6 ký tự'
+        message: pwValidation.message
       }, { status: 400 });
     }
 

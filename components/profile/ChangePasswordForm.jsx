@@ -20,7 +20,7 @@ export default function ChangePasswordForm({
           <KeyRound className="w-5 h-5 text-brand-600" />
           <span>Đổi Mật Khẩu Tài Khoản</span>
         </h3>
-        <p className="text-xs text-gray-400 mt-0.5">Mật khẩu mới phải có độ dài tối thiểu 6 ký tự</p>
+        <p className="text-xs text-gray-400 mt-0.5">Mật khẩu mới phải có tối thiểu 8 ký tự, gồm chữ in hoa, in thường và số (BR-010)</p>
       </div>
 
       {/* Mật khẩu hiện tại */}
@@ -41,7 +41,7 @@ export default function ChangePasswordForm({
 
       {/* Mật khẩu mới */}
       <div>
-        <label className="block text-xs font-bold text-gray-700 mb-1">Mật khẩu mới (tối thiểu 6 ký tự) *</label>
+        <label className="block text-xs font-bold text-gray-700 mb-1">Mật khẩu mới (tối thiểu 8 ký tự, gồm hoa, thường & số) *</label>
         <div className="relative">
           <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
           <input

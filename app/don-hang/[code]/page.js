@@ -83,8 +83,12 @@ function OrderDetailContent({ code }) {
     e.preventDefault();
     setChangePwdError('');
 
-    if (!newPwdInput || newPwdInput.length < 6) {
-      setChangePwdError('Mật khẩu mới phải có ít nhất 6 ký tự.');
+    if (!newPwdInput || newPwdInput.length < 8) {
+      setChangePwdError('Mật khẩu mới phải có tối thiểu 8 ký tự theo quy tắc BR-010.');
+      return;
+    }
+    if (!/[A-Z]/.test(newPwdInput) || !/[a-z]/.test(newPwdInput) || !/[0-9]/.test(newPwdInput)) {
+      setChangePwdError('Mật khẩu mới phải chứa ít nhất 1 chữ in hoa, 1 chữ in thường và 1 chữ số.');
       return;
     }
 

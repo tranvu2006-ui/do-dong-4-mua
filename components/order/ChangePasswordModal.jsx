@@ -57,7 +57,7 @@ export default function ChangePasswordModal({
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold text-gray-700 mb-1">Mật khẩu mới (tối thiểu 6 ký tự)</label>
+            <label className="block text-[11px] font-bold text-gray-700 mb-1">Mật khẩu mới (tối thiểu 8 ký tự, gồm hoa, thường & số)</label>
             <div className="relative">
               <input
                 type={showNewPwd ? 'text' : 'password'}

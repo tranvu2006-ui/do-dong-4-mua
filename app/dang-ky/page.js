@@ -134,8 +134,12 @@ export default function RegisterPage() {
       return;
     }
 
-    if (!password || password.length < 6) {
-      setErrorMsg('Mật khẩu phải có tối thiểu 6 ký tự.');
+    if (!password || password.length < 8) {
+      setErrorMsg('Mật khẩu phải có tối thiểu 8 ký tự theo quy định BR-010.');
+      return;
+    }
+    if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+      setErrorMsg('Mật khẩu phải gồm ít nhất 1 chữ in hoa, 1 chữ in thường và 1 chữ số.');
       return;
     }
 
