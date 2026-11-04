@@ -64,7 +64,7 @@ export default function OrderSummaryCard({
         </div>
         {shippingFee === 0 && (
           <p className="text-[10px] text-emerald-600 font-medium">
-            🎉 Bạn được hưởng ưu đãi Freeship GreenSM (Đơn &gt; 500k)!
+            ✨ Miễn phí vận chuyển giao hàng hỏa tốc GreenSM!
           </p>
         )}
         <div className="border-t border-gray-200 pt-3 flex items-baseline justify-between text-sm">

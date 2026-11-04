@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { calculateShippingFee } from '@/lib/shipping';
 
 export async function GET(request) {
   try {
@@ -176,28 +177,14 @@ export async function POST(request) {
         subtotal: lineSubtotal
       });
     }
-
-    // Free shipping if subtotal >= 500,000 VND (BR-023)
-    // FR-044 & BR-023: Phí vận chuyển linh hoạt theo cài đặt & nấc phí
-    let shipping_fee = 25000;
-    try {
-      const settingsRows = await query("SELECT setting_key, setting_value FROM system_settings WHERE setting_key IN ('default_shipping_fee', 'freeship_threshold')");
-      let freeshipThreshold = 500000;
-      let defaultFee = 25000;
-      settingsRows.forEach(r => {
-        if (r.setting_key === 'freeship_threshold') freeshipThreshold = parseFloat(r.setting_value) || 500000;
-        if (r.setting_key === 'default_shipping_fee') defaultFee = parseFloat(r.setting_value) || 25000;
-      });
-
-      if (subtotal >= freeshipThreshold) {
-        shipping_fee = 0;
-      } else {
-        const feeTiers = await query("SELECT fee FROM shipping_fees WHERE status = 1 ORDER BY min_km ASC LIMIT 1");
-        shipping_fee = feeTiers.length > 0 ? parseFloat(feeTiers[0].fee) : defaultFee;
-      }
-    } catch {
-      shipping_fee = subtotal >= 500000 ? 0 : 25000;
-    }
+    // Tính phí vận chuyển qua Shipping Service (Mặc định 0đ, cấu trúc module hóa sẵn sàng tích hợp API đo khoảng cách)
+    const shippingCalc = await calculateShippingFee({
+      address,
+      branchId: 1,
+      subtotal,
+      items
+    });
+    const shipping_fee = shippingCalc.fee;
     const total_amount = subtotal + shipping_fee;
 
     // Generate Order Code: OD + YYYYMMDD + 4 digits (BR-017)

@@ -206,7 +206,8 @@ export default function CheckoutPage() {
     }
   };
 
-  const shippingFee = subtotal >= 500000 ? 0 : 25000;
+  // Mặc định 0đ theo chính sách hỗ trợ giao hàng toàn bộ đơn hàng (Sẵn sàng tích hợp API đo khoảng cách)
+  const shippingFee = 0;
   const totalAmount = subtotal + shippingFee;
 
   useEffect(() => {

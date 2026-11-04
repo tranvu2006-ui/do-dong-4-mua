@@ -13,9 +13,7 @@ export default function CartDrawer() {
   if (pathname?.startsWith('/admin')) return null;
   if (!isCartOpen) return null;
 
-  const freeShipThreshold = 500000;
-  const remainingForFreeShip = Math.max(0, freeShipThreshold - subtotal);
-  const percentFreeShip = Math.min(100, (subtotal / freeShipThreshold) * 100);
+  // Phí giao hàng hiện tại mặc định 0đ (Sẵn sàng tích hợp API đo khoảng cách)
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
@@ -45,26 +43,15 @@ export default function CartDrawer() {
             </button>
           </div>
 
-          {/* Free Shipping Progress */}
-          <div className="bg-emerald-50 px-6 py-4 border-b border-emerald-100">
-            {remainingForFreeShip > 0 ? (
-              <div className="space-y-2">
-                <p className="text-brand-900 font-medium">
-                  Mua thêm <strong className="text-brand-700 font-extrabold">{remainingForFreeShip.toLocaleString('vi-VN')} đ</strong> để được <span className="text-accent-600 font-black">FREESHIP GreenSM</span>!
-                </p>
-                <div className="w-full bg-emerald-200/70 rounded-full h-2.5 overflow-hidden">
-                  <div
-                    className="bg-brand-600 h-full rounded-full transition-all duration-300"
-                    style={{ width: `${percentFreeShip}%` }}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-brand-800 font-bold">
-                <ShieldCheck className="w-6 h-6 text-brand-600 shrink-0" />
-                <span>Tuyệt vời! Bạn được FREESHIP GreenSM toàn thành phố!</span>
-              </div>
-            )}
+          {/* GreenSM Shipping Info */}
+          <div className="bg-emerald-50/80 px-6 py-3.5 border-b border-emerald-100 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs text-brand-900 font-bold">
+              <Truck className="w-4 h-4 text-brand-600 shrink-0" />
+              <span>Giao hàng hỏa tốc đối tác GreenSM</span>
+            </div>
+            <span className="text-[11px] font-extrabold text-brand-700 bg-white px-2.5 py-0.5 rounded-full border border-emerald-200 shadow-xs">
+              Phí ship: 0 đ
+            </span>
           </div>
 
           {/* Item List */}
