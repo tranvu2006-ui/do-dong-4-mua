@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { auth, formatPhoneForE164, initRecaptchaVerifier, resetRecaptchaVerifier, signInWithPhoneNumber } from '@/lib/firebase';
 import { useCart } from '@/components/CartContext';
+import { getAuthSession, saveAuthSession } from '@/lib/auth-session';
 import DeliveryAddressForm from '@/components/checkout/DeliveryAddressForm';
 import PaymentMethodSelector from '@/components/checkout/PaymentMethodSelector';
 import OrderSummaryCard from '@/components/checkout/OrderSummaryCard';
@@ -60,9 +61,8 @@ export default function CheckoutPage() {
   // Load user from localStorage if logged in
   useEffect(() => {
     try {
-      const savedUser = localStorage.getItem('dodong4mua_user');
-      if (savedUser) {
-        const u = JSON.parse(savedUser);
+      const u = getAuthSession();
+      if (u) {
         setCurrentUser(u);
         setFormData((prev) => ({
           ...prev,
@@ -268,8 +268,7 @@ export default function CheckoutPage() {
       if (data.success) {
         if (data.data?.is_new_account && data.data?.user) {
           try {
-            localStorage.setItem('dodong4mua_user', JSON.stringify(data.data.user));
-            window.dispatchEvent(new Event('auth-change'));
+            saveAuthSession(data.data.user);
           } catch (storageErr) {
             console.error('Failed to save user session', storageErr);
           }

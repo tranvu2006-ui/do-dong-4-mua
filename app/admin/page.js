@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import Pagination from '@/components/Pagination';
 import LogoCropperModal from '@/components/common/LogoCropperModal';
+import { getAuthSession, saveAuthSession, clearAuthSession } from '@/lib/auth-session';
 
 // ADMIN TABS (Modularized JSX)
 import AdminOrdersTab from '@/components/admin/tabs/AdminOrdersTab';
@@ -228,30 +229,28 @@ export default function AdminDashboardPage() {
         const tab = params.get('tab');
         if (tab) setActiveTab(tab);
       }
-      const saved = localStorage.getItem('dodong4mua_user');
-      if (saved) {
-        const u = JSON.parse(saved);
-        if (u && (u.isAdmin || u.role_id === 1 || u.role_id === 2)) {
-          setCurrentUser(u);
-          if (u.role_id === 2) {
-            fetch(`/api/admin/permissions?user_id=${u.id}`)
-              .then((res) => res.json())
-              .then((data) => {
-                if (data.success && data.data) {
-                  const assignedIds = data.data.user_permission_ids || [];
-                  const permNames = [];
-                  SRS_FUNCTIONAL_MODULES.forEach((m) => {
-                    if (m.permissionIds.some((id) => assignedIds.includes(id))) {
-                      permNames.push(...m.permissionNames);
-                    }
-                  });
-                  const updated = { ...u, permissions: Array.from(new Set(permNames)) };
-                  setCurrentUser(updated);
-                  localStorage.setItem('dodong4mua_user', JSON.stringify(updated));
-                }
-              })
-              .catch(() => { });
-          }
+      // SRS NFR-006: Kiểm tra phiên đăng nhập tự động hết hạn sau 24h
+      const u = getAuthSession();
+      if (u && (u.isAdmin || u.role_id === 1 || u.role_id === 2)) {
+        setCurrentUser(u);
+        if (u.role_id === 2) {
+          fetch(`/api/admin/permissions?user_id=${u.id}`)
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success && data.data) {
+                const assignedIds = data.data.user_permission_ids || [];
+                const permNames = [];
+                SRS_FUNCTIONAL_MODULES.forEach((m) => {
+                  if (m.permissionIds.some((id) => assignedIds.includes(id))) {
+                    permNames.push(...m.permissionNames);
+                  }
+                });
+                const updated = { ...u, permissions: Array.from(new Set(permNames)) };
+                setCurrentUser(updated);
+                saveAuthSession(updated);
+              }
+            })
+            .catch(() => { });
         }
       }
     } catch (e) { }
@@ -278,9 +277,8 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (data.success && data.user) {
         if (data.user.isAdmin || data.user.role_id === 1 || data.user.role_id === 2) {
-          localStorage.setItem('dodong4mua_user', JSON.stringify(data.user));
+          saveAuthSession(data.user);
           setCurrentUser(data.user);
-          window.dispatchEvent(new Event('auth-change'));
           loadData();
         } else {
           setLoginError('Tài khoản này là Khách Hàng, không có quyền truy cập trang Quản Trị!');
@@ -305,10 +303,22 @@ export default function AdminDashboardPage() {
     } catch (e) {
       console.warn('Lỗi gọi API đăng xuất admin:', e);
     }
-    localStorage.removeItem('dodong4mua_user');
+    clearAuthSession();
     setCurrentUser(null);
-    window.dispatchEvent(new Event('auth-change'));
   };
+
+  // SRS NFR-006: Định kỳ kiểm tra phiên đăng nhập tự động hết hạn sau 24h
+  useEffect(() => {
+    if (!currentUser) return;
+    const interval = setInterval(() => {
+      const activeSession = getAuthSession();
+      if (!activeSession) {
+        setCurrentUser(null);
+        showToast('Phiên làm việc đã hết hạn sau 24 giờ. Vui lòng đăng nhập lại.', 'warning');
+      }
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [currentUser]);
 
   // Data states
   const [stats, setStats] = useState(null);
@@ -2066,6 +2076,15 @@ export default function AdminDashboardPage() {
     showToast('Đang tạo và tải tệp Excel báo cáo doanh thu...', 'success');
   };
 
+  // API 76, FR-047: Xuất báo cáo doanh thu định dạng PDF có dấu thời gian
+  const handleExportRevenuePdf = () => {
+    let url = '/api/reports/export/pdf?type=revenue';
+    if (revenueStartDate) url += `&startDate=${encodeURIComponent(revenueStartDate)}`;
+    if (revenueEndDate) url += `&endDate=${encodeURIComponent(revenueEndDate)}`;
+    window.open(url, '_blank');
+    showToast('Đang tạo và tải tệp PDF báo cáo doanh thu...', 'success');
+  };
+
     // Quản lý báo cáo khách hàng (FR-048)
   const loadCustomerReport = async (overrideStart, overrideEnd, overrideSearch) => {
     const sDate = overrideStart !== undefined ? overrideStart : customerReportStartDate;
@@ -2199,6 +2218,16 @@ export default function AdminDashboardPage() {
     if (orderReportEndDate) url += `&endDate=${encodeURIComponent(orderReportEndDate)}`;
     window.open(url, '_blank');
     showToast('Đang tạo và tải tệp Excel báo cáo đơn hàng...', 'success');
+  };
+
+  // API 76, FR-050: Xuất báo cáo danh sách đơn hàng định dạng PDF có dấu thời gian
+  const exportOrderReportPdf = () => {
+    let url = '/api/reports/export/pdf?type=orders';
+    if (orderReportStatus && orderReportStatus !== 'all') url += `&status=${encodeURIComponent(orderReportStatus)}`;
+    if (orderReportStartDate) url += `&startDate=${encodeURIComponent(orderReportStartDate)}`;
+    if (orderReportEndDate) url += `&endDate=${encodeURIComponent(orderReportEndDate)}`;
+    window.open(url, '_blank');
+    showToast('Đang tạo và tải tệp PDF báo cáo đơn hàng...', 'success');
   };
 
   const handleQuickCustomerDateFilter = (days) => {
@@ -2565,7 +2594,7 @@ export default function AdminDashboardPage() {
           });
           const updatedUser = { ...currentUser, permissions: Array.from(new Set(allPermNames)) };
           setCurrentUser(updatedUser);
-          localStorage.setItem('dodong4mua_user', JSON.stringify(updatedUser));
+          saveAuthSession(updatedUser);
         }
         setPermissionModal({ isOpen: false, admin: null, selectedIds: [], loading: false, saving: false });
         loadData();
@@ -3477,6 +3506,7 @@ export default function AdminDashboardPage() {
                   revenueEndDate={revenueEndDate}
                   setRevenueEndDate={setRevenueEndDate}
                   handleExportRevenueExcel={handleExportRevenueExcel}
+                  handleExportRevenuePdf={handleExportRevenuePdf}
                   loadRevenueReport={loadRevenueReport}
                   handleQuickDateFilter={handleQuickDateFilter}
                   customerReportData={customerReportData}
@@ -3529,6 +3559,7 @@ export default function AdminDashboardPage() {
                   orderReportPageSize={orderReportPageSize}
                   setOrderReportPageSize={setOrderReportPageSize}
                   exportOrderReportCsv={exportOrderReportCsv}
+                  exportOrderReportPdf={exportOrderReportPdf}
                   loadOrderReport={loadOrderReport}
                   categories={categories}
                 />

@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import { auth, formatPhoneForE164, initRecaptchaVerifier, resetRecaptchaVerifier, signInWithPhoneNumber } from '@/lib/firebase';
+import { saveAuthSession } from '@/lib/auth-session';
 
 import AuthBrandHeader from '@/components/auth/AuthBrandHeader';
 
@@ -75,8 +76,7 @@ function AuthContent() {
 
       const data = await res.json();
       if (data.success) {
-        localStorage.setItem('dodong4mua_user', JSON.stringify(data.user));
-        window.dispatchEvent(new Event('auth-change'));
+        saveAuthSession(data.user);
         if (data.user.isAdmin) {
           router.push('/admin');
         } else {

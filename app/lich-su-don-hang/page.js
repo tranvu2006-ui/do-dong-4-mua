@@ -8,6 +8,7 @@ import { CheckCircle2, XCircle } from 'lucide-react';
 import OrderHistorySearchBar from '@/components/order/OrderHistorySearchBar';
 import OrderHistoryCard from '@/components/order/OrderHistoryCard';
 import CancelOrderModal from '@/components/order/CancelOrderModal';
+import { getAuthSession } from '@/lib/auth-session';
 
 function OrderHistoryContent() {
   const searchParams = useSearchParams();
@@ -33,13 +34,10 @@ function OrderHistoryContent() {
   // Auto-fill phone from logged-in user
   useEffect(() => {
     try {
-      const savedUser = localStorage.getItem('dodong4mua_user');
-      if (savedUser) {
-        const u = JSON.parse(savedUser);
-        if (u.phone) {
-          setPhone(u.phone);
-          fetchOrders(u.phone);
-        }
+      const u = getAuthSession();
+      if (u && u.phone) {
+        setPhone(u.phone);
+        fetchOrders(u.phone);
       }
     } catch (e) {
       console.error(e);

@@ -18,6 +18,7 @@ export default function AdminReportsTab({
   revenueEndDate,
   setRevenueEndDate,
   handleExportRevenueExcel,
+  handleExportRevenuePdf,
   loadRevenueReport,
   handleQuickDateFilter,
   customerReportData,
@@ -70,6 +71,7 @@ export default function AdminReportsTab({
   orderReportPageSize,
   setOrderReportPageSize,
   exportOrderReportCsv,
+  exportOrderReportPdf,
   loadOrderReport,
   categories
 }) {
@@ -169,6 +171,14 @@ export default function AdminReportsTab({
                         >
                           <Download className="w-4 h-4" />
                           <span>Xuất Excel / CSV</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleExportRevenuePdf}
+                          className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-600/20 transition cursor-pointer"
+                        >
+                          <FileText className="w-4 h-4" />
+                          <span>Xuất PDF</span>
                         </button>
                         <button
                           type="button"
@@ -870,7 +880,7 @@ export default function AdminReportsTab({
                               className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-sm flex items-center gap-1.5 transition cursor-pointer"
                             >
                               <Download className="w-3.5 h-3.5" />
-                              <span>Xuất Excel / CSV (TC_REPORT_003)</span>
+                              <span>Xuất Excel / CSV</span>
                             </button>
                           </div>
                         </div>
@@ -1144,7 +1154,7 @@ export default function AdminReportsTab({
                         ) : !inventoryReportData || inventoryReportData.products?.length === 0 ? (
                           <div className="py-12 text-center text-slate-400 space-y-2">
                             <Box className="w-10 h-10 mx-auto text-slate-300" />
-                            <p className="text-sm font-semibold text-slate-600">Không có dữ liệu phù hợp với bộ lọc (TC_REPORT_005)</p>
+                            <p className="text-sm font-semibold text-slate-600">Không có dữ liệu phù hợp với bộ lọc</p>
                             <p className="text-xs text-slate-400">Vui lòng thử chọn danh mục hoặc từ khóa tìm kiếm khác.</p>
                           </div>
                         ) : (
@@ -1294,7 +1304,15 @@ export default function AdminReportsTab({
                               className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm flex items-center gap-1.5 transition cursor-pointer"
                             >
                               <Download className="w-3.5 h-3.5" />
-                              <span>Xuất Excel / CSV (TC_REPORT_003)</span>
+                              <span>Xuất Excel / CSV</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={exportOrderReportPdf}
+                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-sm flex items-center gap-1.5 transition cursor-pointer"
+                            >
+                              <FileText className="w-3.5 h-3.5" />
+                              <span>Xuất PDF</span>
                             </button>
                           </div>
                         </div>
@@ -1598,7 +1616,7 @@ export default function AdminReportsTab({
                         ) : !orderReportData || orderReportData.orders?.length === 0 ? (
                           <div className="py-12 text-center text-slate-400 space-y-2">
                             <ShoppingCart className="w-10 h-10 mx-auto text-slate-300" />
-                            <p className="text-sm font-semibold text-slate-600">Không có đơn hàng nào phù hợp với bộ lọc (TC_REPORT_005)</p>
+                            <p className="text-sm font-semibold text-slate-600">Không có đơn hàng nào phù hợp với bộ lọc</p>
                             <p className="text-xs text-slate-400">Vui lòng thử chọn khoảng thời gian hoặc trạng thái đơn hàng khác.</p>
                           </div>
                         ) : (

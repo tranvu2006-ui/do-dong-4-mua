@@ -9,6 +9,7 @@ import {
   Leaf, Bell
 } from 'lucide-react';
 import { useCart } from './CartContext';
+import { getAuthSession, clearAuthSession } from '@/lib/auth-session';
 
 export default function Navbar() {
   const router = useRouter();
@@ -69,8 +70,7 @@ export default function Navbar() {
 
   const loadNotifications = async () => {
     try {
-      const savedUserStr = localStorage.getItem('dodong4mua_user');
-      const u = savedUserStr ? JSON.parse(savedUserStr) : null;
+      const u = getAuthSession();
       let url = '/api/notifications?role=customer';
       if (u?.id) {
         url += `&userId=${u.id}`;
@@ -110,12 +110,8 @@ export default function Navbar() {
 
   const loadUser = () => {
     try {
-      const saved = localStorage.getItem('dodong4mua_user');
-      if (saved) {
-        setCurrentUser(JSON.parse(saved));
-      } else {
-        setCurrentUser(null);
-      }
+      const session = getAuthSession();
+      setCurrentUser(session);
     } catch (e) {
       setCurrentUser(null);
     }
@@ -166,9 +162,8 @@ export default function Navbar() {
     } catch (e) {
       console.warn('Lỗi gọi API đăng xuất:', e);
     }
-    localStorage.removeItem('dodong4mua_user');
+    clearAuthSession();
     setCurrentUser(null);
-    window.dispatchEvent(new Event('auth-change'));
     router.push('/');
   };
 

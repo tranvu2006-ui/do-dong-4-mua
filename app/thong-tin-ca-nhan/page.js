@@ -9,6 +9,7 @@ import ProfileBreadcrumbHeader from '@/components/profile/ProfileBreadcrumbHeade
 import ProfileSidebarCard from '@/components/profile/ProfileSidebarCard';
 import ProfileInfoForm from '@/components/profile/ProfileInfoForm';
 import ChangePasswordForm from '@/components/profile/ChangePasswordForm';
+import { getAuthSession, saveAuthSession, clearAuthSession } from '@/lib/auth-session';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -35,12 +36,11 @@ export default function ProfilePage() {
   useEffect(() => {
     async function loadProfile() {
       try {
-        const saved = localStorage.getItem('dodong4mua_user');
-        if (!saved) {
+        const userObj = getAuthSession();
+        if (!userObj) {
           setLoading(false);
           return;
         }
-        const userObj = JSON.parse(saved);
         setCurrentUser(userObj);
 
         // Fetch fresh profile from API
@@ -100,9 +100,8 @@ export default function ProfilePage() {
           full_name: fullName.trim(),
           address: address.trim(),
         };
-        localStorage.setItem('dodong4mua_user', JSON.stringify(updatedUser));
+        saveAuthSession(updatedUser);
         setCurrentUser(updatedUser);
-        window.dispatchEvent(new Event('auth-change'));
       } else {
         setErrorMsg(data.message || 'Cập nhật thông tin thất bại');
       }
@@ -156,8 +155,7 @@ export default function ProfilePage() {
         setNewPassword('');
         setConfirmPassword('');
         setTimeout(() => {
-          localStorage.removeItem('dodong4mua_user');
-          window.dispatchEvent(new Event('auth-change'));
+          clearAuthSession();
           router.push('/dang-nhap');
         }, 2000);
       } else {
@@ -181,8 +179,7 @@ export default function ProfilePage() {
         });
       }
     } catch (e) {}
-    localStorage.removeItem('dodong4mua_user');
-    window.dispatchEvent(new Event('auth-change'));
+    clearAuthSession();
     router.push('/');
   };
 
