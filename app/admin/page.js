@@ -217,8 +217,8 @@ export default function AdminDashboardPage() {
 
   // Authentication State
   const [currentUser, setCurrentUser] = useState(null);
-  const [adminPhone, setAdminPhone] = useState('0929894248');
-  const [adminPassword, setAdminPassword] = useState('123456');
+  const [adminPhone, setAdminPhone] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [checkingAuth, setCheckingAuth] = useState(true);
 
@@ -2774,11 +2774,6 @@ export default function AdminDashboardPage() {
             </button>
           </form>
 
-          <div className="p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800 text-[11px] text-slate-400 space-y-1">
-            <div className="font-bold text-slate-300">Tài khoản Quản trị Tổng mặc định:</div>
-            <div>• Số điện thoại: <span className="font-mono text-emerald-400">0929894248</span></div>
-            <div>• Mật khẩu: <span className="font-mono text-emerald-400">123456</span></div>
-          </div>
 
           <div className="pt-2 text-center border-t border-slate-800">
             <Link href="/" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition cursor-pointer">
