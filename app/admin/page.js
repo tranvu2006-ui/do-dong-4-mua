@@ -8,7 +8,7 @@ import {
   ArrowLeft, Filter, Tag, Percent, Image as ImageIcon, MapPin,
   FileText, Play, Pause, XCircle, Search, Upload, Lock, LogOut,
   ExternalLink, ShieldCheck, Leaf, ChevronRight, Sparkles, Store,
-  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar, RotateCcw, X, Settings, Bell, Send
+  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar, RotateCcw, X, Settings, Bell, Send, Download
 } from 'lucide-react';
 import Pagination from '@/components/Pagination';
 
@@ -413,6 +413,12 @@ export default function AdminDashboardPage() {
   const [selectedRecipientIds, setSelectedRecipientIds] = useState([]);
   const [userPickerSearch, setUserPickerSearch] = useState('');
   const [userPickerRoleFilter, setUserPickerRoleFilter] = useState('ALL');
+
+  // Quản lý báo cáo doanh thu (FR-047 & BR-028)
+  const [revenueData, setRevenueData] = useState(null);
+  const [revenueLoading, setRevenueLoading] = useState(false);
+  const [revenueStartDate, setRevenueStartDate] = useState('');
+  const [revenueEndDate, setRevenueEndDate] = useState('');
   const [showAddBannerModal, setShowAddBannerModal] = useState(false);
   const [showAddAdminModal, setShowAddAdminModal] = useState(false);
 
@@ -615,7 +621,7 @@ export default function AdminDashboardPage() {
     try {
       const [
         statsRes, ordersRes, prodsRes, catsRes,
-        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes, settingsRes, shippingFeesRes, notificationsRes
+        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes, settingsRes, shippingFeesRes, notificationsRes, revenueRes
       ] = await Promise.all([
         fetch('/api/admin/stats'),
         fetch(`/api/orders?limit=100${orderStatusFilter ? `&status=${orderStatusFilter}` : ''}${orderSearch ? `&search=${encodeURIComponent(orderSearch)}` : ''}${orderStartDate ? `&startDate=${orderStartDate}` : ''}${orderEndDate ? `&endDate=${orderEndDate}` : ''}`),
@@ -630,15 +636,16 @@ export default function AdminDashboardPage() {
         fetch('/api/admin/settings'),
         fetch('/api/admin/shipping-fees'),
         fetch('/api/admin/notifications'),
+        fetch('/api/admin/reports/revenue'),
       ]);
 
       const [
         statsData, ordersData, prodsData, catsData,
         promosData, branchesData, bannersData, custsData, logsData, usersData,
-        settingsData, shippingFeesData, notificationsData
+        settingsData, shippingFeesData, notificationsData, revenueDataRes
       ] = await Promise.all([
         statsRes.json(), ordersRes.json(), prodsRes.json(), catsRes.json(),
-        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json(), settingsRes.json(), shippingFeesRes.json(), notificationsRes.json()
+        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json(), settingsRes.json(), shippingFeesRes.json(), notificationsRes.json(), revenueRes.json()
       ]);
 
       if (statsData.success) setStats(statsData.data);
@@ -657,6 +664,7 @@ export default function AdminDashboardPage() {
       if (settingsData && settingsData.success) setSiteSettings(settingsData.data);
       if (shippingFeesData && shippingFeesData.success) setShippingFees(shippingFeesData.data);
       if (notificationsData && notificationsData.success) setNotifications(notificationsData.data);
+      if (revenueDataRes && revenueDataRes.success) setRevenueData(revenueDataRes.data);
     } catch (err) {
       console.error('Failed to load admin data', err);
     } finally {
@@ -1867,6 +1875,65 @@ export default function AdminDashboardPage() {
   };
 
     // Quản lý thông báo hệ thống (FR-046)
+    // Quản lý báo cáo doanh thu (FR-047 & BR-028)
+  const loadRevenueReport = async (overrideStart, overrideEnd) => {
+    const sDate = overrideStart !== undefined ? overrideStart : revenueStartDate;
+    const eDate = overrideEnd !== undefined ? overrideEnd : revenueEndDate;
+
+    if (sDate && eDate && sDate > eDate) {
+      showToast('Ngày bắt đầu không được lớn hơn ngày kết thúc!', 'warning');
+      return;
+    }
+
+    setRevenueLoading(true);
+    try {
+      let url = '/api/admin/reports/revenue?';
+      if (sDate) url += `startDate=${encodeURIComponent(sDate)}&`;
+      if (eDate) url += `endDate=${encodeURIComponent(eDate)}&`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success) {
+        setRevenueData(data.data);
+      } else {
+        showToast(data.message || 'Lỗi tải báo cáo doanh thu', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi kết nối máy chủ: ' + err.message, 'error');
+    } finally {
+      setRevenueLoading(false);
+    }
+  };
+
+  const handleExportRevenueExcel = () => {
+    let url = '/api/admin/reports/revenue?format=excel';
+    if (revenueStartDate) url += `&startDate=${encodeURIComponent(revenueStartDate)}`;
+    if (revenueEndDate) url += `&endDate=${encodeURIComponent(revenueEndDate)}`;
+    window.open(url, '_blank');
+    showToast('Đang tạo và tải tệp Excel báo cáo doanh thu...', 'success');
+  };
+
+  const handleQuickDateFilter = (days) => {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    if (days === 0) {
+      setRevenueStartDate(todayStr);
+      setRevenueEndDate(todayStr);
+      loadRevenueReport(todayStr, todayStr);
+    } else if (days === -1) {
+      setRevenueStartDate('');
+      setRevenueEndDate('');
+      loadRevenueReport('', '');
+    } else {
+      const past = new Date();
+      past.setDate(past.getDate() - days);
+      const pastStr = past.toISOString().split('T')[0];
+      setRevenueStartDate(pastStr);
+      setRevenueEndDate(todayStr);
+      loadRevenueReport(pastStr, todayStr);
+    }
+  };
+
   const handleCreateNotification = async (e) => {
     e.preventDefault();
     if (!newNotification.title || !newNotification.title.trim()) {
@@ -4551,55 +4618,343 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* TAB 9: BÁO CÁO & DOANH THU */}
-              {activeTab === 'reports' && stats && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                    <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-emerald-600" />
-                      <span>Top Sản Phẩm Bán Chạy Nhất</span>
-                    </h3>
-                    {(!stats.topProducts || stats.topProducts.length === 0) ? (
-                      <p className="text-xs text-slate-400 py-6 text-center">Chưa có dữ liệu giao dịch phát sinh</p>
-                    ) : (
-                      <div className="divide-y divide-slate-100">
-                        {stats.topProducts.map((tp) => (
-                          <div key={tp.id} className="py-3 flex items-center justify-between text-xs">
-                            <div className="flex items-center gap-3">
-                              <img src={tp.thumbnail} alt={tp.name} className="w-10 h-10 rounded-xl object-cover border border-slate-200" />
-                              <div>
-                                <div className="font-bold text-slate-800">{tp.name}</div>
-                                <div className="text-[11px] text-slate-400">{parseFloat(tp.price).toLocaleString('vi-VN')} đ</div>
-                              </div>
-                            </div>
-                            <span className="font-black text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200">
-                              Đã bán: {tp.sold_count}
-                            </span>
+              {/* TAB 9: BÁO CÁO DOANH THU HỆ THỐNG (FR-047 & BR-028) */}
+              {activeTab === 'reports' && (
+                <div className="space-y-6 animate-in fade-in duration-200">
+                  {/* Header & Quick Action Buttons */}
+                  <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                      <div>
+                        <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                          <BarChart3 className="w-5 h-5 text-emerald-600" />
+                          <span>Báo Cáo Doanh Thu Hệ Thống (FR-047)</span>
+                        </h2>
+                        <p className="text-xs text-slate-500 mt-1">
+                          Thống kê doanh thu theo khoảng thời gian dựa trên các đơn hàng đã giao thành công (Quy tắc BR-028)
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                        <button
+                          type="button"
+                          onClick={handleExportRevenueExcel}
+                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition cursor-pointer"
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>Xuất Excel / CSV</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => loadRevenueReport()}
+                          disabled={revenueLoading}
+                          className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                        >
+                          <RefreshCw className={`w-3.5 h-3.5 ${revenueLoading ? 'animate-spin text-emerald-600' : ''}`} />
+                          <span>Làm mới</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Bộ lọc khoảng thời gian tìm kiếm (Điều kiện bắt buộc theo SRS FR-047) */}
+                    <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 space-y-3">
+                      <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
+                        <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+                          <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <span className="text-xs font-bold text-slate-600 whitespace-nowrap">Từ ngày:</span>
+                            <input
+                              type="date"
+                              value={revenueStartDate}
+                              onChange={(e) => setRevenueStartDate(e.target.value)}
+                              className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium bg-white focus:outline-none focus:border-emerald-500 w-full sm:w-auto"
+                            />
                           </div>
-                        ))}
+
+                          <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <span className="text-xs font-bold text-slate-600 whitespace-nowrap">Đến ngày:</span>
+                            <input
+                              type="date"
+                              value={revenueEndDate}
+                              onChange={(e) => setRevenueEndDate(e.target.value)}
+                              className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium bg-white focus:outline-none focus:border-emerald-500 w-full sm:w-auto"
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <button
+                              type="button"
+                              onClick={() => loadRevenueReport()}
+                              disabled={revenueLoading}
+                              className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                            >
+                              <Search className="w-3.5 h-3.5" />
+                              <span>Lọc dữ liệu</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleQuickDateFilter(-1)}
+                              className="p-1.5 bg-white hover:bg-slate-100 text-slate-500 rounded-xl border border-slate-200 text-xs font-bold transition cursor-pointer"
+                              title="Đặt lại bộ lọc"
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Phím tắt chọn nhanh khoảng thời gian */}
+                        <div className="flex items-center gap-1.5 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
+                          <button
+                            type="button"
+                            onClick={() => handleQuickDateFilter(0)}
+                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 transition cursor-pointer whitespace-nowrap"
+                          >
+                            Hôm nay
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickDateFilter(7)}
+                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 transition cursor-pointer whitespace-nowrap"
+                          >
+                            7 ngày qua
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickDateFilter(30)}
+                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 transition cursor-pointer whitespace-nowrap"
+                          >
+                            30 ngày qua
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickDateFilter(-1)}
+                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 transition cursor-pointer whitespace-nowrap"
+                          >
+                            Toàn thời gian
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 5 CHỈ SỐ KẾT QUẢ BẮT BUỘC THEO SRS FR-047 & BR-028 */}
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-1">
+                      {/* 1. Tổng doanh thu (BR-028: Chỉ tính đơn Đã giao) */}
+                      <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 flex flex-col justify-between col-span-2 md:col-span-1 shadow-2xs">
+                        <div className="flex items-center justify-between text-emerald-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                          <span>Tổng Doanh Thu</span>
+                          <TrendingUp className="w-4 h-4 text-emerald-600" />
+                        </div>
+                        <div className="text-xl font-black text-emerald-950">
+                          {((revenueData?.total_revenue ?? 0)).toLocaleString('vi-VN')} đ
+                        </div>
+                        <div className="text-[10px] text-emerald-700 font-semibold mt-1">
+                          Chỉ tính đơn Đã giao (BR-028)
+                        </div>
+                      </div>
+
+                      {/* 2. Tổng số đơn hàng */}
+                      <div className="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
+                        <div className="flex items-center justify-between text-slate-500 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                          <span>Tổng Số Đơn</span>
+                          <ShoppingCart className="w-4 h-4 text-slate-400" />
+                        </div>
+                        <div className="text-xl font-black text-slate-900">
+                          {revenueData?.total_orders ?? 0} đơn
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-semibold mt-1">
+                          Tổng số đơn phát sinh
+                        </div>
+                      </div>
+
+                      {/* 3. Giá trị trung bình mỗi đơn (AOV) */}
+                      <div className="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
+                        <div className="flex items-center justify-between text-slate-500 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                          <span>Giá Trị TB / Đơn</span>
+                          <Percent className="w-4 h-4 text-blue-500" />
+                        </div>
+                        <div className="text-xl font-black text-slate-900">
+                          {((revenueData?.average_order_value ?? 0)).toLocaleString('vi-VN')} đ
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-semibold mt-1">
+                          Doanh thu / Đơn thành công
+                        </div>
+                      </div>
+
+                      {/* 4. Số đơn thành công (Đã giao) */}
+                      <div className="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
+                        <div className="flex items-center justify-between text-emerald-700 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                          <span>Đơn Thành Công</span>
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        </div>
+                        <div className="text-xl font-black text-emerald-700">
+                          {revenueData?.successful_orders ?? 0} đơn
+                        </div>
+                        <div className="text-[10px] text-emerald-600 font-semibold mt-1">
+                          Trạng thái: Đã giao hàng
+                        </div>
+                      </div>
+
+                      {/* 5. Số đơn hủy */}
+                      <div className="bg-rose-50/60 border border-rose-200/70 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
+                        <div className="flex items-center justify-between text-rose-700 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                          <span>Đơn Bị Hủy</span>
+                          <XCircle className="w-4 h-4 text-rose-500" />
+                        </div>
+                        <div className="text-xl font-black text-rose-700">
+                          {revenueData?.cancelled_orders ?? 0} đơn
+                        </div>
+                        <div className="text-[10px] text-rose-600 font-semibold mt-1">
+                          Không tính vào doanh thu
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BẢNG DIỄN BIẾN DOANH THU THEO THỜI GIAN (TIMELINE) */}
+                  <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-emerald-600" />
+                        <span>Diễn Biến Doanh Thu Theo Từng Ngày</span>
+                      </h3>
+                      <span className="text-xs text-slate-400 font-medium">
+                        {revenueData?.timeline?.length || 0} mốc thời gian ghi nhận
+                      </span>
+                    </div>
+
+                    {(!revenueData?.timeline || revenueData.timeline.length === 0) ? (
+                      <div className="py-10 text-center text-slate-400 text-xs">
+                        Không có dữ liệu doanh thu trong khoảng thời gian đã chọn.
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto rounded-xl border border-slate-200">
+                        <table className="w-full text-left text-xs">
+                          <thead>
+                            <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200 text-[11px]">
+                              <th className="py-2.5 px-4">Ngày</th>
+                              <th className="py-2.5 px-4 text-center">Tổng đơn</th>
+                              <th className="py-2.5 px-4 text-center text-emerald-700">Đơn thành công</th>
+                              <th className="py-2.5 px-4 text-center text-rose-600">Đơn hủy</th>
+                              <th className="py-2.5 px-4 text-right">Doanh thu thực tế (BR-028)</th>
+                              <th className="py-2.5 px-4 text-right">Tỷ lệ thành công</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 font-medium">
+                            {revenueData.timeline.map((item) => {
+                              const rev = parseFloat(item.revenue) || 0;
+                              const tot = parseInt(item.total_orders, 10) || 0;
+                              const succ = parseInt(item.successful_orders, 10) || 0;
+                              const rate = tot > 0 ? Math.round((succ / tot) * 100) : 0;
+                              return (
+                                <tr key={item.date} className="hover:bg-slate-50/80 transition">
+                                  <td className="py-3 px-4 font-mono font-bold text-slate-900">
+                                    {item.date}
+                                  </td>
+                                  <td className="py-3 px-4 text-center">
+                                    <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-mono font-bold text-[11px]">
+                                      {tot}
+                                    </span>
+                                  </td>
+                                  <td className="py-3 px-4 text-center">
+                                    <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-mono font-bold text-[11px]">
+                                      {succ}
+                                    </span>
+                                  </td>
+                                  <td className="py-3 px-4 text-center">
+                                    <span className="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-md font-mono font-bold text-[11px]">
+                                      {item.cancelled_orders}
+                                    </span>
+                                  </td>
+                                  <td className="py-3 px-4 text-right font-bold text-emerald-700 text-sm">
+                                    {rev.toLocaleString('vi-VN')} đ
+                                  </td>
+                                  <td className="py-3 px-4 text-right">
+                                    <div className="inline-flex items-center gap-1.5">
+                                      <div className="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                        <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${rate}%` }}></div>
+                                      </div>
+                                      <span className="text-[11px] font-bold text-slate-600 font-mono w-8 text-right">{rate}%</span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
                       </div>
                     )}
                   </div>
 
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                    <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
-                      <BarChart3 className="w-5 h-5 text-emerald-600" />
-                      <span>Phân Phối Đơn Hàng Theo Trạng Thái</span>
-                    </h3>
-                    {(!stats.orderCounts || stats.orderCounts.length === 0) ? (
-                      <p className="text-xs text-slate-400 py-6 text-center">Chưa có đơn hàng nào trong hệ thống</p>
-                    ) : (
-                      <div className="space-y-3">
-                        {stats.orderCounts.map((oc) => (
-                          <div key={oc.order_status} className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-50 border border-slate-200">
-                            <span className="font-bold text-slate-700">{oc.order_status}</span>
-                            <span className="bg-brand-600 text-white font-black px-3 py-1 rounded-full">
-                              {oc.count} đơn
-                            </span>
-                          </div>
-                        ))}
+                  {/* 2 KHỐI CHI TIẾT: PHƯƠNG THỨC THANH TOÁN & TOP SẢN PHẨM */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Phân bổ theo phương thức thanh toán */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                          <span>Doanh Thu Theo Phương Thức Thanh Toán</span>
+                        </h3>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase">Đơn Đã Giao</span>
                       </div>
-                    )}
+
+                      {(!revenueData?.paymentBreakdown || revenueData.paymentBreakdown.length === 0) ? (
+                        <p className="text-xs text-slate-400 py-6 text-center">Chưa có giao dịch phát sinh</p>
+                      ) : (
+                        <div className="space-y-3">
+                          {revenueData.paymentBreakdown.map((pb) => {
+                            const methodLabel = pb.payment_method === 'VIETQR' ? 'Chuyển khoản VietQR' : pb.payment_method === 'COD' ? 'Tiền mặt khi nhận hàng (COD)' : pb.payment_method;
+                            const amount = parseFloat(pb.total_amount) || 0;
+                            return (
+                              <div key={pb.payment_method} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                                <div>
+                                  <div className="font-bold text-slate-900">{methodLabel}</div>
+                                  <div className="text-[11px] text-slate-400 mt-0.5">{pb.order_count} đơn hàng hoàn tất</div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="font-black text-emerald-700 text-sm">{amount.toLocaleString('vi-VN')} đ</div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Top sản phẩm bán chạy nhất theo doanh thu thực tế */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
+                          <Package className="w-5 h-5 text-emerald-600" />
+                          <span>Top Sản Phẩm Mang Lại Doanh Thu Cao</span>
+                        </h3>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase">BR-028</span>
+                      </div>
+
+                      {(!revenueData?.topProducts || revenueData.topProducts.length === 0) ? (
+                        <p className="text-xs text-slate-400 py-6 text-center">Chưa có sản phẩm nào hoàn tất giao hàng</p>
+                      ) : (
+                        <div className="divide-y divide-slate-100">
+                          {revenueData.topProducts.map((tp) => (
+                            <div key={tp.id} className="py-3 flex items-center justify-between text-xs">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <img
+                                  src={tp.thumbnail}
+                                  alt={tp.name}
+                                  className="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0"
+                                />
+                                <div className="min-w-0">
+                                  <div className="font-bold text-slate-800 truncate">{tp.name}</div>
+                                  <div className="text-[11px] text-slate-400">Đã bán: <span className="font-bold text-slate-700">{tp.total_sold}</span></div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-3">
+                                <div className="font-black text-emerald-700 text-sm">
+                                  {parseFloat(tp.total_revenue).toLocaleString('vi-VN')} đ
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
