@@ -419,6 +419,16 @@ export default function AdminDashboardPage() {
   const [revenueLoading, setRevenueLoading] = useState(false);
   const [revenueStartDate, setRevenueStartDate] = useState('');
   const [revenueEndDate, setRevenueEndDate] = useState('');
+
+  // Báo cáo phân hệ Reporting & Báo cáo khách hàng (FR-048)
+  const [reportSubTab, setReportSubTab] = useState('revenue'); // 'revenue' | 'customers'
+  const [customerReportData, setCustomerReportData] = useState(null);
+  const [customerReportLoading, setCustomerReportLoading] = useState(false);
+  const [customerReportStartDate, setCustomerReportStartDate] = useState('');
+  const [customerReportEndDate, setCustomerReportEndDate] = useState('');
+  const [customerReportSearch, setCustomerReportSearch] = useState('');
+  const [customerReportPage, setCustomerReportPage] = useState(1);
+  const [customerReportPageSize, setCustomerReportPageSize] = useState(10);
   const [showAddBannerModal, setShowAddBannerModal] = useState(false);
   const [showAddAdminModal, setShowAddAdminModal] = useState(false);
 
@@ -621,7 +631,7 @@ export default function AdminDashboardPage() {
     try {
       const [
         statsRes, ordersRes, prodsRes, catsRes,
-        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes, settingsRes, shippingFeesRes, notificationsRes, revenueRes
+        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes, settingsRes, shippingFeesRes, notificationsRes, revenueRes, customerReportRes
       ] = await Promise.all([
         fetch('/api/admin/stats'),
         fetch(`/api/orders?limit=100${orderStatusFilter ? `&status=${orderStatusFilter}` : ''}${orderSearch ? `&search=${encodeURIComponent(orderSearch)}` : ''}${orderStartDate ? `&startDate=${orderStartDate}` : ''}${orderEndDate ? `&endDate=${orderEndDate}` : ''}`),
@@ -637,15 +647,16 @@ export default function AdminDashboardPage() {
         fetch('/api/admin/shipping-fees'),
         fetch('/api/admin/notifications'),
         fetch('/api/admin/reports/revenue'),
+        fetch('/api/admin/reports/customers'),
       ]);
 
       const [
         statsData, ordersData, prodsData, catsData,
         promosData, branchesData, bannersData, custsData, logsData, usersData,
-        settingsData, shippingFeesData, notificationsData, revenueDataRes
+        settingsData, shippingFeesData, notificationsData, revenueDataRes, customerReportDataRes
       ] = await Promise.all([
         statsRes.json(), ordersRes.json(), prodsRes.json(), catsRes.json(),
-        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json(), settingsRes.json(), shippingFeesRes.json(), notificationsRes.json(), revenueRes.json()
+        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json(), settingsRes.json(), shippingFeesRes.json(), notificationsRes.json(), revenueRes.json(), customerReportRes.json()
       ]);
 
       if (statsData.success) setStats(statsData.data);
@@ -665,6 +676,7 @@ export default function AdminDashboardPage() {
       if (shippingFeesData && shippingFeesData.success) setShippingFees(shippingFeesData.data);
       if (notificationsData && notificationsData.success) setNotifications(notificationsData.data);
       if (revenueDataRes && revenueDataRes.success) setRevenueData(revenueDataRes.data);
+      if (customerReportDataRes && customerReportDataRes.success) setCustomerReportData(customerReportDataRes.data);
     } catch (err) {
       console.error('Failed to load admin data', err);
     } finally {
@@ -1913,6 +1925,68 @@ export default function AdminDashboardPage() {
     showToast('Đang tạo và tải tệp Excel báo cáo doanh thu...', 'success');
   };
 
+    // Quản lý báo cáo khách hàng (FR-048)
+  const loadCustomerReport = async (overrideStart, overrideEnd, overrideSearch) => {
+    const sDate = overrideStart !== undefined ? overrideStart : customerReportStartDate;
+    const eDate = overrideEnd !== undefined ? overrideEnd : customerReportEndDate;
+    const sTerm = overrideSearch !== undefined ? overrideSearch : customerReportSearch;
+
+    if (sDate && eDate && sDate > eDate) {
+      showToast('Ngày bắt đầu không được lớn hơn ngày kết thúc!', 'warning');
+      return;
+    }
+
+    setCustomerReportLoading(true);
+    try {
+      let url = '/api/admin/reports/customers?';
+      if (sDate) url += `startDate=${encodeURIComponent(sDate)}&`;
+      if (eDate) url += `endDate=${encodeURIComponent(eDate)}&`;
+      if (sTerm) url += `search=${encodeURIComponent(sTerm)}&`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success) {
+        setCustomerReportData(data.data);
+      } else {
+        showToast(data.message || 'Lỗi tải báo cáo khách hàng', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi kết nối máy chủ: ' + err.message, 'error');
+    } finally {
+      setCustomerReportLoading(false);
+    }
+  };
+
+  const handleExportCustomerExcel = () => {
+    let url = '/api/admin/reports/customers?format=excel';
+    if (customerReportStartDate) url += `&startDate=${encodeURIComponent(customerReportStartDate)}`;
+    if (customerReportEndDate) url += `&endDate=${encodeURIComponent(customerReportEndDate)}`;
+    if (customerReportSearch) url += `&search=${encodeURIComponent(customerReportSearch)}`;
+    window.open(url, '_blank');
+    showToast('Đang tạo và tải tệp Excel báo cáo khách hàng...', 'success');
+  };
+
+  const handleQuickCustomerDateFilter = (days) => {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    if (days === 0) {
+      setCustomerReportStartDate(todayStr);
+      setCustomerReportEndDate(todayStr);
+      loadCustomerReport(todayStr, todayStr, customerReportSearch);
+    } else if (days === -1) {
+      setCustomerReportStartDate('');
+      setCustomerReportEndDate('');
+      loadCustomerReport('', '', customerReportSearch);
+    } else {
+      const past = new Date();
+      past.setDate(past.getDate() - days);
+      const pastStr = past.toISOString().split('T')[0];
+      setCustomerReportStartDate(pastStr);
+      setCustomerReportEndDate(todayStr);
+      loadCustomerReport(pastStr, todayStr, customerReportSearch);
+    }
+  };
+
   const handleQuickDateFilter = (days) => {
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0];
@@ -2565,6 +2639,13 @@ export default function AdminDashboardPage() {
       (n.sender_name && n.sender_name.toLowerCase().includes(term));
     return matchType && matchSearch;
   });
+
+    // Phân trang danh sách Báo cáo khách hàng (FR-048)
+  const custReportList = customerReportData?.customers || [];
+  const paginatedCustReport = custReportList.slice(
+    (customerReportPage - 1) * customerReportPageSize,
+    customerReportPage * customerReportPageSize
+  );
 
   const paginatedNotifications = filteredNotifications.slice(
     (notificationPage - 1) * notificationPageSize,
@@ -4621,8 +4702,42 @@ export default function AdminDashboardPage() {
               {/* TAB 9: BÁO CÁO DOANH THU HỆ THỐNG (FR-047 & BR-028) */}
               {activeTab === 'reports' && (
                 <div className="space-y-6 animate-in fade-in duration-200">
-                  {/* Header & Quick Action Buttons */}
-                  <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5">
+                  {/* THANH CHUYỂN ĐỔI BÁO CÁO (REPORTING MODULE - SRS 7.6 & FR-047, FR-048) */}
+                  <div className="flex items-center gap-2 p-1.5 bg-slate-200/70 rounded-2xl w-fit shadow-2xs">
+                    <button
+                      type="button"
+                      onClick={() => setReportSubTab('revenue')}
+                      className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition cursor-pointer ${
+                        reportSubTab === 'revenue'
+                          ? 'bg-white text-emerald-950 shadow-sm'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <TrendingUp className="w-4 h-4 text-emerald-600" />
+                      <span>Báo Cáo Doanh Thu (FR-047)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReportSubTab('customers');
+                        if (!customerReportData) loadCustomerReport();
+                      }}
+                      className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition cursor-pointer ${
+                        reportSubTab === 'customers'
+                          ? 'bg-white text-indigo-950 shadow-sm'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <Users className="w-4 h-4 text-indigo-600" />
+                      <span>Báo Cáo Khách Hàng (FR-048)</span>
+                    </button>
+                  </div>
+
+                  {reportSubTab === 'revenue' && (
+                    <div className="space-y-6 animate-in fade-in duration-200">
+                      {/* Header & Quick Action Buttons */}
+                      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                       <div>
                         <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
@@ -4956,7 +5071,338 @@ export default function AdminDashboardPage() {
                       )}
                     </div>
                   </div>
-                </div>
+                    </div>
+                  )}
+
+                  {/* NỘI DUNG 2: BÁO CÁO KHÁCH HÀNG (FR-048) */}
+                  {reportSubTab === 'customers' && (
+                    <div className="space-y-6 animate-in fade-in duration-200">
+                      {/* Header & Action Buttons */}
+                      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                          <div>
+                            <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                              <Users className="w-5 h-5 text-indigo-600" />
+                              <span>Báo Cáo Khách Hàng Hệ Thống (FR-048)</span>
+                            </h2>
+                            <p className="text-xs text-slate-500 mt-1">
+                              Thống kê số lượng, khách mới và hoạt động mua hàng theo từng khách (Định danh duy nhất bằng SĐT)
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                            <button
+                              type="button"
+                              onClick={handleExportCustomerExcel}
+                              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/20 transition cursor-pointer"
+                            >
+                              <Download className="w-4 h-4" />
+                              <span>Xuất Excel / CSV</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => loadCustomerReport()}
+                              disabled={customerReportLoading}
+                              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                            >
+                              <RefreshCw className={`w-3.5 h-3.5 ${customerReportLoading ? 'animate-spin text-indigo-600' : ''}`} />
+                              <span>Làm mới</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Bộ lọc khoảng thời gian & Tìm kiếm khách hàng */}
+                        <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 space-y-3">
+                          <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
+                            <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+                              <div className="flex items-center gap-2 w-full sm:w-auto">
+                                <span className="text-xs font-bold text-slate-600 whitespace-nowrap">Từ ngày:</span>
+                                <input
+                                  type="date"
+                                  value={customerReportStartDate}
+                                  onChange={(e) => setCustomerReportStartDate(e.target.value)}
+                                  className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium bg-white focus:outline-none focus:border-indigo-500 w-full sm:w-auto"
+                                />
+                              </div>
+
+                              <div className="flex items-center gap-2 w-full sm:w-auto">
+                                <span className="text-xs font-bold text-slate-600 whitespace-nowrap">Đến ngày:</span>
+                                <input
+                                  type="date"
+                                  value={customerReportEndDate}
+                                  onChange={(e) => setCustomerReportEndDate(e.target.value)}
+                                  className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium bg-white focus:outline-none focus:border-indigo-500 w-full sm:w-auto"
+                                />
+                              </div>
+
+                              <div className="relative w-full sm:w-56">
+                                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                                <input
+                                  type="text"
+                                  placeholder="Tìm tên, SĐT khách..."
+                                  value={customerReportSearch}
+                                  onChange={(e) => setCustomerReportSearch(e.target.value)}
+                                  className="w-full pl-8 pr-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-medium bg-white focus:outline-none focus:border-indigo-500"
+                                />
+                              </div>
+
+                              <div className="flex items-center gap-2 w-full sm:w-auto">
+                                <button
+                                  type="button"
+                                  onClick={() => loadCustomerReport()}
+                                  disabled={customerReportLoading}
+                                  className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                                >
+                                  <Search className="w-3.5 h-3.5" />
+                                  <span>Lọc</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setCustomerReportSearch('');
+                                    handleQuickCustomerDateFilter(-1);
+                                  }}
+                                  className="p-1.5 bg-white hover:bg-slate-100 text-slate-500 rounded-xl border border-slate-200 text-xs font-bold transition cursor-pointer"
+                                  title="Đặt lại bộ lọc"
+                                >
+                                  <RotateCcw className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Phím tắt chọn nhanh ngày */}
+                            <div className="flex items-center gap-1.5 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
+                              <button
+                                type="button"
+                                onClick={() => handleQuickCustomerDateFilter(0)}
+                                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-700 transition cursor-pointer whitespace-nowrap"
+                              >
+                                Hôm nay
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleQuickCustomerDateFilter(7)}
+                                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-700 transition cursor-pointer whitespace-nowrap"
+                              >
+                                7 ngày qua
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleQuickCustomerDateFilter(30)}
+                                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-700 transition cursor-pointer whitespace-nowrap"
+                              >
+                                30 ngày qua
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleQuickCustomerDateFilter(-1)}
+                                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-indigo-50 border border-indigo-200 text-indigo-800 hover:bg-indigo-100 transition cursor-pointer whitespace-nowrap"
+                              >
+                                Toàn thời gian
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 4 CHỈ SỐ KẾT QUẢ BẮT BUỘC THEO SRS FR-048 */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-1">
+                          {/* 1. Tổng số khách hàng */}
+                          <div className="bg-indigo-50/70 border border-indigo-200/80 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
+                            <div className="flex items-center justify-between text-indigo-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                              <span>Tổng Khách Hàng</span>
+                              <Users className="w-4 h-4 text-indigo-600" />
+                            </div>
+                            <div className="text-xl font-black text-indigo-950">
+                              {customerReportData?.total_customers ?? 0} khách
+                            </div>
+                            <div className="text-[10px] text-indigo-700 font-semibold mt-1">
+                              Tài khoản người dùng (role_id = 3)
+                            </div>
+                          </div>
+
+                          {/* 2. Số khách hàng mới */}
+                          <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
+                            <div className="flex items-center justify-between text-emerald-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                              <span>Khách Hàng Mới</span>
+                              <UserPlus className="w-4 h-4 text-emerald-600" />
+                            </div>
+                            <div className="text-xl font-black text-emerald-950">
+                              {customerReportData?.new_customers ?? 0} khách
+                            </div>
+                            <div className="text-[10px] text-emerald-700 font-semibold mt-1">
+                              Đăng ký trong khoảng thời gian lọc
+                            </div>
+                          </div>
+
+                          {/* 3. Số khách hàng phát sinh đơn hàng */}
+                          <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
+                            <div className="flex items-center justify-between text-amber-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                              <span>Khách Có Đơn Hàng</span>
+                              <ShoppingCart className="w-4 h-4 text-amber-600" />
+                            </div>
+                            <div className="text-xl font-black text-amber-950">
+                              {customerReportData?.active_customers ?? 0} khách
+                            </div>
+                            <div className="text-[10px] text-amber-700 font-semibold mt-1">
+                              Phát sinh ít nhất 1 đơn hàng
+                            </div>
+                          </div>
+
+                          {/* 4. Khách hàng chưa từng mua hàng */}
+                          <div className="bg-slate-50 border border-slate-200/70 rounded-2xl p-4 flex flex-col justify-between shadow-2xs">
+                            <div className="flex items-center justify-between text-slate-500 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                              <span>Khách Chưa Có Đơn</span>
+                              <User className="w-4 h-4 text-slate-400" />
+                            </div>
+                            <div className="text-xl font-black text-slate-800">
+                              {customerReportData?.inactive_customers ?? 0} khách
+                            </div>
+                            <div className="text-[10px] text-slate-400 font-semibold mt-1">
+                              Chưa phát sinh đơn mua hàng
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* TOP 5 KHÁCH HÀNG TIÊU BIỂU */}
+                      {customerReportData?.top_customers && customerReportData.top_customers.length > 0 && (
+                        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+                          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
+                              <Sparkles className="w-5 h-5 text-amber-500" />
+                              <span>Top Khách Hàng Tiêu Biểu (Mua Nhiều Nhất)</span>
+                            </h3>
+                            <span className="text-xs text-slate-400 font-medium">Xếp hạng theo chi tiêu thực tế</span>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                            {customerReportData.top_customers.map((tc, idx) => (
+                              <div
+                                key={tc.id}
+                                className={`rounded-2xl p-3.5 border flex flex-col justify-between ${
+                                  idx === 0
+                                    ? 'bg-amber-50/70 border-amber-200 text-amber-950 shadow-xs'
+                                    : 'bg-slate-50/80 border-slate-200/70 text-slate-800'
+                                }`}
+                              >
+                                <div>
+                                  <div className="flex items-center justify-between mb-1.5">
+                                    <span className="w-6 h-6 rounded-full bg-white border border-slate-200 font-black text-[11px] flex items-center justify-center">
+                                      #{idx + 1}
+                                    </span>
+                                    <span className="text-[10px] font-bold bg-white px-2 py-0.5 rounded-full border border-slate-200">
+                                      {tc.order_count} đơn
+                                    </span>
+                                  </div>
+                                  <div className="font-bold text-xs truncate" title={tc.full_name}>
+                                    {tc.full_name}
+                                  </div>
+                                  <div className="font-mono text-[11px] opacity-75 mt-0.5">
+                                    {tc.phone}
+                                  </div>
+                                </div>
+                                <div className="mt-3 pt-2 border-t border-slate-200/60 font-black text-emerald-700 text-xs">
+                                  {parseFloat(tc.total_spent).toLocaleString('vi-VN')} đ
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* BẢNG CHI TIẾT SỐ ĐƠN HÀNG CỦA TỪNG KHÁCH (NỘI DUNG SRS FR-048) */}
+                      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                          <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-indigo-600" />
+                            <span>Danh Sách Khách Hàng & Hoạt Động Mua Hàng</span>
+                          </h3>
+                          <span className="text-xs text-slate-400 font-medium">
+                            Tổng {custReportList.length} khách hàng tìm thấy
+                          </span>
+                        </div>
+
+                        {custReportList.length === 0 ? (
+                          <div className="py-12 text-center text-slate-400 text-xs">
+                            <Users className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                            <div>Không tìm thấy khách hàng nào phù hợp với bộ lọc.</div>
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto rounded-xl border border-slate-200">
+                            <table className="w-full text-left text-xs">
+                              <thead>
+                                <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200 text-[11px]">
+                                  <th className="py-3 px-4">Khách hàng</th>
+                                  <th className="py-3 px-4">Số điện thoại</th>
+                                  <th className="py-3 px-4">Địa chỉ</th>
+                                  <th className="py-3 px-4 text-center">Tổng số đơn</th>
+                                  <th className="py-3 px-4 text-center text-emerald-700">Đơn thành công</th>
+                                  <th className="py-3 px-4 text-center text-rose-600">Đơn hủy</th>
+                                  <th className="py-3 px-4 text-right">Tổng chi tiêu (VNĐ)</th>
+                                  <th className="py-3 px-4 text-right">Lần mua gần nhất</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100 font-medium">
+                                {paginatedCustReport.map((c) => (
+                                  <tr key={c.id} className="hover:bg-slate-50/80 transition">
+                                    <td className="py-3 px-4 font-bold text-slate-900">
+                                      <div>{c.full_name}</div>
+                                      <div className="text-[10px] text-slate-400 font-normal">
+                                        Đăng ký: {new Date(c.created_at).toLocaleDateString('vi-VN')}
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-4 font-mono font-bold text-slate-700">
+                                      {c.phone}
+                                    </td>
+                                    <td className="py-3 px-4 text-slate-500 max-w-xs truncate" title={c.address}>
+                                      {c.address || '—'}
+                                    </td>
+                                    <td className="py-3 px-4 text-center">
+                                      <span className="px-2 py-0.5 rounded-md font-mono font-bold text-[11px] bg-slate-100 text-slate-800">
+                                        {c.order_count} đơn
+                                      </span>
+                                    </td>
+                                    <td className="py-3 px-4 text-center">
+                                      <span className="px-2 py-0.5 rounded-md font-mono font-bold text-[11px] bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                        {c.successful_orders}
+                                      </span>
+                                    </td>
+                                    <td className="py-3 px-4 text-center">
+                                      <span className="px-2 py-0.5 rounded-md font-mono font-bold text-[11px] bg-rose-50 text-rose-700 border border-rose-200">
+                                        {c.cancelled_orders}
+                                      </span>
+                                    </td>
+                                    <td className="py-3 px-4 text-right font-black text-emerald-700 text-sm">
+                                      {parseFloat(c.total_spent).toLocaleString('vi-VN')} đ
+                                    </td>
+                                    <td className="py-3 px-4 text-right text-slate-500 font-mono text-[11px]">
+                                      {c.last_order_date
+                                        ? new Date(c.last_order_date).toLocaleDateString('vi-VN')
+                                        : 'Chưa có'}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+
+                        {/* Phân trang danh sách khách hàng */}
+                        {custReportList.length > 0 && (
+                          <Pagination
+                            currentPage={customerReportPage}
+                            totalItems={custReportList.length}
+                            pageSize={customerReportPageSize}
+                            onPageChange={setCustomerReportPage}
+                            onPageSizeChange={setCustomerReportPageSize}
+                            pageSizeOptions={[10, 15, 30, 50]}
+                            itemName="khách hàng"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
+</div>
               )}
 
               {/* TAB 11: CẤU HÌNH WEBSITE (FR-043) */}

@@ -1,1 +1,1 @@
-export { GET } from '../../admin/customers/route';
+export { GET } from '../../admin/reports/customers/route';
