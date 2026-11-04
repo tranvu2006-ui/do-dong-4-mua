@@ -6,6 +6,17 @@ import { AlertTriangle, RefreshCw, LayoutDashboard } from 'lucide-react';
 export default function AdminErrorBoundary({ error, reset }) {
   useEffect(() => {
     console.error('Captured Admin Error:', error);
+    try {
+      fetch('/api/system/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'CLIENT_ERROR',
+          module: 'ADMIN',
+          description: `Sự cố giao diện Quản Trị: ${error?.message || String(error)} | Tab/Trang: ${typeof window !== 'undefined' ? (window.location.pathname + window.location.search) : ''}`
+        })
+      }).catch(() => {});
+    } catch (e) {}
   }, [error]);
 
   return (
@@ -55,3 +66,4 @@ export default function AdminErrorBoundary({ error, reset }) {
     </div>
   );
 }
+

@@ -1,1 +1,1 @@
-export { GET } from '../../admin/logs/route';
+export { GET, POST } from '../../admin/logs/route';

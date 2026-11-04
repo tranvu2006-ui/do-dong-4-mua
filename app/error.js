@@ -7,6 +7,17 @@ import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 export default function GlobalErrorBoundary({ error, reset }) {
   useEffect(() => {
     console.error('Captured Application Error:', error);
+    try {
+      fetch('/api/system/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'CLIENT_ERROR',
+          module: 'STOREFRONT',
+          description: `Sự cố giao diện người dùng: ${error?.message || String(error)} | Trang: ${typeof window !== 'undefined' ? window.location.pathname : ''}`
+        })
+      }).catch(() => {});
+    } catch (e) {}
   }, [error]);
 
   return (
@@ -54,3 +65,4 @@ export default function GlobalErrorBoundary({ error, reset }) {
     </div>
   );
 }
+

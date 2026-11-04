@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
-import { getRealClientIp } from '@/lib/logger';
+import { getRealClientIp, logSystemAction } from '@/lib/logger';
 
 // FR-045: Quản lý nhật ký hệ thống (Audit Logs)
 export async function GET(request) {
@@ -89,4 +89,23 @@ export async function DELETE() {
     success: false,
     message: 'Quy tắc nghiệp vụ FR-045: Nhật ký hệ thống là bất biến, không cho phép xóa!'
   }, { status: 403 });
+}
+
+// Ghi nhận nhật ký sự cố hoặc hành động từ giao diện người dùng
+export async function POST(request) {
+  try {
+    const body = await request.json().catch(() => ({}));
+    const { action = 'CLIENT_ERROR', module = 'SYSTEM', description = '', userId = null } = body;
+    await logSystemAction({
+      request,
+      userId: userId ? parseInt(userId, 10) : 1,
+      action: String(action).slice(0, 50),
+      module: String(module).slice(0, 50),
+      description: String(description || 'Lỗi không xác định trên giao diện').slice(0, 500),
+    });
+    return NextResponse.json({ success: true, message: 'Đã ghi nhận nhật ký thành công' });
+  } catch (error) {
+    console.error('Lỗi khi ghi nhật ký từ client (POST):', error);
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+  }
 }
