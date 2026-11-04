@@ -27,3 +27,4 @@ export default function AuthBrandHeader({ title, subtitle }) {
     </div>
   );
 }
+

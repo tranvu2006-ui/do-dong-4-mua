@@ -79,9 +79,10 @@ export default function OrderSummaryCard({
         <div className="flex items-center gap-1.5 text-brand-800 font-bold">
           <ShieldCheck className="w-4 h-4 text-brand-600" /> Cam kết chất lượng Đổ Đống 4 Mùa:
         </div>
-        <p>• Trái cây tuyển chọn chuẩn VietGAP, đúng mùa vụ tươi ngon.</p>
+        <p>• Trái cây tuyển chọn tươi ngon đúng mùa vụ, an toàn tuyệt đối.</p>
         <p>• Bao ăn 1 đổi 1 trong vòng 24 giờ nếu có quả sượng hoặc hỏng.</p>
       </div>
     </div>
   );
 }
+

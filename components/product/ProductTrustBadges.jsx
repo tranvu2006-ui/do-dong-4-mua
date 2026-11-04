@@ -18,9 +18,10 @@ export default function ProductTrustBadges() {
       </div>
       <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 space-y-1.5">
         <ShieldCheck className="w-6 h-6 text-brand-600 mx-auto" />
-        <div className="font-black text-gray-900">Chuẩn VietGAP</div>
+        <div className="font-black text-gray-900">Chuẩn Tươi Ngon</div>
         <div className="text-gray-500 font-medium">An toàn tuyệt đối</div>
       </div>
     </div>
   );
 }
+

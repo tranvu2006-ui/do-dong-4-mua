@@ -39,7 +39,7 @@ export default function HomeHeroBanner({
         <div className="lg:col-span-7 space-y-5">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/20 border border-accent-500/40 text-accent-300 font-extrabold uppercase tracking-wider backdrop-blur-md text-xs sm:text-sm">
             <Sparkles className="w-4 h-4 text-accent-400" />
-            <span>Nông Sản Tận Vườn • Chuẩn VietGAP</span>
+            <span>Nông Sản Tận Vườn • Tươi Ngon 4 Mùa</span>
           </div>
 
           {currentBanner.title && (
@@ -111,3 +111,4 @@ export default function HomeHeroBanner({
     </section>
   );
 }
+

@@ -40,3 +40,4 @@ export default function ProfileBreadcrumbHeader({ onLogout }) {
     </div>
   );
 }
+
