@@ -8,7 +8,7 @@ import {
   ArrowLeft, Filter, Tag, Percent, Image as ImageIcon, MapPin,
   FileText, Play, Pause, XCircle, Search, Upload, Lock, LogOut,
   ExternalLink, ShieldCheck, Leaf, ChevronRight, Sparkles, Store,
-  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar, RotateCcw, X, Settings, Bell, Send, Download
+  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar, RotateCcw, X, Settings, Bell, Send, Download, ZoomIn, ZoomOut, Move, Globe, Crop, Check
 } from 'lucide-react';
 import Pagination from '@/components/Pagination';
 
@@ -501,6 +501,21 @@ export default function AdminDashboardPage() {
     conflictError: '',
   });
 
+  // Modal Xem trước & Căn chỉnh Logo Thương hiệu (Chuẩn phong cách Facebook)
+  const [logoCropperModal, setLogoCropperModal] = useState({
+    isOpen: false,
+    imageSrc: '',
+    rawFile: null,
+    scale: 1,
+    position: { x: 0, y: 0 },
+    shape: 'circle', // 'circle' | 'square'
+    isDragging: false,
+    dragStart: { x: 0, y: 0 },
+    isSaving: false,
+  });
+  const cropperImageRef = React.useRef(null);
+  const cropperFrameRef = React.useRef(null);
+
   // Form states
   const [newAdmin, setNewAdmin] = useState({
     full_name: '', phone: '', password: '', branch_id: 1, role_id: 2
@@ -646,6 +661,188 @@ export default function AdminDashboardPage() {
     } finally {
       setUploadingImage(false);
       e.target.value = '';
+    }
+  };
+
+  // Xử lý chọn ảnh Logo để mở Modal Căn chỉnh & Xem trước (Chuẩn Facebook)
+  const handleLogoFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      showToast(`Dung lượng ảnh (${(file.size / (1024 * 1024)).toFixed(2)} MB) vượt quá giới hạn 5 MB!`, 'warning');
+      e.target.value = '';
+      return;
+    }
+
+    const ext = file.name.split('.').pop().toLowerCase();
+    const allowed = ['jpg', 'jpeg', 'png', 'webp'];
+    if (!allowed.includes(ext)) {
+      showToast('Định dạng không hợp lệ! Vui lòng chọn file ảnh có đuôi .jpg, .png hoặc .webp.', 'warning');
+      e.target.value = '';
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setLogoCropperModal({
+      isOpen: true,
+      imageSrc: objectUrl,
+      rawFile: file,
+      scale: 1,
+      position: { x: 0, y: 0 },
+      shape: 'circle',
+      isDragging: false,
+      dragStart: { x: 0, y: 0 },
+      isSaving: false,
+    });
+    e.target.value = '';
+  };
+
+  const openLogoCropperWithCurrentUrl = () => {
+    if (!siteSettings.logo_url) {
+      showToast('Chưa có logo để xem trước! Vui lòng tải ảnh từ máy tính hoặc dán URL.', 'warning');
+      return;
+    }
+    setLogoCropperModal({
+      isOpen: true,
+      imageSrc: siteSettings.logo_url,
+      rawFile: null,
+      scale: 1,
+      position: { x: 0, y: 0 },
+      shape: 'circle',
+      isDragging: false,
+      dragStart: { x: 0, y: 0 },
+      isSaving: false,
+    });
+  };
+
+  const handleCropperMouseDown = (e) => {
+    e.preventDefault();
+    setLogoCropperModal(prev => ({
+      ...prev,
+      isDragging: true,
+      dragStart: { x: e.clientX - prev.position.x, y: e.clientY - prev.position.y }
+    }));
+  };
+
+  const handleCropperMouseMove = (e) => {
+    if (!logoCropperModal.isDragging) return;
+    setLogoCropperModal(prev => ({
+      ...prev,
+      position: {
+        x: e.clientX - prev.dragStart.x,
+        y: e.clientY - prev.dragStart.y
+      }
+    }));
+  };
+
+  const handleCropperMouseUp = () => {
+    if (logoCropperModal.isDragging) {
+      setLogoCropperModal(prev => ({ ...prev, isDragging: false }));
+    }
+  };
+
+  const handleCropperTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      setLogoCropperModal(prev => ({
+        ...prev,
+        isDragging: true,
+        dragStart: { x: touch.clientX - prev.position.x, y: touch.clientY - prev.position.y }
+      }));
+    }
+  };
+
+  const handleCropperTouchMove = (e) => {
+    if (!logoCropperModal.isDragging || e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    setLogoCropperModal(prev => ({
+      ...prev,
+      position: {
+        x: touch.clientX - prev.dragStart.x,
+        y: touch.clientY - prev.dragStart.y
+      }
+    }));
+  };
+
+  const handleSaveCroppedLogo = async () => {
+    if (!logoCropperModal.imageSrc) return;
+    setLogoCropperModal(prev => ({ ...prev, isSaving: true }));
+
+    try {
+      const img = cropperImageRef.current;
+      const frame = cropperFrameRef.current;
+
+      if (!img || !frame) {
+        throw new Error('Không tìm thấy khung ảnh để xử lý');
+      }
+
+      const imgRect = img.getBoundingClientRect();
+      const frameRect = frame.getBoundingClientRect();
+
+      const ratioX = img.naturalWidth / imgRect.width;
+      const ratioY = img.naturalHeight / imgRect.height;
+
+      const sourceX = Math.max(0, (frameRect.left - imgRect.left) * ratioX);
+      const sourceY = Math.max(0, (frameRect.top - imgRect.top) * ratioY);
+      const sourceWidth = Math.min(img.naturalWidth - sourceX, frameRect.width * ratioX);
+      const sourceHeight = Math.min(img.naturalHeight - sourceY, frameRect.height * ratioY);
+
+      const canvas = document.createElement('canvas');
+      const OUTPUT_SIZE = 512;
+      canvas.width = OUTPUT_SIZE;
+      canvas.height = OUTPUT_SIZE;
+      const ctx = canvas.getContext('2d');
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      ctx.drawImage(
+        img,
+        sourceX, sourceY, sourceWidth, sourceHeight,
+        0, 0, OUTPUT_SIZE, OUTPUT_SIZE
+      );
+
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Không thể xuất ảnh đã căn chỉnh');
+
+      const formData = new FormData();
+      formData.append('file', blob, `brand-logo-${Date.now()}.png`);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (data.success && data.url) {
+        setSiteSettings(prev => ({ ...prev, logo_url: data.url }));
+        showToast('Đã căn chỉnh và cập nhật logo thương hiệu thành công!', 'success');
+        setLogoCropperModal(prev => ({ ...prev, isOpen: false, isSaving: false }));
+      } else {
+        throw new Error(data.message || 'Lỗi khi tải ảnh đã căn chỉnh lên máy chủ');
+      }
+    } catch (err) {
+      console.error('Lỗi khi crop logo:', err);
+      if (logoCropperModal.rawFile) {
+        try {
+          const rawFormData = new FormData();
+          rawFormData.append('file', logoCropperModal.rawFile);
+          const rawRes = await fetch('/api/upload', { method: 'POST', body: rawFormData });
+          const rawData = await rawRes.json();
+          if (rawData.success && rawData.url) {
+            setSiteSettings(prev => ({ ...prev, logo_url: rawData.url }));
+            showToast('Đã lưu logo gốc thành công!', 'success');
+            setLogoCropperModal(prev => ({ ...prev, isOpen: false, isSaving: false }));
+            return;
+          }
+        } catch (rawErr) {
+          // ignore
+        }
+      }
+      showToast('Lỗi căn chỉnh ảnh: ' + err.message, 'error');
+      setLogoCropperModal(prev => ({ ...prev, isSaving: false }));
     }
   };
 
@@ -6605,29 +6802,47 @@ export default function AdminDashboardPage() {
                         </div>
                       </div>
 
-                      {/* Logo Upload & Preview */}
+                      {/* Logo Upload & Preview (Có khung xem trước & căn chỉnh chuẩn Facebook) */}
                       <div className="pt-2">
                         <label className="block font-bold text-slate-700 mb-1.5 text-xs">Logo nhận diện thương hiệu</label>
                         <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-white rounded-xl border border-slate-200">
-                          <div className="w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+                          <div
+                            onClick={openLogoCropperWithCurrentUrl}
+                            className="group relative w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:border-brand-500 transition shadow-sm"
+                            title="Bấm để mở khung xem trước và căn chỉnh logo"
+                          >
                             {siteSettings.logo_url ? (
                               <img src={siteSettings.logo_url} alt="Logo Preview" className="w-full h-full object-contain p-1" />
                             ) : (
                               <Leaf className="w-8 h-8 text-emerald-600" />
                             )}
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                              <Eye className="w-5 h-5" />
+                            </div>
                           </div>
                           <div className="flex-1 space-y-2 text-xs w-full">
-                            <div className="flex items-center gap-3">
-                              <label className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl border border-emerald-200 transition cursor-pointer inline-flex items-center gap-1.5">
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                              <label className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl border border-emerald-200 transition cursor-pointer inline-flex items-center gap-1.5 shadow-sm">
                                 <Upload className="w-3.5 h-3.5" />
                                 <span>Tải logo từ máy tính</span>
                                 <input
                                   type="file"
                                   accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                                  onChange={(e) => handleFileUpload(e, 'settings_logo')}
+                                  onChange={handleLogoFileSelect}
                                   className="hidden"
                                 />
                               </label>
+                              {siteSettings.logo_url && (
+                                <button
+                                  type="button"
+                                  onClick={openLogoCropperWithCurrentUrl}
+                                  className="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-xl border border-blue-200 transition cursor-pointer inline-flex items-center gap-1.5 shadow-sm"
+                                  title="Mở khung xem trước & căn chỉnh"
+                                >
+                                  <Crop className="w-3.5 h-3.5" />
+                                  <span>Xem trước & Căn chỉnh</span>
+                                </button>
+                              )}
                               <span className="text-[11px] text-slate-400">JPG, PNG, WEBP &le; 5MB</span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -6639,6 +6854,16 @@ export default function AdminDashboardPage() {
                                 onChange={(e) => setSiteSettings({ ...siteSettings, logo_url: e.target.value })}
                                 className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:border-brand-500 font-mono"
                               />
+                              {siteSettings.logo_url && (
+                                <button
+                                  type="button"
+                                  onClick={openLogoCropperWithCurrentUrl}
+                                  className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg font-bold text-[11px] shrink-0 transition cursor-pointer"
+                                  title="Mở xem trước ảnh từ URL này"
+                                >
+                                  Xem
+                                </button>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -10181,6 +10406,212 @@ export default function AdminDashboardPage() {
                 className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold transition shadow-md shadow-rose-600/20 cursor-pointer"
               >
                 Xác nhận xóa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL CĂN CHỈNH & XEM TRƯỚC LOGO THƯƠNG HIỆU (CHUẨN PHONG CÁCH FACEBOOK AVATAR CROPPER) */}
+      {logoCropperModal.isOpen && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 select-none animate-in fade-in duration-200"
+          onMouseUp={handleCropperMouseUp}
+          onTouchEnd={handleCropperMouseUp}
+        >
+          <div className="bg-[#242526] text-white rounded-3xl max-w-lg w-full shadow-2xl border border-white/10 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="relative px-5 py-4 border-b border-white/10 flex items-center justify-between">
+              <div className="w-9" />
+              <h3 className="font-heading font-black text-base text-white text-center flex-1">
+                Xem trước & Căn chỉnh Logo
+              </h3>
+              <button
+                type="button"
+                onClick={() => setLogoCropperModal(prev => ({ ...prev, isOpen: false }))}
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer"
+                title="Đóng"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Viewport Canvas Area */}
+            <div className="p-4 sm:p-6 space-y-4">
+              <div
+                className="w-full h-72 sm:h-80 bg-[#18191a] rounded-2xl relative overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing border border-white/5"
+                onMouseDown={handleCropperMouseDown}
+                onMouseMove={handleCropperMouseMove}
+                onTouchStart={handleCropperTouchStart}
+                onTouchMove={handleCropperTouchMove}
+              >
+                {/* Image being cropped */}
+                {logoCropperModal.imageSrc && (
+                  <img
+                    ref={cropperImageRef}
+                    src={logoCropperModal.imageSrc}
+                    alt="Logo Crop Source"
+                    crossOrigin="anonymous"
+                    draggable={false}
+                    className="max-w-none pointer-events-none transition-transform duration-75 ease-out select-none"
+                    style={{
+                      transform: `translate(${logoCropperModal.position.x}px, ${logoCropperModal.position.y}px) scale(${logoCropperModal.scale})`,
+                      transformOrigin: 'center center',
+                      maxHeight: '85%',
+                      maxWidth: '85%',
+                      objectFit: 'contain',
+                    }}
+                  />
+                )}
+
+                {/* Dark Mask with Clear Spotlight Frame */}
+                <div
+                  ref={cropperFrameRef}
+                  className={`w-52 h-52 sm:w-60 sm:h-60 pointer-events-none transition-all duration-200 ${
+                    logoCropperModal.shape === 'circle' ? 'rounded-full' : 'rounded-2xl'
+                  } border-2 border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.68)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}
+                >
+                  <div className="w-2.5 h-2.5 border-t border-l border-white/30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                </div>
+
+                {/* Floating Hint Overlay like Facebook */}
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white/90 text-[11px] font-medium flex items-center gap-1.5 shadow-lg border border-white/10 pointer-events-none whitespace-nowrap">
+                  <Move className="w-3 h-3 text-blue-400" />
+                  <span>Kéo hoặc dùng chuột để đặt lại vị trí hình ảnh</span>
+                </div>
+              </div>
+
+              {/* Zoom Slider Row */}
+              <div className="space-y-3 pt-1">
+                <div className="flex items-center gap-3 px-2">
+                  <button
+                    type="button"
+                    onClick={() => setLogoCropperModal(prev => ({ ...prev, scale: Math.max(0.5, Number((prev.scale - 0.1).toFixed(2))) }))}
+                    className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white/70 hover:text-white transition cursor-pointer"
+                    title="Thu nhỏ"
+                  >
+                    <ZoomOut className="w-4 h-4" />
+                  </button>
+
+                  <input
+                    type="range"
+                    min="0.5"
+                    max="3"
+                    step="0.05"
+                    value={logoCropperModal.scale}
+                    onChange={(e) => setLogoCropperModal(prev => ({ ...prev, scale: parseFloat(e.target.value) }))}
+                    className="flex-1 accent-blue-500 h-1.5 bg-white/20 rounded-lg cursor-pointer"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setLogoCropperModal(prev => ({ ...prev, scale: Math.min(3, Number((prev.scale + 0.1).toFixed(2))) }))}
+                    className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white/70 hover:text-white transition cursor-pointer"
+                    title="Phóng to"
+                  >
+                    <ZoomIn className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setLogoCropperModal(prev => ({ ...prev, scale: 1, position: { x: 0, y: 0 } }))}
+                    className="px-2.5 py-1 text-[11px] rounded-lg bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition cursor-pointer flex items-center gap-1 shrink-0"
+                    title="Đặt lại vị trí ban đầu"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Đặt lại</span>
+                  </button>
+                </div>
+
+                {/* Shape Switcher */}
+                <div className="flex items-center justify-between px-2 text-xs text-white/70">
+                  <span className="text-[11px] text-white/50">Kiểu khung cắt:</span>
+                  <div className="flex items-center gap-1 bg-white/10 p-0.5 rounded-xl">
+                    <button
+                      type="button"
+                      onClick={() => setLogoCropperModal(prev => ({ ...prev, shape: 'circle' }))}
+                      className={`px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                        logoCropperModal.shape === 'circle' ? 'bg-blue-600 text-white shadow-sm' : 'text-white/70 hover:text-white'
+                      }`}
+                    >
+                      Khung tròn
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLogoCropperModal(prev => ({ ...prev, shape: 'square' }))}
+                      className={`px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                        logoCropperModal.shape === 'square' ? 'bg-blue-600 text-white shadow-sm' : 'text-white/70 hover:text-white'
+                      }`}
+                    >
+                      Khung vuông bo góc
+                    </button>
+                  </div>
+                </div>
+
+                {/* Live simulation on Website Navbar */}
+                <div className="p-3 bg-white/5 border border-white/10 rounded-2xl space-y-1.5">
+                  <div className="flex items-center justify-between text-[11px] text-white/60">
+                    <span>Mô phỏng hiển thị trên thanh Menu website:</span>
+                    <span className="text-emerald-400 font-bold">Xem trước trực tiếp</span>
+                  </div>
+                  <div className="bg-white rounded-xl p-2.5 flex items-center gap-2.5 text-slate-800 shadow-sm border border-slate-200">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center overflow-hidden shrink-0">
+                      {logoCropperModal.imageSrc ? (
+                        <img
+                          src={logoCropperModal.imageSrc}
+                          alt="Preview"
+                          className="w-full h-full object-contain p-0.5"
+                        />
+                      ) : (
+                        <Leaf className="w-4 h-4 text-emerald-600" />
+                      )}
+                    </div>
+                    <div className="leading-tight">
+                      <div className="font-heading font-black text-xs text-emerald-800">
+                        {siteSettings.site_name || 'ĐỒ ĐỒNG 4 MÙA'}
+                      </div>
+                      <div className="text-[10px] text-slate-400">
+                        {siteSettings.site_slogan || 'Hệ Thống Trái Cây Tươi Chuẩn VietGAP'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Notice text */}
+                <div className="flex items-center gap-2 text-[11px] text-white/50 px-2">
+                  <Globe className="w-3.5 h-3.5 shrink-0 text-white/40" />
+                  <span>Logo sau khi lưu sẽ được áp dụng trực tiếp lên toàn bộ hệ thống website.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Buttons */}
+            <div className="px-5 py-3.5 border-t border-white/10 bg-[#1e1f20] flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setLogoCropperModal(prev => ({ ...prev, isOpen: false }))}
+                disabled={logoCropperModal.isSaving}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white/70 hover:text-white hover:bg-white/10 transition cursor-pointer"
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveCroppedLogo}
+                disabled={logoCropperModal.isSaving}
+                className="px-6 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition cursor-pointer flex items-center gap-2 disabled:opacity-50"
+              >
+                {logoCropperModal.isSaving ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Đang xử lý & lưu...</span>
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Lưu logo</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
