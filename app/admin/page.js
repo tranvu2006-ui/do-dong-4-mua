@@ -515,6 +515,7 @@ export default function AdminDashboardPage() {
   });
   const cropperImageRef = React.useRef(null);
   const cropperFrameRef = React.useRef(null);
+  const cropperPreviewCanvasRef = React.useRef(null);
 
   // Form states
   const [newAdmin, setNewAdmin] = useState({
@@ -766,6 +767,60 @@ export default function AdminDashboardPage() {
     }));
   };
 
+  const updateCropperPreview = React.useCallback(() => {
+    const canvas = cropperPreviewCanvasRef.current;
+    const img = cropperImageRef.current;
+    const frame = cropperFrameRef.current;
+
+    if (!canvas || !img || !frame || !img.naturalWidth) return;
+
+    const imgRect = img.getBoundingClientRect();
+    const frameRect = frame.getBoundingClientRect();
+
+    if (frameRect.width === 0 || imgRect.width === 0) return;
+
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const scaleFactor = canvas.width / frameRect.width;
+    const dx = (imgRect.left - frameRect.left) * scaleFactor;
+    const dy = (imgRect.top - frameRect.top) * scaleFactor;
+    const dw = imgRect.width * scaleFactor;
+    const dh = imgRect.height * scaleFactor;
+
+    ctx.save();
+    if (logoCropperModal.shape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
+      ctx.clip();
+    }
+    ctx.drawImage(img, dx, dy, dw, dh);
+    ctx.restore();
+  }, [logoCropperModal.shape]);
+
+  useEffect(() => {
+    if (!logoCropperModal.isOpen || !logoCropperModal.imageSrc) return;
+
+    const img = cropperImageRef.current;
+    if (img) {
+      if (img.complete && img.naturalWidth) {
+        updateCropperPreview();
+      } else {
+        img.onload = updateCropperPreview;
+      }
+    }
+    const timer = setTimeout(updateCropperPreview, 30);
+    return () => clearTimeout(timer);
+  }, [
+    logoCropperModal.isOpen,
+    logoCropperModal.imageSrc,
+    logoCropperModal.position.x,
+    logoCropperModal.position.y,
+    logoCropperModal.scale,
+    logoCropperModal.shape,
+    updateCropperPreview
+  ]);
+
   const handleSaveCroppedLogo = async () => {
     if (!logoCropperModal.imageSrc) return;
     setLogoCropperModal(prev => ({ ...prev, isSaving: true }));
@@ -781,14 +836,6 @@ export default function AdminDashboardPage() {
       const imgRect = img.getBoundingClientRect();
       const frameRect = frame.getBoundingClientRect();
 
-      const ratioX = img.naturalWidth / imgRect.width;
-      const ratioY = img.naturalHeight / imgRect.height;
-
-      const sourceX = Math.max(0, (frameRect.left - imgRect.left) * ratioX);
-      const sourceY = Math.max(0, (frameRect.top - imgRect.top) * ratioY);
-      const sourceWidth = Math.min(img.naturalWidth - sourceX, frameRect.width * ratioX);
-      const sourceHeight = Math.min(img.naturalHeight - sourceY, frameRect.height * ratioY);
-
       const canvas = document.createElement('canvas');
       const OUTPUT_SIZE = 512;
       canvas.width = OUTPUT_SIZE;
@@ -798,11 +845,20 @@ export default function AdminDashboardPage() {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
-      ctx.drawImage(
-        img,
-        sourceX, sourceY, sourceWidth, sourceHeight,
-        0, 0, OUTPUT_SIZE, OUTPUT_SIZE
-      );
+      const scaleFactor = OUTPUT_SIZE / frameRect.width;
+      const dx = (imgRect.left - frameRect.left) * scaleFactor;
+      const dy = (imgRect.top - frameRect.top) * scaleFactor;
+      const dw = imgRect.width * scaleFactor;
+      const dh = imgRect.height * scaleFactor;
+
+      ctx.save();
+      if (logoCropperModal.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(OUTPUT_SIZE / 2, OUTPUT_SIZE / 2, OUTPUT_SIZE / 2, 0, Math.PI * 2);
+        ctx.clip();
+      }
+      ctx.drawImage(img, dx, dy, dw, dh);
+      ctx.restore();
 
       const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
       if (!blob) throw new Error('Không thể xuất ảnh đã căn chỉnh');
@@ -10557,33 +10613,15 @@ export default function AdminDashboardPage() {
                     </span>
                   </div>
                   <div className="bg-white rounded-xl p-2.5 flex items-center gap-2.5 text-slate-800 shadow-sm border border-slate-200">
-                    {/* Live Synchronized Mini Frame: Exactly matches real-time pan & zoom */}
-                    <div className={`w-10 h-10 ${logoCropperModal.shape === 'circle' ? 'rounded-full' : 'rounded-lg'} bg-emerald-50/50 border border-emerald-200 overflow-hidden relative flex items-center justify-center shrink-0 shadow-sm`}>
+                    {/* Live Synchronized Mini Frame: Rendered via High-DPI Canvas */}
+                    <div className={`w-10 h-10 ${logoCropperModal.shape === 'circle' ? 'rounded-full' : 'rounded-xl'} bg-emerald-50/50 border border-emerald-200 overflow-hidden relative flex items-center justify-center shrink-0 shadow-sm`}>
                       {logoCropperModal.imageSrc ? (
-                        <div
-                          style={{
-                            width: 240,
-                            height: 240,
-                            transform: 'scale(0.166667)',
-                            transformOrigin: 'top left',
-                            pointerEvents: 'none',
-                          }}
-                          className="flex items-center justify-center shrink-0"
-                        >
-                          <img
-                            src={logoCropperModal.imageSrc}
-                            alt="Live Simulated Preview"
-                            draggable={false}
-                            className="max-w-none pointer-events-none select-none transition-transform duration-75 ease-out"
-                            style={{
-                              transform: `translate(${logoCropperModal.position.x}px, ${logoCropperModal.position.y}px) scale(${logoCropperModal.scale})`,
-                              transformOrigin: 'center center',
-                              maxHeight: '85%',
-                              maxWidth: '85%',
-                              objectFit: 'contain',
-                            }}
-                          />
-                        </div>
+                        <canvas
+                          ref={cropperPreviewCanvasRef}
+                          width={96}
+                          height={96}
+                          className={`w-full h-full ${logoCropperModal.shape === 'circle' ? 'rounded-full' : 'rounded-xl'} object-contain`}
+                        />
                       ) : (
                         <Leaf className="w-5 h-5 text-emerald-600" />
                       )}
@@ -10592,9 +10630,11 @@ export default function AdminDashboardPage() {
                       <div className="font-heading font-black text-xs text-emerald-800">
                         {siteSettings.site_name || 'ĐỒ ĐỒNG 4 MÙA'}
                       </div>
-                      <div className="text-[10px] text-slate-400">
-                        {siteSettings.site_slogan || 'Hệ Thống Trái Cây Tươi Chuẩn VietGAP'}
-                      </div>
+                      {siteSettings.site_slogan ? (
+                        <div className="text-[10px] text-slate-400">
+                          {siteSettings.site_slogan}
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 </div>
