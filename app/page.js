@@ -2,13 +2,10 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { 
-  Sparkles, Filter, X, RefreshCw, 
-  ChevronRight, ChevronDown, PackageOpen, Tag, Check, SlidersHorizontal
-} from 'lucide-react';
-import ProductCard from '@/components/ProductCard';
-
-
+import HomeHeroBanner from '@/components/home/HomeHeroBanner';
+import ProductFilterSection from '@/components/home/ProductFilterSection';
+import ShopeeProductGrid from '@/components/home/ShopeeProductGrid';
+import HomeSkeleton from '@/components/home/HomeSkeleton';
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -22,10 +19,6 @@ function HomeContent() {
   const minPriceParam = searchParams.get('min_price') || '';
   const maxPriceParam = searchParams.get('max_price') || '';
 
-  const [customMin, setCustomMin] = useState(minPriceParam);
-  const [customMax, setCustomMax] = useState(maxPriceParam);
-  const [showPricePopover, setShowPricePopover] = useState(false);
-
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [banners, setBanners] = useState([]);
@@ -35,12 +28,7 @@ function HomeContent() {
   const [sort, setSort] = useState('newest');
   const [visibleCount, setVisibleCount] = useState(12);
 
-  useEffect(() => {
-    setCustomMin(minPriceParam);
-    setCustomMax(maxPriceParam);
-  }, [minPriceParam, maxPriceParam]);
-
-  // Load Categories & Banners Metadata on mount (voi localStorage Cache 0ms)
+  // Load Categories & Banners Metadata on mount (với localStorage Cache 0ms)
   useEffect(() => {
     try {
       const cachedBanners = localStorage.getItem('dodong4mua_home_banners');
@@ -138,458 +126,53 @@ function HomeContent() {
     router.replace(queryString ? `/?${queryString}` : '/', { scroll: false });
   };
 
-  const getPricePreset = () => {
-    if (!minPriceParam && !maxPriceParam) return '';
-    if (!minPriceParam && maxPriceParam === '50000') return 'under_50';
-    if (minPriceParam === '50000' && maxPriceParam === '100000') return '50_100';
-    if (minPriceParam === '100000' && maxPriceParam === '200000') return '100_200';
-    if (minPriceParam === '200000' && !maxPriceParam) return 'above_200';
-    return 'custom';
-  };
-
-  const handlePricePresetSelect = (preset) => {
-    if (preset === '') {
-      updateFilters({ min_price: '', max_price: '' });
-      setShowPricePopover(false);
-    } else if (preset === 'under_50') {
-      updateFilters({ min_price: '', max_price: '50000' });
-      setShowPricePopover(false);
-    } else if (preset === '50_100') {
-      updateFilters({ min_price: '50000', max_price: '100000' });
-      setShowPricePopover(false);
-    } else if (preset === '100_200') {
-      updateFilters({ min_price: '100000', max_price: '200000' });
-      setShowPricePopover(false);
-    } else if (preset === 'above_200') {
-      updateFilters({ min_price: '200000', max_price: '' });
-      setShowPricePopover(false);
-    } else if (preset === 'custom') {
-      setShowPricePopover(true);
-    }
-  };
-
-  const applyCustomPrice = () => {
-    updateFilters({
-      min_price: customMin ? customMin.trim() : '',
-      max_price: customMax ? customMax.trim() : ''
-    });
-    setShowPricePopover(false);
-  };
-
   const clearAllFilters = () => {
     setSort('newest');
-    setCustomMin('');
-    setCustomMax('');
-    setShowPricePopover(false);
     router.replace('/', { scroll: false });
   };
 
-  const currentBanner = banners[activeBannerIdx] || null;
+  const scrollToProducts = () => {
+    const el = document.getElementById('product-section');
+    el?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="space-y-12 pb-20">
-      {/* 1. Hero Section (100% dong tu CSDL + Cache localStorage 0ms, khong hard code) */}
-      {!bannersLoaded && banners.length === 0 ? (
-        <section className="bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 min-h-[480px] lg:min-h-[520px] flex items-center animate-pulse">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
-            <div className="lg:col-span-7 space-y-5">
-              <div className="w-48 h-8 rounded-full bg-white/15" />
-              <div className="w-3/4 h-12 rounded-2xl bg-white/20" />
-              <div className="w-full h-16 rounded-xl bg-white/10" />
-              <div className="w-56 h-12 rounded-2xl bg-white/20" />
-            </div>
-            <div className="lg:col-span-5">
-              <div className="aspect-[4/3] rounded-3xl bg-white/10" />
-            </div>
-          </div>
-        </section>
-      ) : currentBanner ? (
-        <section className="relative bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white overflow-hidden shadow-xl min-h-[480px] lg:min-h-[520px] flex items-center">
-          <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10 w-full">
-            <div className="lg:col-span-7 space-y-5">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/20 border border-accent-500/40 text-accent-300 font-extrabold uppercase tracking-wider backdrop-blur-md text-xs sm:text-sm">
-                <Sparkles className="w-4 h-4 text-accent-400" />
-                <span>Nông Sản Tận Vườn • Chuẩn VietGAP</span>
-              </div>
+      {/* 1. Hero Section */}
+      <HomeHeroBanner
+        banners={banners}
+        bannersLoaded={bannersLoaded}
+        activeIdx={activeBannerIdx}
+        onSelectIdx={setActiveBannerIdx}
+        onScrollToProducts={scrollToProducts}
+      />
 
-              {currentBanner.title && (
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white font-heading">
-                  {currentBanner.title}
-                </h1>
-              )}
-
-              {currentBanner.description ? (
-                <p className="text-emerald-100 max-w-2xl leading-relaxed font-medium text-sm sm:text-base">
-                  {currentBanner.description}
-                </p>
-              ) : null}
-
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                <button
-                  onClick={() => {
-                    const el = document.getElementById('product-section');
-                    el?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="btn-primary cursor-pointer text-sm font-bold"
-                >
-                  <span>Xem Bảng Giá Hôm Nay</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => document.getElementById('product-section')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-bold border border-white/20 transition-all backdrop-blur-md flex items-center gap-2 cursor-pointer hover:border-white/40 text-sm"
-                >
-                  <Sparkles className="w-4 h-4 text-amber-300" />
-                  <span>Khám Phá Sản Phẩm</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 relative">
-              {currentBanner.image_url ? (
-                <div className="relative aspect-video sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/15 group bg-slate-800">
-                  <img
-                    src={currentBanner.image_url}
-                    alt={currentBanner.title || 'Banner'}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-5">
-                    <div className="text-white font-bold flex items-center gap-2 text-xs sm:text-sm">
-                      <span className="bg-brand-600 px-2.5 py-0.5 rounded-lg text-white font-black uppercase text-xs">Hot</span>
-                      <span>Bao ăn từng quả • Giao tươi tận nhà</span>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-
-              {/* Dots navigation */}
-              {banners.length > 1 && (
-                <div className="flex justify-center gap-2 mt-4">
-                  {banners.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveBannerIdx(idx)}
-                      className={`h-2 rounded-full transition-all cursor-pointer ${
-                        idx === activeBannerIdx ? 'w-8 bg-accent-500' : 'w-2 bg-white/40 hover:bg-white/60'
-                      }`}
-                      aria-label={`Chuyển tới banner ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      {/* 3. Main Content Container */}
+      {/* 2. Main Content Container */}
       <div id="product-section" className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
-        {/* 4. Filter Toolbar: Categories Tabs + Quick Filters (Còn hàng, Giảm giá) + Sort (FR-017 & FR-018) */}
-        <div className="space-y-3">
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-            {/* Category tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-              <button
-                onClick={() => updateFilters({ category: '' })}
-                className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                  currentCategory === ''
-                    ? 'bg-brand-700 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
-                }`}
-              >
-                Tất Cả Danh Mục
-              </button>
-              {categories.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => updateFilters({ category: c.slug })}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                    currentCategory === c.slug
-                      ? 'bg-brand-700 text-white shadow-md'
-                      : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
-                  }`}
-                >
-                  {c.name} ({c.product_count || 0})
-                </button>
-              ))}
-            </div>
+        {/* 3. Filter Toolbar */}
+        <ProductFilterSection
+          categories={categories}
+          currentCategory={currentCategory}
+          currentSeason={currentSeason}
+          currentSearch={currentSearch}
+          inStockFilter={inStockFilter}
+          discountedFilter={discountedFilter}
+          minPriceParam={minPriceParam}
+          maxPriceParam={maxPriceParam}
+          sort={sort}
+          onSortChange={setSort}
+          onUpdateFilters={updateFilters}
+          onClearAllFilters={clearAllFilters}
+        />
 
-            {/* Quick Filters & Sort Selector */}
-            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-              {/* Lọc theo Khoảng giá (FR-017) */}
-              <div className="relative">
-                <select
-                  value={getPricePreset()}
-                  onChange={(e) => {
-                    if (e.target.value === 'custom') {
-                      setShowPricePopover(true);
-                    } else {
-                      handlePricePresetSelect(e.target.value);
-                    }
-                  }}
-                  className={`font-bold border rounded-xl px-3 py-2 text-xs transition cursor-pointer shadow-sm ${
-                    getPricePreset() !== ''
-                      ? 'bg-emerald-50 border-emerald-500 text-emerald-800 ring-1 ring-emerald-500'
-                      : 'bg-white border-gray-200 text-slate-700 hover:border-gray-300'
-                  }`}
-                >
-                  <option value="">Khoảng giá: Tất cả</option>
-                  <option value="under_50">Dưới 50.000 đ</option>
-                  <option value="50_100">50.000 đ - 100.000 đ</option>
-                  <option value="100_200">100.000 đ - 200.000 đ</option>
-                  <option value="above_200">Trên 200.000 đ</option>
-                  <option value="custom">Tùy chọn khoảng giá...</option>
-                </select>
-
-                {/* Popover tùy chọn khoảng giá */}
-                {showPricePopover && (
-                  <div className="absolute top-full right-0 sm:left-0 mt-2 z-40 bg-white border border-gray-200 shadow-xl rounded-2xl p-4 w-72 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-black text-gray-900 uppercase tracking-wide">Nhập khoảng giá (VNĐ)</h4>
-                      <button
-                        onClick={() => setShowPricePopover(false)}
-                        className="text-gray-400 hover:text-gray-600 p-0.5 rounded-lg cursor-pointer"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="text-[11px] font-bold text-gray-500 mb-1 block">Tối thiểu (đ)</label>
-                        <input
-                          type="number"
-                          placeholder="0"
-                          value={customMin}
-                          onChange={(e) => setCustomMin(e.target.value)}
-                          className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-600"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-bold text-gray-500 mb-1 block">Tối đa (đ)</label>
-                        <input
-                          type="number"
-                          placeholder="500000"
-                          value={customMax}
-                          onChange={(e) => setCustomMax(e.target.value)}
-                          className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-600"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-end gap-2 pt-1">
-                      <button
-                        onClick={() => {
-                          setCustomMin('');
-                          setCustomMax('');
-                          updateFilters({ min_price: '', max_price: '' });
-                          setShowPricePopover(false);
-                        }}
-                        className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:text-gray-700 cursor-pointer"
-                      >
-                        Đặt lại
-                      </button>
-                      <button
-                        onClick={applyCustomPrice}
-                        className="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-extrabold shadow-sm cursor-pointer"
-                      >
-                        Áp dụng
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-              {/* Quick Filter: Đang giảm giá (FR-017) */}
-              <button
-                onClick={() => updateFilters({ discounted: discountedFilter ? '' : '1' })}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                  discountedFilter
-                    ? 'bg-rose-600 text-white shadow-sm'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-rose-50 hover:text-rose-600'
-                }`}
-              >
-                <Tag className="w-3.5 h-3.5" />
-                <span>Đang giảm giá</span>
-              </button>
-
-              {/* Quick Filter: Còn hàng (FR-017) */}
-              <button
-                onClick={() => updateFilters({ in_stock: inStockFilter ? '' : '1' })}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                  inStockFilter
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-700'
-                }`}
-              >
-                <Check className="w-3.5 h-3.5" />
-                <span>Còn hàng</span>
-              </button>
-
-              {/* Sắp xếp chuẩn FR-018: 5 tiêu chí */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-gray-400 font-bold text-xs flex items-center gap-1">
-                  <SlidersHorizontal className="w-3.5 h-3.5" />
-                </span>
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                  className="font-bold bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-600 cursor-pointer shadow-sm"
-                >
-                  <option value="newest">Mới nhất</option>
-                  <option value="price_asc">Giá tăng dần</option>
-                  <option value="price_desc">Giá giảm dần</option>
-                  <option value="name_asc">Tên A → Z</option>
-                  <option value="name_desc">Tên Z → A</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Active Filter Notification Bar */}
-          {(currentSearch || currentCategory || currentSeason || inStockFilter || discountedFilter || minPriceParam || maxPriceParam) && (
-            <div className="bg-emerald-50/80 border border-emerald-200 px-4 py-2.5 rounded-2xl flex flex-wrap items-center justify-between gap-2 text-xs shadow-sm">
-              <div className="text-brand-900 font-medium flex flex-wrap items-center gap-1.5">
-                <span className="font-bold text-slate-500">Đang lọc theo:</span>
-                {currentSearch && (
-                  <span className="font-extrabold bg-white px-2 py-0.5 rounded-lg border border-emerald-200 text-accent-700">
-                    Từ khóa: &quot;{currentSearch}&quot;
-                  </span>
-                )}
-                {currentCategory && (
-                  <span className="font-extrabold bg-white px-2 py-0.5 rounded-lg border border-emerald-200 text-brand-700">
-                    Danh mục: {categories.find(c => c.slug === currentCategory || String(c.id) === currentCategory)?.name || currentCategory}
-                  </span>
-                )}
-                {currentSeason && (
-                  <span className="font-extrabold bg-white px-2 py-0.5 rounded-lg border border-emerald-200 text-amber-700 uppercase">
-                    Mùa: {currentSeason}
-                  </span>
-                )}
-                {discountedFilter && (
-                  <span className="font-extrabold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-lg">
-                    Chỉ hàng giảm giá
-                  </span>
-                )}
-                {inStockFilter && (
-                  <span className="font-extrabold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-lg">
-                    Chỉ hàng còn trong kho
-                  </span>
-                )}
-                {minPriceParam && !maxPriceParam && (
-                  <span className="font-extrabold bg-white px-2 py-0.5 rounded-lg border border-emerald-200 text-emerald-800">
-                    Giá từ: {Number(minPriceParam).toLocaleString('vi-VN')} đ
-                  </span>
-                )}
-                {!minPriceParam && maxPriceParam && (
-                  <span className="font-extrabold bg-white px-2 py-0.5 rounded-lg border border-emerald-200 text-emerald-800">
-                    Giá dưới: {Number(maxPriceParam).toLocaleString('vi-VN')} đ
-                  </span>
-                )}
-                {minPriceParam && maxPriceParam && (
-                  <span className="font-extrabold bg-white px-2 py-0.5 rounded-lg border border-emerald-200 text-emerald-800">
-                    Khoảng giá: {Number(minPriceParam).toLocaleString('vi-VN')} đ - {Number(maxPriceParam).toLocaleString('vi-VN')} đ
-                  </span>
-                )}
-              </div>
-              <button
-                onClick={clearAllFilters}
-                className="font-bold text-red-600 hover:text-red-700 hover:underline flex items-center gap-1 cursor-pointer text-xs ml-auto"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Xóa bộ lọc</span>
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* 5. Product Grid & Empty States */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6">
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="bg-white rounded-3xl p-5 border border-gray-100 animate-pulse space-y-4">
-                <div className="aspect-square bg-gray-100 rounded-2xl" />
-                <div className="h-5 bg-gray-100 rounded-xl w-3/4" />
-                <div className="h-5 bg-gray-100 rounded-xl w-1/2" />
-              </div>
-            ))}
-          </div>
-        ) : products.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 max-w-lg mx-auto space-y-4 shadow-sm">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 text-brand-600 flex items-center justify-center mx-auto">
-              <PackageOpen className="w-8 h-8" />
-            </div>
-            <h3 className="font-extrabold text-gray-900 text-xl font-heading">Không tìm thấy sản phẩm phù hợp</h3>
-            <p className="text-gray-500 font-medium text-xs leading-relaxed">
-              Hãy thử tìm kiếm với từ khóa khác hoặc chuyển sang danh mục mùa vụ khác nhé!
-            </p>
-            <button
-              onClick={clearAllFilters}
-              className="mt-2 btn-primary cursor-pointer text-xs"
-            >
-              Xem lại tất cả sản phẩm
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {products.slice(0, visibleCount).map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-
-            {/* Shopee-style Xem them button (FR-043) */}
-            {products.length > visibleCount && (
-              <div className="flex flex-col items-center justify-center pt-4 pb-2 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => setVisibleCount((prev) => prev + 12)}
-                  className="px-10 py-3.5 bg-white hover:bg-brand-50 text-brand-700 font-extrabold text-sm rounded-2xl border-2 border-brand-600 hover:border-brand-700 transition-all shadow-xs hover:shadow-md cursor-pointer flex items-center gap-2 group active:scale-95"
-                >
-                  <span>Xem Thêm Sản Phẩm</span>
-                  <ChevronDown className="w-4 h-4 text-brand-600 group-hover:translate-y-0.5 transition-transform" />
-                </button>
-                <p className="text-xs text-gray-400 font-medium">
-                  Đang hiển thị {Math.min(visibleCount, products.length)} trên tổng số {products.length} sản phẩm
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Seamless Skeleton Fallback (Mirrors exact page structure so there is ZERO layout shift or flicker)
-function HomeSkeleton() {
-  return (
-    <div className="space-y-12 pb-20 animate-pulse">
-      {/* Hero Skeleton */}
-      <section className="bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 min-h-[480px] lg:min-h-[520px] flex items-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
-          <div className="lg:col-span-7 space-y-5">
-            <div className="w-48 h-8 rounded-full bg-white/15" />
-            <div className="w-3/4 h-12 rounded-2xl bg-white/20" />
-            <div className="w-full h-16 rounded-xl bg-white/10" />
-            <div className="w-56 h-12 rounded-2xl bg-white/20" />
-          </div>
-          <div className="lg:col-span-5">
-            <div className="aspect-[4/3] rounded-3xl bg-white/10" />
-          </div>
-        </div>
-      </section>
-
-      {/* Product Grid Skeleton */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
-        <div className="h-10 w-48 bg-slate-200 rounded-xl" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="bg-white rounded-3xl p-5 border border-slate-100 space-y-4">
-              <div className="aspect-square bg-slate-100 rounded-2xl" />
-              <div className="h-5 bg-slate-100 rounded-xl w-3/4" />
-              <div className="h-5 bg-slate-100 rounded-xl w-1/2" />
-            </div>
-          ))}
-        </div>
+        {/* 4. Product Grid & Shopee-style Pagination */}
+        <ShopeeProductGrid
+          products={products}
+          loading={loading}
+          visibleCount={visibleCount}
+          onShowMore={() => setVisibleCount((prev) => prev + 12)}
+          onClearFilters={clearAllFilters}
+        />
       </div>
     </div>
   );
