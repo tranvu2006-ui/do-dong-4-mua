@@ -2126,6 +2126,16 @@ export default function AdminDashboardPage() {
     showToast('Đang tạo và tải tệp Excel báo cáo khách hàng...', 'success');
   };
 
+  // API 76, FR-048: Xuất báo cáo khách hàng định dạng PDF
+  const handleExportCustomerPdf = () => {
+    let url = '/api/reports/export/pdf?type=customers';
+    if (customerReportStartDate) url += `&startDate=${encodeURIComponent(customerReportStartDate)}`;
+    if (customerReportEndDate) url += `&endDate=${encodeURIComponent(customerReportEndDate)}`;
+    if (customerReportSearch) url += `&search=${encodeURIComponent(customerReportSearch)}`;
+    window.open(url, '_blank');
+    showToast('Đang tạo và tải tệp PDF báo cáo khách hàng...', 'success');
+  };
+
   // Quản lý báo cáo hàng tồn kho (FR-049 & BR-029)
   const loadInventoryReport = async (overrideCat, overrideStatus, overrideSearch, overrideStart, overrideEnd) => {
     const sCat = overrideCat !== undefined ? overrideCat : inventoryReportCategory;
@@ -2171,6 +2181,18 @@ export default function AdminDashboardPage() {
     if (inventoryReportEndDate) url += `&endDate=${encodeURIComponent(inventoryReportEndDate)}`;
     window.open(url, '_blank');
     showToast('Đang tạo và tải tệp Excel báo cáo hàng tồn kho...', 'success');
+  };
+
+  // API 76, FR-049: Xuất báo cáo hàng tồn kho định dạng PDF
+  const exportInventoryReportPdf = () => {
+    let url = '/api/reports/export/pdf?type=inventory';
+    if (inventoryReportCategory && inventoryReportCategory !== 'all') url += `&categoryId=${encodeURIComponent(inventoryReportCategory)}`;
+    if (inventoryReportStockStatus && inventoryReportStockStatus !== 'all') url += `&stockStatus=${encodeURIComponent(inventoryReportStockStatus)}`;
+    if (inventoryReportSearch) url += `&search=${encodeURIComponent(inventoryReportSearch)}`;
+    if (inventoryReportStartDate) url += `&startDate=${encodeURIComponent(inventoryReportStartDate)}`;
+    if (inventoryReportEndDate) url += `&endDate=${encodeURIComponent(inventoryReportEndDate)}`;
+    window.open(url, '_blank');
+    showToast('Đang tạo và tải tệp PDF báo cáo hàng tồn kho...', 'success');
   };
 
   // Quản lý báo cáo đơn hàng (FR-050 & BR-030)
@@ -3518,6 +3540,7 @@ export default function AdminDashboardPage() {
                   customerReportSearch={customerReportSearch}
                   setCustomerReportSearch={setCustomerReportSearch}
                   handleExportCustomerExcel={handleExportCustomerExcel}
+                  handleExportCustomerPdf={handleExportCustomerPdf}
                   handleQuickCustomerDateFilter={handleQuickCustomerDateFilter}
                   loadCustomerReport={loadCustomerReport}
                   customerReportPage={customerReportPage}
@@ -3541,6 +3564,7 @@ export default function AdminDashboardPage() {
                   inventoryReportPageSize={inventoryReportPageSize}
                   setInventoryReportPageSize={setInventoryReportPageSize}
                   exportInventoryReportCsv={exportInventoryReportCsv}
+                  exportInventoryReportPdf={exportInventoryReportPdf}
                   loadInventoryReport={loadInventoryReport}
                   orderReportData={orderReportData}
                   orderReportLoading={orderReportLoading}

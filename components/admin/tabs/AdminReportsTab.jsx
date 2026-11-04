@@ -30,6 +30,7 @@ export default function AdminReportsTab({
   customerReportSearch,
   setCustomerReportSearch,
   handleExportCustomerExcel,
+  handleExportCustomerPdf,
   handleQuickCustomerDateFilter,
   loadCustomerReport,
   customerReportPage,
@@ -53,6 +54,7 @@ export default function AdminReportsTab({
   inventoryReportPageSize,
   setInventoryReportPageSize,
   exportInventoryReportCsv,
+  exportInventoryReportPdf,
   loadInventoryReport,
   orderReportData,
   orderReportLoading,
@@ -524,7 +526,7 @@ export default function AdminReportsTab({
                             </p>
                           </div>
 
-                          <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                          <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
                             <button
                               type="button"
                               onClick={handleExportCustomerExcel}
@@ -532,6 +534,14 @@ export default function AdminReportsTab({
                             >
                               <Download className="w-4 h-4" />
                               <span>Xuất Excel / CSV</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleExportCustomerPdf}
+                              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-600/20 transition cursor-pointer"
+                            >
+                              <FileText className="w-4 h-4" />
+                              <span>Xuất PDF</span>
                             </button>
                             <button
                               type="button"
@@ -864,23 +874,31 @@ export default function AdminReportsTab({
                               Theo dõi số lượng tồn kho từng sản phẩm, cảnh báo sắp hết hàng và tổng giá trị vốn lưu kho
                             </p>
                           </div>
-                          <div className="flex items-center gap-2 flex-wrap">
+                          <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+                            <button
+                              type="button"
+                              onClick={exportInventoryReportCsv}
+                              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-amber-600/20 transition cursor-pointer"
+                            >
+                              <Download className="w-4 h-4" />
+                              <span>Xuất Excel / CSV</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={exportInventoryReportPdf}
+                              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-600/20 transition cursor-pointer"
+                            >
+                              <FileText className="w-4 h-4" />
+                              <span>Xuất PDF</span>
+                            </button>
                             <button
                               type="button"
                               onClick={() => loadInventoryReport()}
                               disabled={inventoryReportLoading}
-                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 flex items-center gap-1.5 transition cursor-pointer"
+                              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                             >
-                              <RotateCcw className={`w-3.5 h-3.5 ${inventoryReportLoading ? 'animate-spin' : ''}`} />
+                              <RotateCcw className={`w-3.5 h-3.5 ${inventoryReportLoading ? 'animate-spin text-amber-600' : ''}`} />
                               <span>Làm mới</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={exportInventoryReportCsv}
-                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-sm flex items-center gap-1.5 transition cursor-pointer"
-                            >
-                              <Download className="w-3.5 h-3.5" />
-                              <span>Xuất Excel / CSV</span>
                             </button>
                           </div>
                         </div>
@@ -1288,31 +1306,31 @@ export default function AdminReportsTab({
                               Thống kê số lượng, tiến độ xử lý và diễn biến đơn hàng theo khoảng thời gian
                             </p>
                           </div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <button
-                              type="button"
-                              onClick={() => loadOrderReport()}
-                              disabled={orderReportLoading}
-                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 flex items-center gap-1.5 transition cursor-pointer"
-                            >
-                              <RotateCcw className={`w-3.5 h-3.5 ${orderReportLoading ? 'animate-spin' : ''}`} />
-                              <span>Làm mới</span>
-                            </button>
+                          <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
                             <button
                               type="button"
                               onClick={exportOrderReportCsv}
-                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm flex items-center gap-1.5 transition cursor-pointer"
+                              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition cursor-pointer"
                             >
-                              <Download className="w-3.5 h-3.5" />
+                              <Download className="w-4 h-4" />
                               <span>Xuất Excel / CSV</span>
                             </button>
                             <button
                               type="button"
                               onClick={exportOrderReportPdf}
-                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-sm flex items-center gap-1.5 transition cursor-pointer"
+                              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-600/20 transition cursor-pointer"
                             >
-                              <FileText className="w-3.5 h-3.5" />
+                              <FileText className="w-4 h-4" />
                               <span>Xuất PDF</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => loadOrderReport()}
+                              disabled={orderReportLoading}
+                              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                            >
+                              <RotateCcw className={`w-3.5 h-3.5 ${orderReportLoading ? 'animate-spin text-blue-600' : ''}`} />
+                              <span>Làm mới</span>
                             </button>
                           </div>
                         </div>
