@@ -154,27 +154,36 @@ function OrderHistoryContent() {
         onConfirmCancel={handleCancelOrder}
       />
 
-      {/* Toast Notification */}
+      {/* Toast Notification (Độ tương phản cao, nổi bật) */}
       {toast && (
-        <div className="fixed top-6 right-6 z-[9999] animate-in slide-in-from-top-4 fade-in duration-300 max-w-sm">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/95 backdrop-blur-md text-slate-800 shadow-2xl border border-slate-100/90 shadow-slate-900/10">
+        <div className="fixed top-6 right-6 z-[9999] animate-in slide-in-from-top-4 fade-in duration-300 max-w-md">
+          <div
+            className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl shadow-2xl border transition-all ${
+              toast.type === 'error'
+                ? 'bg-rose-600 border-rose-400 text-white shadow-rose-950/40 ring-4 ring-rose-500/20'
+                : 'bg-emerald-600 border-emerald-400 text-white shadow-emerald-950/40 ring-4 ring-emerald-500/20'
+            }`}
+          >
             <div className="shrink-0">
               {toast.type === 'error' ? (
-                <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 border border-rose-100 flex items-center justify-center">
-                  <XCircle className="w-4 h-4" />
+                <div className="w-9 h-9 rounded-xl bg-white/20 text-white border border-white/30 flex items-center justify-center shadow-xs">
+                  <XCircle className="w-5 h-5 stroke-[2.5]" />
                 </div>
               ) : (
-                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
-                  <CheckCircle2 className="w-4 h-4" />
+                <div className="w-9 h-9 rounded-xl bg-white/20 text-white border border-white/30 flex items-center justify-center shadow-xs">
+                  <CheckCircle2 className="w-5 h-5 stroke-[2.5]" />
                 </div>
               )}
             </div>
-            <span className="text-xs font-bold font-sans text-slate-800">
-              {toast.message}
-            </span>
+            <div className="flex-1 pr-1">
+              <span className="text-xs font-black font-sans text-white leading-relaxed drop-shadow-xs">
+                {toast.message}
+              </span>
+            </div>
             <button
               onClick={() => setToast(null)}
-              className="ml-auto p-1 rounded-lg text-slate-400 hover:text-slate-600 transition cursor-pointer text-xs"
+              className="ml-auto p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition cursor-pointer text-xs font-bold"
+              aria-label="Đóng thông báo"
             >
               ✕
             </button>
