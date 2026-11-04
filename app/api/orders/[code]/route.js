@@ -133,9 +133,11 @@ export async function PATCH(request, { params }) {
     // Xử lý HỦY ĐƠN HÀNG (FR-028 & BR-020)
     if (action === 'CANCEL' || order_status === 'DA_HUY') {
       if (['DANG_GIAO', 'DA_GIAO', 'DA_HUY'].includes(currentOrder.order_status)) {
+        const hotlineRow = await query('SELECT setting_value FROM system_settings WHERE setting_key = "hotline"');
+        const hotline = hotlineRow[0]?.setting_value || 'CSKH';
         return NextResponse.json({
           success: false,
-          message: `Không thể hủy đơn hàng vì đơn đã chuyển sang trạng thái "${currentOrder.order_status}". Vui lòng liên hệ Hotline 0901.234.567 để được hỗ trợ!`
+          message: `Không thể hủy đơn hàng vì đơn đã chuyển sang trạng thái "${currentOrder.order_status}". Vui lòng liên hệ Hotline ${hotline} để được hỗ trợ!`
         }, { status: 400 });
       }
 

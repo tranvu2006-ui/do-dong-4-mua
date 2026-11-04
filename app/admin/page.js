@@ -1562,6 +1562,7 @@ export default function AdminDashboardPage() {
         setNewBranch({ branch_name: '', phone: '', address: '' });
         showToast('Thêm chi nhánh mới thành công!');
         loadData();
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('branches-change'));
       } else {
         showToast(data.message || 'Lỗi thêm chi nhánh', 'error');
       }
@@ -1600,6 +1601,7 @@ export default function AdminDashboardPage() {
         setEditingBranch(null);
         showToast('Cập nhật thông tin chi nhánh thành công!');
         loadData();
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('branches-change'));
       } else {
         showToast(data.message || 'Lỗi cập nhật chi nhánh', 'error');
       }
@@ -1650,6 +1652,7 @@ export default function AdminDashboardPage() {
         showToast(`Đã xóa vĩnh viễn chi nhánh "${deletingBranch.branch_name}"!`);
         setDeletingBranch(null);
         loadData();
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('branches-change'));
       } else {
         showToast(data.message || 'Xóa chi nhánh thất bại!', 'error');
       }
@@ -1787,6 +1790,9 @@ export default function AdminDashboardPage() {
         setSiteSettings(data.data);
         showToast('Cập nhật cấu hình website thành công!');
         loadData();
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('settings-change'));
+        }
       } else {
         showToast(data.message || 'Lỗi cập nhật cấu hình', 'error');
       }
@@ -2799,13 +2805,18 @@ export default function AdminDashboardPage() {
         <div className="flex flex-col h-full overflow-hidden">
           {/* Brand Logo Header */}
           <div className="p-5 border-b border-slate-800/80 flex items-center gap-3 shrink-0">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/25">
-              <Leaf className="w-6 h-6 text-slate-950" />
-            </div>
+            {siteSettings?.logo_url ? (
+              <div className="w-11 h-11 rounded-2xl overflow-hidden bg-white p-1 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/10">
+                <img src={siteSettings.logo_url} alt="Logo" className="w-full h-full object-contain" />
+              </div>
+            ) : (
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/25 shrink-0">
+                <Leaf className="w-6 h-6 text-slate-950" />
+              </div>
+            )}
             <div>
               <div className="font-heading font-black text-white text-lg tracking-tight leading-none flex items-center gap-1.5">
-                <span>ĐỔ ĐỐNG</span>
-                <span className="text-accent-400">4 MÙA</span>
+                <span>{siteSettings?.site_name?.trim() || 'ĐỔ ĐỐNG 4 MÙA'}</span>
               </div>
               <div className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider mt-1 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>

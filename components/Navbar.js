@@ -18,6 +18,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [siteSettings, setSiteSettings] = useState(null);
+  const [branches, setBranches] = useState([]);
   const [activeBranchCount, setActiveBranchCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -39,8 +40,9 @@ export default function Navbar() {
         setSiteSettings(settingsData.data);
       }
       if (branchesData.success && Array.isArray(branchesData.data)) {
+        setBranches(branchesData.data);
         const activeCount = branchesData.data.filter(b => b.status === 1).length;
-        setActiveBranchCount(activeCount || branchesData.data.length);
+        setActiveBranchCount(activeCount);
       }
     } catch (e) {
       console.warn('Lỗi tải cấu hình động navbar:', e);
@@ -107,6 +109,8 @@ export default function Navbar() {
     loadSettingsAndBranches();
     window.addEventListener('auth-change', loadUser);
     window.addEventListener('auth-change', loadNotifications);
+    window.addEventListener('settings-change', loadSettingsAndBranches);
+    window.addEventListener('branches-change', loadSettingsAndBranches);
 
     const handleClickOutside = (e) => {
       if (!e.target.closest('#notif-dropdown-container')) {
@@ -118,6 +122,8 @@ export default function Navbar() {
     return () => {
       window.removeEventListener('auth-change', loadUser);
       window.removeEventListener('auth-change', loadNotifications);
+      window.removeEventListener('settings-change', loadSettingsAndBranches);
+      window.removeEventListener('branches-change', loadSettingsAndBranches);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
@@ -166,7 +172,10 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <Link href="/chi-nhanh" className="flex items-center gap-1 font-semibold hover:text-brand-200 transition cursor-pointer">
               <MapPin className="w-3.5 h-3.5 text-accent-400 shrink-0" />
-              <span>Hệ thống {activeBranchCount > 0 ? activeBranchCount : 2} Chi nhánh</span>
+              <span>
+                Hệ thống {activeBranchCount > 0 ? activeBranchCount : (branches.filter(b => b.status === 1).length || branches.length || 0)} Chi nhánh
+                {branches.filter(b => b.status === 1).length > 0 && ` (${branches.filter(b => b.status === 1).slice(0, 2).map(b => b.branch_name.replace(/^Chi Nhánh\s*/i, '')).join(' & ')}${branches.filter(b => b.status === 1).length > 2 ? '...' : ''})`}
+              </span>
             </Link>
             <span className="hidden md:inline-block text-brand-700">|</span>
             <span className="hidden md:flex items-center gap-1.5 text-emerald-100">
@@ -186,10 +195,12 @@ export default function Navbar() {
                 <span>Cổng Quản Trị</span>
               </Link>
             )}
-            {(() => {
-              const hotlineRaw = siteSettings?.hotline || '0929894248';
+            {siteSettings?.hotline ? (() => {
+              const hotlineRaw = siteSettings.hotline;
               const cleanPhone = hotlineRaw.replace(/\D/g, '');
               const formattedPhone = cleanPhone.length === 10
+                ? `${cleanPhone.slice(0, 4)}.${cleanPhone.slice(4, 7)}.${cleanPhone.slice(7)}`
+                : cleanPhone.length === 11
                 ? `${cleanPhone.slice(0, 4)}.${cleanPhone.slice(4, 7)}.${cleanPhone.slice(7)}`
                 : hotlineRaw;
               return (
@@ -198,7 +209,7 @@ export default function Navbar() {
                   <span>Hotline: {formattedPhone}</span>
                 </a>
               );
-            })()}
+            })() : null}
           </div>
         </div>
       </div>
@@ -206,17 +217,35 @@ export default function Navbar() {
       {/* Main navigation */}
       <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6">
         <div className="flex items-center justify-between gap-4">
-          {/* Logo */}
+          {/* Logo & Thuong hieu dong 100% (FR-043) */}
           <Link href="/" className="flex items-center gap-2.5 group shrink-0 cursor-pointer">
-            <div className="w-10 h-10 bg-gradient-to-br from-brand-600 to-brand-800 rounded-xl flex items-center justify-center text-white shadow-md shadow-brand-600/20 group-hover:scale-105 transition-transform">
-              <Leaf className="w-6 h-6 text-white" />
-            </div>
+            {siteSettings?.logo_url ? (
+              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md border border-gray-100 flex items-center justify-center bg-white p-0.5 group-hover:scale-105 transition-transform shrink-0">
+                <img
+                  src={siteSettings.logo_url}
+                  alt={siteSettings?.site_name || "Logo"}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            ) : (
+              <div className="w-10 h-10 bg-gradient-to-br from-brand-600 to-brand-800 rounded-xl flex items-center justify-center text-white shadow-md shadow-brand-600/20 group-hover:scale-105 transition-transform shrink-0">
+                <Leaf className="w-6 h-6 text-white" />
+              </div>
+            )}
             <div>
               <div className="text-xl font-black tracking-tight text-brand-900 flex items-center gap-1">
-                <span>ĐỔ ĐỐNG</span>
-                <span className="text-accent-500 font-extrabold">4 MÙA</span>
+                {siteSettings?.site_name?.trim() ? (
+                  <span>{siteSettings.site_name.trim()}</span>
+                ) : (
+                  <>
+                    <span>ĐỔ ĐỐNG</span>
+                    <span className="text-accent-500 font-extrabold">4 MÙA</span>
+                  </>
+                )}
               </div>
-              <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Trái Cây Tươi Ngon Chuẩn Vị</p>
+              <p className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                {siteSettings?.site_slogan || 'Trái Cây Tươi Ngon Chuẩn Vị'}
+              </p>
             </div>
           </Link>
 
@@ -472,7 +501,7 @@ export default function Navbar() {
               </Link>
               <Link href="/chi-nhanh" onClick={() => setMobileMenuOpen(false)} className="p-2.5 bg-gray-50 rounded-xl text-gray-800 font-bold flex items-center gap-2 cursor-pointer">
                 <MapPin className="w-4 h-4 text-accent-500" />
-                <span>Hệ thống {activeBranchCount > 0 ? activeBranchCount : 2} chi nhánh</span>
+                <span>Hệ thống {activeBranchCount > 0 ? activeBranchCount : (branches.filter(b => b.status === 1).length || branches.length || 0)} chi nhánh</span>
               </Link>
               {currentUser ? (
                 <button onClick={handleLogout} className="p-2.5 text-red-600 font-bold text-left flex items-center gap-2 cursor-pointer">

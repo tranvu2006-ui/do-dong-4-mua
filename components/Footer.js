@@ -31,6 +31,12 @@ export default function Footer() {
       }
     }
     loadData();
+    window.addEventListener('settings-change', loadData);
+    window.addEventListener('branches-change', loadData);
+    return () => {
+      window.removeEventListener('settings-change', loadData);
+      window.removeEventListener('branches-change', loadData);
+    };
   }, []);
   if (pathname?.startsWith('/admin')) return null;
 
@@ -44,7 +50,7 @@ export default function Footer() {
               <Truck className="w-7 h-7" />
             </div>
             <div>
-              <h4 className="text-white font-black text-lg mb-1 font-heading">Giao Hỏa Tốc GreenSM</h4>
+              <h4 className="text-white font-black text-lg mb-1 font-heading">Giao Hỏa Tốc {siteSettings?.shipping_partner || 'GreenSM'}</h4>
               <p className="text-emerald-200 font-medium">Giao nhanh nội thành trong 2 giờ, cam kết trái cây mát lạnh không dập nát.</p>
             </div>
           </div>
@@ -85,42 +91,67 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-brand-900">
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-brand-600 rounded-2xl flex items-center justify-center text-white shadow-md">
-              <Leaf className="w-7 h-7" />
-            </div>
+            {siteSettings?.logo_url ? (
+              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white p-1 shadow-md shrink-0 flex items-center justify-center">
+                <img
+                  src={siteSettings.logo_url}
+                  alt={siteSettings?.site_name || "Logo"}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            ) : (
+              <div className="w-12 h-12 bg-brand-600 rounded-2xl flex items-center justify-center text-white shadow-md shrink-0">
+                <Leaf className="w-7 h-7" />
+              </div>
+            )}
             <div className="text-2xl font-black text-white font-heading">
-              ĐỔ ĐỐNG <span className="text-accent-400">4 MÙA</span>
+              {siteSettings?.site_name?.trim() ? (
+                <span>{siteSettings.site_name.trim()}</span>
+              ) : (
+                <>ĐỔ ĐỐNG <span className="text-accent-400">4 MÙA</span></>
+              )}
             </div>
           </div>
           <p className="text-emerald-200 leading-relaxed mb-6 font-medium">
             Hệ thống cung cấp trái cây đặc sản 4 mùa Xuân - Hạ - Thu - Đông, trái cây nhập khẩu cao cấp và giỏ quà biếu sang trọng.
           </p>
           <div className="text-emerald-300 space-y-2 font-medium">
+            {siteSettings?.company_address && (
+              <p className="flex items-start gap-2">
+                <MapPin className="w-5 h-5 text-accent-400 shrink-0 mt-0.5" />
+                <span>Trụ sở: {siteSettings.company_address}</span>
+              </p>
+            )}
             <p className="flex items-center gap-2"><Clock className="w-5 h-5 text-accent-400 shrink-0" /> Giờ mở cửa: 07:00 - 21:30 hàng ngày</p>
-            <p className="flex items-center gap-2"><Phone className="w-5 h-5 text-accent-400 shrink-0" /> Hotline CSKH: {siteSettings?.hotline || "0929894248"}</p>
-            <p className="flex items-center gap-2"><Mail className="w-5 h-5 text-accent-400 shrink-0" /> Email: {siteSettings?.contact_email || "tranvukuroko@gmail.com"}</p>
+            {siteSettings?.hotline && (
+              <p className="flex items-center gap-2"><Phone className="w-5 h-5 text-accent-400 shrink-0" /> Hotline CSKH: {siteSettings.hotline}</p>
+            )}
+            {siteSettings?.contact_email && (
+              <p className="flex items-center gap-2"><Mail className="w-5 h-5 text-accent-400 shrink-0" /> Email: {siteSettings.contact_email}</p>
+            )}
           </div>
         </div>
 
         <div>
           <h3 className="text-white font-black text-xl mb-4 border-l-4 border-accent-500 pl-3 font-heading">Hệ Thống Chi Nhánh</h3>
           <ul className="text-emerald-200 space-y-4 font-medium">
-            <li className="flex items-start gap-2.5">
-              <MapPin className="w-5 h-5 text-accent-400 shrink-0 mt-1" />
-              <div>
-                <strong className="text-white block font-bold">Chi nhánh Thủ Đức (Trụ sở chính)</strong>
-                53 Võ Văn Ngân, P. Linh Chiểu, TP. Thủ Đức, TP.HCM
-                <br /><span className="text-emerald-400 font-bold">SĐT: 0901 234 567</span>
-              </div>
-            </li>
-            <li className="flex items-start gap-2.5">
-              <MapPin className="w-5 h-5 text-accent-400 shrink-0 mt-1" />
-              <div>
-                <strong className="text-white block font-bold">Chi nhánh Quận 1</strong>
-                12 Lê Duẩn, P. Bến Nghé, Quận 1, TP.HCM
-                <br /><span className="text-emerald-400 font-bold">SĐT: 0907 654 321</span>
-              </div>
-            </li>
+            {branches.filter(b => b.status === 1).slice(0, 3).map((b) => (
+              <li key={b.id} className="flex items-start gap-2.5">
+                <MapPin className="w-5 h-5 text-accent-400 shrink-0 mt-1" />
+                <div>
+                  <strong className="text-white block font-bold">{b.branch_name}</strong>
+                  {b.address}
+                  {b.phone && (
+                    <>
+                      <br /><span className="text-emerald-400 font-bold">SĐT: {b.phone}</span>
+                    </>
+                  )}
+                </div>
+              </li>
+            ))}
+            {branches.filter(b => b.status === 1).length === 0 && (
+              <li className="text-xs text-emerald-400/80">Đang cập nhật danh sách chi nhánh...</li>
+            )}
           </ul>
         </div>
 
