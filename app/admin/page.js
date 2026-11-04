@@ -429,6 +429,17 @@ export default function AdminDashboardPage() {
   const [customerReportSearch, setCustomerReportSearch] = useState('');
   const [customerReportPage, setCustomerReportPage] = useState(1);
   const [customerReportPageSize, setCustomerReportPageSize] = useState(10);
+
+  // Báo cáo hàng tồn kho (FR-049 & BR-029)
+  const [inventoryReportData, setInventoryReportData] = useState(null);
+  const [inventoryReportLoading, setInventoryReportLoading] = useState(false);
+  const [inventoryReportSearch, setInventoryReportSearch] = useState('');
+  const [inventoryReportCategory, setInventoryReportCategory] = useState('all');
+  const [inventoryReportStockStatus, setInventoryReportStockStatus] = useState('all');
+  const [inventoryReportStartDate, setInventoryReportStartDate] = useState('');
+  const [inventoryReportEndDate, setInventoryReportEndDate] = useState('');
+  const [inventoryReportPage, setInventoryReportPage] = useState(1);
+  const [inventoryReportPageSize, setInventoryReportPageSize] = useState(10);
   const [showAddBannerModal, setShowAddBannerModal] = useState(false);
   const [showAddAdminModal, setShowAddAdminModal] = useState(false);
 
@@ -631,7 +642,7 @@ export default function AdminDashboardPage() {
     try {
       const [
         statsRes, ordersRes, prodsRes, catsRes,
-        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes, settingsRes, shippingFeesRes, notificationsRes, revenueRes, customerReportRes
+        promosRes, branchesRes, bannersRes, custsRes, logsRes, usersRes, settingsRes, shippingFeesRes, notificationsRes, revenueRes, customerReportRes, inventoryReportRes
       ] = await Promise.all([
         fetch('/api/admin/stats'),
         fetch(`/api/orders?limit=100${orderStatusFilter ? `&status=${orderStatusFilter}` : ''}${orderSearch ? `&search=${encodeURIComponent(orderSearch)}` : ''}${orderStartDate ? `&startDate=${orderStartDate}` : ''}${orderEndDate ? `&endDate=${orderEndDate}` : ''}`),
@@ -648,15 +659,16 @@ export default function AdminDashboardPage() {
         fetch('/api/admin/notifications'),
         fetch('/api/admin/reports/revenue'),
         fetch('/api/admin/reports/customers'),
+        fetch('/api/admin/reports/inventory'),
       ]);
 
       const [
         statsData, ordersData, prodsData, catsData,
         promosData, branchesData, bannersData, custsData, logsData, usersData,
-        settingsData, shippingFeesData, notificationsData, revenueDataRes, customerReportDataRes
+        settingsData, shippingFeesData, notificationsData, revenueDataRes, customerReportDataRes, inventoryReportDataRes
       ] = await Promise.all([
         statsRes.json(), ordersRes.json(), prodsRes.json(), catsRes.json(),
-        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json(), settingsRes.json(), shippingFeesRes.json(), notificationsRes.json(), revenueRes.json(), customerReportRes.json()
+        promosRes.json(), branchesRes.json(), bannersRes.json(), custsRes.json(), logsRes.json(), usersRes.json(), settingsRes.json(), shippingFeesRes.json(), notificationsRes.json(), revenueRes.json(), customerReportRes.json(), inventoryReportRes.json()
       ]);
 
       if (statsData.success) setStats(statsData.data);
@@ -677,6 +689,7 @@ export default function AdminDashboardPage() {
       if (notificationsData && notificationsData.success) setNotifications(notificationsData.data);
       if (revenueDataRes && revenueDataRes.success) setRevenueData(revenueDataRes.data);
       if (customerReportDataRes && customerReportDataRes.success) setCustomerReportData(customerReportDataRes.data);
+      if (inventoryReportDataRes && inventoryReportDataRes.success) setInventoryReportData(inventoryReportDataRes.data);
     } catch (err) {
       console.error('Failed to load admin data', err);
     } finally {
@@ -1964,6 +1977,53 @@ export default function AdminDashboardPage() {
     if (customerReportSearch) url += `&search=${encodeURIComponent(customerReportSearch)}`;
     window.open(url, '_blank');
     showToast('Đang tạo và tải tệp Excel báo cáo khách hàng...', 'success');
+  };
+
+  // Quản lý báo cáo hàng tồn kho (FR-049 & BR-029)
+  const loadInventoryReport = async (overrideCat, overrideStatus, overrideSearch, overrideStart, overrideEnd) => {
+    const sCat = overrideCat !== undefined ? overrideCat : inventoryReportCategory;
+    const sStatus = overrideStatus !== undefined ? overrideStatus : inventoryReportStockStatus;
+    const sTerm = overrideSearch !== undefined ? overrideSearch : inventoryReportSearch;
+    const sDate = overrideStart !== undefined ? overrideStart : inventoryReportStartDate;
+    const eDate = overrideEnd !== undefined ? overrideEnd : inventoryReportEndDate;
+
+    if (sDate && eDate && sDate > eDate) {
+      showToast('Ngày bắt đầu không được lớn hơn ngày kết thúc!', 'warning');
+      return;
+    }
+
+    setInventoryReportLoading(true);
+    try {
+      let url = '/api/admin/reports/inventory?';
+      if (sCat && sCat !== 'all') url += `categoryId=${encodeURIComponent(sCat)}&`;
+      if (sStatus && sStatus !== 'all') url += `stockStatus=${encodeURIComponent(sStatus)}&`;
+      if (sTerm) url += `search=${encodeURIComponent(sTerm)}&`;
+      if (sDate) url += `startDate=${encodeURIComponent(sDate)}&`;
+      if (eDate) url += `endDate=${encodeURIComponent(eDate)}&`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success) {
+        setInventoryReportData(data.data);
+      } else {
+        showToast(data.message || 'Lỗi tải báo cáo tồn kho', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi kết nối máy chủ: ' + err.message, 'error');
+    } finally {
+      setInventoryReportLoading(false);
+    }
+  };
+
+  const exportInventoryReportCsv = () => {
+    let url = '/api/admin/reports/inventory?format=excel';
+    if (inventoryReportCategory && inventoryReportCategory !== 'all') url += `&categoryId=${encodeURIComponent(inventoryReportCategory)}`;
+    if (inventoryReportStockStatus && inventoryReportStockStatus !== 'all') url += `&stockStatus=${encodeURIComponent(inventoryReportStockStatus)}`;
+    if (inventoryReportSearch) url += `&search=${encodeURIComponent(inventoryReportSearch)}`;
+    if (inventoryReportStartDate) url += `&startDate=${encodeURIComponent(inventoryReportStartDate)}`;
+    if (inventoryReportEndDate) url += `&endDate=${encodeURIComponent(inventoryReportEndDate)}`;
+    window.open(url, '_blank');
+    showToast('Đang tạo và tải tệp Excel báo cáo hàng tồn kho...', 'success');
   };
 
   const handleQuickCustomerDateFilter = (days) => {
@@ -4732,6 +4792,22 @@ export default function AdminDashboardPage() {
                       <Users className="w-4 h-4 text-indigo-600" />
                       <span>Báo Cáo Khách Hàng (FR-048)</span>
                     </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReportSubTab('inventory');
+                        if (!inventoryReportData) loadInventoryReport();
+                      }}
+                      className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition cursor-pointer ${
+                        reportSubTab === 'inventory'
+                          ? 'bg-white text-amber-950 shadow-sm'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <Box className="w-4 h-4 text-amber-600" />
+                      <span>Báo Cáo Hàng Tồn Kho (FR-049)</span>
+                    </button>
                   </div>
 
                   {reportSubTab === 'revenue' && (
@@ -5397,6 +5473,423 @@ export default function AdminDashboardPage() {
                             onPageSizeChange={setCustomerReportPageSize}
                             pageSizeOptions={[10, 15, 30, 50]}
                             itemName="khách hàng"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* BÁO CÁO HÀNG TỒN KHO (FR-049 & BR-029) */}
+                  {reportSubTab === 'inventory' && (
+                    <div className="space-y-6 animate-in fade-in duration-200">
+                      {/* Tiêu đề & Bộ lọc kho hàng */}
+                      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                          <div>
+                            <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
+                              <Box className="w-5 h-5 text-amber-600" />
+                              <span>Báo Cáo Hàng Tồn Kho (FR-049)</span>
+                            </h2>
+                            <p className="text-xs text-slate-500 mt-1">
+                              Theo dõi số lượng tồn kho từng sản phẩm, cảnh báo sắp hết hàng và tổng giá trị vốn lưu kho (BR-029)
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <button
+                              type="button"
+                              onClick={() => loadInventoryReport()}
+                              disabled={inventoryReportLoading}
+                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 flex items-center gap-1.5 transition cursor-pointer"
+                            >
+                              <RotateCcw className={`w-3.5 h-3.5 ${inventoryReportLoading ? 'animate-spin' : ''}`} />
+                              <span>Làm mới</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={exportInventoryReportCsv}
+                              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-sm flex items-center gap-1.5 transition cursor-pointer"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                              <span>Xuất Excel / CSV (TC_REPORT_003)</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Thanh lọc nâng cao */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1">
+                          <div className="relative">
+                            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="text"
+                              placeholder="Tìm mã SP, tên trái cây..."
+                              value={inventoryReportSearch}
+                              onChange={(e) => {
+                                setInventoryReportSearch(e.target.value);
+                                setInventoryReportPage(1);
+                              }}
+                              className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition"
+                            />
+                          </div>
+
+                          <div>
+                            <select
+                              value={inventoryReportCategory}
+                              onChange={(e) => {
+                                setInventoryReportCategory(e.target.value);
+                                setInventoryReportPage(1);
+                                loadInventoryReport(e.target.value, inventoryReportStockStatus, inventoryReportSearch);
+                              }}
+                              className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition bg-white"
+                            >
+                              <option value="all">Tất cả danh mục ({categories.length})</option>
+                              {categories.map((c) => (
+                                <option key={c.id} value={c.id}>{c.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div>
+                            <select
+                              value={inventoryReportStockStatus}
+                              onChange={(e) => {
+                                setInventoryReportStockStatus(e.target.value);
+                                setInventoryReportPage(1);
+                                loadInventoryReport(inventoryReportCategory, e.target.value, inventoryReportSearch);
+                              }}
+                              className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition bg-white font-medium"
+                            >
+                              <option value="all">Tất cả tình trạng tồn</option>
+                              <option value="out_of_stock">🔴 Hết hàng (Tồn = 0)</option>
+                              <option value="low_stock">⚠️ Sắp hết hàng (Tồn ≤ 10)</option>
+                              <option value="in_stock">🟢 Còn hàng (Tồn trên 10)</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <input
+                              type="date"
+                              value={inventoryReportStartDate}
+                              onChange={(e) => setInventoryReportStartDate(e.target.value)}
+                              placeholder="Từ ngày"
+                              className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition"
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="date"
+                              value={inventoryReportEndDate}
+                              onChange={(e) => setInventoryReportEndDate(e.target.value)}
+                              placeholder="Đến ngày"
+                              className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setInventoryReportPage(1);
+                                loadInventoryReport();
+                              }}
+                              className="px-3 py-2 rounded-xl text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 transition cursor-pointer shrink-0"
+                            >
+                              Lọc
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setInventoryReportSearch('');
+                                setInventoryReportCategory('all');
+                                setInventoryReportStockStatus('all');
+                                setInventoryReportStartDate('');
+                                setInventoryReportEndDate('');
+                                setInventoryReportPage(1);
+                                loadInventoryReport('all', 'all', '', '', '');
+                              }}
+                              title="Đặt lại bộ lọc"
+                              className="p-2 rounded-xl text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition cursor-pointer shrink-0"
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 4 Thẻ chỉ số tổng hợp kho hàng */}
+                      {inventoryReportData && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                          {/* Tổng sản phẩm & Tổng lượng tồn */}
+                          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng mặt hàng</span>
+                              <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                                <Box className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-2xl font-black text-slate-900 tracking-tight">
+                                {inventoryReportData.overall?.total_products || 0}
+                                <span className="text-xs font-semibold text-slate-500 ml-1.5">mặt hàng</span>
+                              </div>
+                              <p className="text-xs text-slate-500 mt-1">
+                                Tổng lưu kho: <strong className="text-slate-800">{(inventoryReportData.overall?.total_stock_quantity || 0).toLocaleString('vi-VN')}</strong> sản phẩm
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Tổng giá trị vốn kho */}
+                          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng vốn tồn kho</span>
+                              <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                <TrendingUp className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-2xl font-black text-blue-700 tracking-tight">
+                                {(inventoryReportData.overall?.total_inventory_value || 0).toLocaleString('vi-VN')}
+                                <span className="text-xs font-bold text-blue-600 ml-1">đ</span>
+                              </div>
+                              <p className="text-xs text-slate-500 mt-1">
+                                Tính theo đơn giá niêm yết hiện hành
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Báo động hết hàng (BR-029) */}
+                          <div className="bg-white p-5 rounded-2xl border border-rose-200 shadow-2xs space-y-3 bg-gradient-to-br from-white to-rose-50/30">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-rose-700 uppercase tracking-wider">Hết hàng (Tồn = 0)</span>
+                              <div className="w-9 h-9 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600">
+                                <AlertTriangle className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-2xl font-black text-rose-700 tracking-tight">
+                                {inventoryReportData.overall?.out_of_stock_count || 0}
+                                <span className="text-xs font-semibold text-rose-600 ml-1.5">mặt hàng</span>
+                              </div>
+                              <p className="text-xs text-rose-600 mt-1 font-medium">
+                                Cần nhập kho hoặc chuyển hàng ngay
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Cảnh báo sắp hết hàng */}
+                          <div className="bg-white p-5 rounded-2xl border border-amber-200 shadow-2xs space-y-3 bg-gradient-to-br from-white to-amber-50/30">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">Sắp hết hàng (Tồn ≤ 10)</span>
+                              <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+                                <Clock className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-2xl font-black text-amber-700 tracking-tight">
+                                {inventoryReportData.overall?.low_stock_count || 0}
+                                <span className="text-xs font-semibold text-amber-600 ml-1.5">mặt hàng</span>
+                              </div>
+                              <p className="text-xs text-amber-700 mt-1 font-medium">
+                                Đang chạm ngưỡng an toàn tối thiểu
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Phân bổ tồn kho theo Danh mục */}
+                      {inventoryReportData && inventoryReportData.category_distribution?.length > 0 && (
+                        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+                          <h3 className="font-heading font-black text-sm text-slate-900 flex items-center gap-2">
+                            <Layers className="w-4 h-4 text-amber-600" />
+                            <span>Phân Bổ Tồn Kho Theo Danh Mục Trái Cây</span>
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {inventoryReportData.category_distribution.map((cat) => (
+                              <div
+                                key={cat.category_id}
+                                onClick={() => {
+                                  setInventoryReportCategory(cat.category_id);
+                                  setInventoryReportPage(1);
+                                  loadInventoryReport(cat.category_id, inventoryReportStockStatus, inventoryReportSearch);
+                                }}
+                                className="p-4 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-amber-50/40 hover:border-amber-300 transition cursor-pointer space-y-2 group"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-xs text-slate-900 group-hover:text-amber-800 transition">
+                                    {cat.category_name}
+                                  </span>
+                                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-200/70 text-slate-700 font-semibold">
+                                    {cat.product_count} sản phẩm
+                                  </span>
+                                </div>
+                                <div className="flex items-baseline justify-between pt-1">
+                                  <span className="text-xs text-slate-500">Tồn kho:</span>
+                                  <span className="text-sm font-black text-slate-900">
+                                    {cat.total_stock.toLocaleString('vi-VN')}
+                                  </span>
+                                </div>
+                                <div className="flex items-baseline justify-between">
+                                  <span className="text-xs text-slate-500">Giá trị vốn:</span>
+                                  <span className="text-xs font-bold text-emerald-700">
+                                    {Math.round(cat.category_value).toLocaleString('vi-VN')} đ
+                                  </span>
+                                </div>
+                                {(cat.out_of_stock_count > 0 || cat.low_stock_count > 0) && (
+                                  <div className="pt-2 border-t border-slate-200/60 flex items-center gap-2 text-[11px]">
+                                    {cat.out_of_stock_count > 0 && (
+                                      <span className="px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold">
+                                        {cat.out_of_stock_count} hết hàng
+                                      </span>
+                                    )}
+                                    {cat.low_stock_count > 0 && (
+                                      <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">
+                                        {cat.low_stock_count} sắp hết
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Bảng chi tiết toàn bộ sản phẩm tồn kho (Bảng cốt lõi FR-049) */}
+                      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-6 space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                          <div>
+                            <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
+                              <Box className="w-4 h-4 text-amber-600" />
+                              <span>Danh Sách Chi Tiết Hàng Tồn Kho (FR-049)</span>
+                            </h3>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              Đầy đủ thông tin: Mã sản phẩm, Tên sản phẩm, Danh mục, Tồn kho hiện tại và Trạng thái theo quy tắc SRS
+                            </p>
+                          </div>
+                          <span className="text-xs px-3 py-1 rounded-xl bg-slate-100 text-slate-600 font-bold self-start sm:self-auto">
+                            Tổng cộng: {inventoryReportData?.products?.length || 0} sản phẩm
+                          </span>
+                        </div>
+
+                        {inventoryReportLoading ? (
+                          <div className="py-12 flex flex-col items-center justify-center text-slate-400 gap-3">
+                            <RotateCcw className="w-8 h-8 animate-spin text-amber-600" />
+                            <span className="text-xs font-semibold">Đang tổng hợp dữ liệu tồn kho...</span>
+                          </div>
+                        ) : !inventoryReportData || inventoryReportData.products?.length === 0 ? (
+                          <div className="py-12 text-center text-slate-400 space-y-2">
+                            <Box className="w-10 h-10 mx-auto text-slate-300" />
+                            <p className="text-sm font-semibold text-slate-600">Không có dữ liệu phù hợp với bộ lọc (TC_REPORT_005)</p>
+                            <p className="text-xs text-slate-400">Vui lòng thử chọn danh mục hoặc từ khóa tìm kiếm khác.</p>
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-left text-xs text-slate-600 border-collapse">
+                              <thead>
+                                <tr className="border-b border-slate-200 bg-slate-50/70 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                  <th className="py-3 px-3">Mã SP</th>
+                                  <th className="py-3 px-3">Sản phẩm</th>
+                                  <th className="py-3 px-3">Danh mục</th>
+                                  <th className="py-3 px-3 text-right">Đơn giá</th>
+                                  <th className="py-3 px-3 text-center">Tồn kho hiện tại</th>
+                                  <th className="py-3 px-3 text-center">Trạng thái (BR-029)</th>
+                                  <th className="py-3 px-3 text-right">Giá trị tồn kho</th>
+                                  <th className="py-3 px-3 text-center">Cập nhật</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100">
+                                {(() => {
+                                  const invList = inventoryReportData.products || [];
+                                  const startIdx = (inventoryReportPage - 1) * inventoryReportPageSize;
+                                  const pageItems = invList.slice(startIdx, startIdx + inventoryReportPageSize);
+
+                                  return pageItems.map((prod) => {
+                                    const isOutOfStock = prod.stock === 0;
+                                    const isLowStock = prod.stock > 0 && prod.stock <= 10;
+
+                                    return (
+                                      <tr key={prod.id} className="hover:bg-slate-50/60 transition">
+                                        <td className="py-3 px-3 font-mono font-bold text-slate-900">
+                                          <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[11px]">
+                                            {prod.product_code}
+                                          </span>
+                                        </td>
+                                        <td className="py-3 px-3">
+                                          <div className="flex items-center gap-2.5">
+                                            {prod.thumbnail ? (
+                                              <img
+                                                src={prod.thumbnail}
+                                                alt={prod.product_name}
+                                                className="w-9 h-9 rounded-lg object-cover border border-slate-200 shrink-0"
+                                              />
+                                            ) : (
+                                              <div className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 shrink-0">
+                                                <Box className="w-4 h-4" />
+                                              </div>
+                                            )}
+                                            <div>
+                                              <p className="font-bold text-slate-900">{prod.product_name}</p>
+                                              <span className="text-[11px] text-slate-400">Đơn vị: {prod.unit || 'Sản phẩm'}</span>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td className="py-3 px-3">
+                                          <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-semibold">
+                                            {prod.category_name}
+                                          </span>
+                                        </td>
+                                        <td className="py-3 px-3 text-right font-medium text-slate-800">
+                                          {prod.price.toLocaleString('vi-VN')} đ
+                                        </td>
+                                        <td className="py-3 px-3 text-center">
+                                          <span className={`text-base font-black ${
+                                            isOutOfStock ? 'text-rose-600' : isLowStock ? 'text-amber-600' : 'text-slate-900'
+                                          }`}>
+                                            {prod.stock.toLocaleString('vi-VN')}
+                                          </span>
+                                          <span className="text-[10px] text-slate-400 block font-normal">{prod.unit || 'sp'}</span>
+                                        </td>
+                                        <td className="py-3 px-3 text-center">
+                                          {isOutOfStock ? (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-100 text-rose-700 border border-rose-200">
+                                              <XCircle className="w-3 h-3 text-rose-600" />
+                                              <span>Hết hàng</span>
+                                            </span>
+                                          ) : isLowStock ? (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-100 text-amber-800 border border-amber-200">
+                                              <AlertTriangle className="w-3 h-3 text-amber-600" />
+                                              <span>Sắp hết hàng</span>
+                                            </span>
+                                          ) : (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                              <span>Còn hàng</span>
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td className="py-3 px-3 text-right font-bold text-slate-900">
+                                          {Math.round(prod.inventory_value).toLocaleString('vi-VN')} đ
+                                        </td>
+                                        <td className="py-3 px-3 text-center text-slate-400 text-[11px]">
+                                          {prod.updated_at ? new Date(prod.updated_at).toLocaleDateString('vi-VN') : '—'}
+                                        </td>
+                                      </tr>
+                                    );
+                                  });
+                                })()}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+
+                        {/* Phân trang danh sách tồn kho */}
+                        {inventoryReportData && inventoryReportData.products?.length > 0 && (
+                          <Pagination
+                            currentPage={inventoryReportPage}
+                            totalItems={inventoryReportData.products.length}
+                            pageSize={inventoryReportPageSize}
+                            onPageChange={setInventoryReportPage}
+                            onPageSizeChange={setInventoryReportPageSize}
+                            pageSizeOptions={[10, 15, 30, 50]}
+                            itemName="sản phẩm tồn kho"
                           />
                         )}
                       </div>
