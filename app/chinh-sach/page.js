@@ -102,16 +102,30 @@ function PolicyContent() {
           </Link>
         </div>
 
-        {/* Page Header */}
-        <div className="bg-gradient-to-r from-brand-900 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-lg">
-          <h1 className="text-2xl sm:text-3xl font-black font-heading tracking-tight">
-            Chính Sách & Điều Khoản
-          </h1>
-          {siteSettings?.site_name && (
-            <p className="text-xs sm:text-sm text-emerald-200/90 mt-1 font-medium">
-              {siteSettings.site_name}
-            </p>
-          )}
+        {/* Page Header (Clean, Light & Modern Style) */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-700 shadow-xs shrink-0">
+              <ShieldCheck className="w-8 h-8 text-brand-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-black font-heading tracking-tight text-slate-900 leading-tight">
+                Chính Sách & Điều Khoản
+              </h1>
+              {siteSettings?.site_name && (
+                <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
+                  {siteSettings.site_name}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-100">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Văn bản chính thức</span>
+            </span>
+          </div>
         </div>
 
         {/* Main Content Layout: Sidebar + Policy Detail */}
