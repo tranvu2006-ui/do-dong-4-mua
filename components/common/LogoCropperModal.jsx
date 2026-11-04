@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, ZoomIn, ZoomOut, RotateCcw, Move, Leaf, Globe, Check, RefreshCw } from 'lucide-react';
 
 export default function LogoCropperModal({
@@ -22,7 +22,6 @@ export default function LogoCropperModal({
 
   const imgRef = useRef(null);
   const frameRef = useRef(null);
-  const previewCanvasRef = useRef(null);
 
   // Reset values when modal opens with new image
   useEffect(() => {
@@ -33,53 +32,6 @@ export default function LogoCropperModal({
       setIsSaving(false);
     }
   }, [isOpen, imageSrc, initialShape]);
-
-  // Live Canvas Preview (60 FPS sync with zoom and pan)
-  const updatePreview = useCallback(() => {
-    const canvas = previewCanvasRef.current;
-    const img = imgRef.current;
-    const frame = frameRef.current;
-
-    if (!canvas || !img || !frame || !img.naturalWidth) return;
-
-    const imgRect = img.getBoundingClientRect();
-    const frameRect = frame.getBoundingClientRect();
-
-    if (frameRect.width === 0 || imgRect.width === 0) return;
-
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const scaleFactor = canvas.width / frameRect.width;
-    const dx = (imgRect.left - frameRect.left) * scaleFactor;
-    const dy = (imgRect.top - frameRect.top) * scaleFactor;
-    const dw = imgRect.width * scaleFactor;
-    const dh = imgRect.height * scaleFactor;
-
-    ctx.save();
-    if (shape === 'circle') {
-      ctx.beginPath();
-      ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
-      ctx.clip();
-    }
-    ctx.drawImage(img, dx, dy, dw, dh);
-    ctx.restore();
-  }, [shape]);
-
-  useEffect(() => {
-    if (!isOpen || !imageSrc) return;
-
-    const img = imgRef.current;
-    if (img) {
-      if (img.complete && img.naturalWidth) {
-        updatePreview();
-      } else {
-        img.onload = updatePreview;
-      }
-    }
-    const timer = setTimeout(updatePreview, 30);
-    return () => clearTimeout(timer);
-  }, [isOpen, imageSrc, position.x, position.y, scale, shape, updatePreview]);
 
   // Mouse & Touch Pan handlers
   const handleMouseDown = (e) => {
@@ -102,8 +54,8 @@ export default function LogoCropperModal({
 
   const handleTouchStart = (e) => {
     if (e.touches.length === 1) {
-      const touch = e.touches[0];
       setIsDragging(true);
+      const touch = e.touches[0];
       setDragStart({ x: touch.clientX - position.x, y: touch.clientY - position.y });
     }
   };
@@ -117,6 +69,7 @@ export default function LogoCropperModal({
     });
   };
 
+  // High-Resolution 512x512 Canvas Export on Save
   const handleSave = async () => {
     if (!imageSrc || isSaving) return;
     setIsSaving(true);
@@ -193,10 +146,11 @@ export default function LogoCropperModal({
           </button>
         </div>
 
-        {/* Viewport Canvas Area */}
-        <div className="p-4 sm:p-5 space-y-4">
+        {/* Modal Body */}
+        <div className="p-4 sm:p-6 space-y-4">
+          {/* Main Interactive Canvas & Crop Container */}
           <div
-            className="w-full h-72 sm:h-80 bg-slate-950 rounded-2xl relative overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing border border-slate-800 shadow-inner"
+            className="relative w-full h-72 bg-slate-950 rounded-2xl overflow-hidden flex items-center justify-center select-none cursor-grab active:cursor-grabbing border border-slate-800"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onTouchStart={handleTouchStart}
@@ -209,7 +163,7 @@ export default function LogoCropperModal({
                 alt="Crop Source"
                 crossOrigin="anonymous"
                 draggable={false}
-                className="max-w-none pointer-events-none transition-transform duration-75 ease-out select-none"
+                className="max-w-none pointer-events-none select-none"
                 style={{
                   transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                   transformOrigin: 'center center',
@@ -220,12 +174,12 @@ export default function LogoCropperModal({
               />
             )}
 
-            {/* Dark Mask with Clear Spotlight Frame */}
+            {/* Dark Mask with Clear Spotlight Frame (240px x 240px) */}
             <div
               ref={frameRef}
-              className={`w-60 h-60 pointer-events-none transition-all duration-200 ${
+              className={`w-60 h-60 pointer-events-none transition-all duration-150 ${
                 shape === 'circle' ? 'rounded-full' : 'rounded-2xl'
-              } border-2 border-emerald-400 shadow-[0_0_0_9999px_rgba(2,6,23,0.72)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}
+              } border-2 border-emerald-400 shadow-[0_0_0_9999px_rgba(2,6,23,0.76)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center`}
             >
               <div className="w-3 h-3 border-t border-l border-emerald-300/40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
             </div>
@@ -307,7 +261,7 @@ export default function LogoCropperModal({
               </div>
             </div>
 
-            {/* Live simulation on Website Navbar */}
+            {/* Live Real-Time 60FPS Simulation on Website Navbar */}
             <div className="p-3 bg-slate-50 border border-slate-200/90 rounded-2xl space-y-1.5">
               <div className="flex items-center justify-between text-xs text-slate-600">
                 <span className="font-bold text-slate-700">Mô phỏng hiển thị trên thanh Menu website:</span>
@@ -315,15 +269,42 @@ export default function LogoCropperModal({
                   Xem trước trực tiếp
                 </span>
               </div>
-              <div className="bg-white rounded-xl p-2.5 flex items-center gap-2.5 text-slate-800 shadow-sm border border-slate-200">
-                <div className={`w-10 h-10 ${shape === 'circle' ? 'rounded-full' : 'rounded-xl'} bg-emerald-50/50 border border-emerald-200 overflow-hidden relative flex items-center justify-center shrink-0 shadow-sm`}>
+              <div className="bg-white rounded-xl p-2.5 flex items-center gap-3 text-slate-800 shadow-sm border border-slate-200">
+                {/* Simulated Navbar Icon: Proportionally Synchronized with zero lag */}
+                <div
+                  className={`w-11 h-11 ${
+                    shape === 'circle' ? 'rounded-full' : 'rounded-xl'
+                  } bg-emerald-50/60 border border-emerald-200 overflow-hidden relative flex items-center justify-center shrink-0 shadow-sm`}
+                >
                   {imageSrc ? (
-                    <canvas
-                      ref={previewCanvasRef}
-                      width={96}
-                      height={96}
-                      className={`w-full h-full ${shape === 'circle' ? 'rounded-full' : 'rounded-xl'} object-contain`}
-                    />
+                    <div
+                      style={{
+                        width: '240px',
+                        height: '240px',
+                        transform: 'scale(0.18333)',
+                        transformOrigin: 'center center',
+                        position: 'absolute',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        pointerEvents: 'none'
+                      }}
+                    >
+                      <img
+                        src={imageSrc}
+                        alt="Simulated Preview"
+                        crossOrigin="anonymous"
+                        draggable={false}
+                        className="max-w-none select-none"
+                        style={{
+                          transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+                          transformOrigin: 'center center',
+                          maxHeight: '85%',
+                          maxWidth: '85%',
+                          objectFit: 'contain',
+                        }}
+                      />
+                    </div>
                   ) : (
                     <Leaf className="w-5 h-5 text-emerald-600" />
                   )}
