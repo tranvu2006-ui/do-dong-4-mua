@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { 
   ShoppingBag, Search, Phone, ShieldCheck, MapPin, 
   Sparkles, Menu, X, User, LogOut, Package,
-  Leaf, Sun, Flower2, Wind, Snowflake, Bell
+  Leaf, Bell
 } from 'lucide-react';
 import { useCart } from './CartContext';
 
@@ -20,6 +20,7 @@ export default function Navbar() {
   const [siteSettings, setSiteSettings] = useState(null);
   const [branches, setBranches] = useState([]);
   const [activeBranchCount, setActiveBranchCount] = useState(null);
+  const [topCategories, setTopCategories] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -28,13 +29,15 @@ export default function Navbar() {
 
   const loadSettingsAndBranches = async () => {
     try {
-      const [settingsRes, branchesRes] = await Promise.all([
+      const [settingsRes, branchesRes, categoriesRes] = await Promise.all([
         fetch('/api/system/settings'),
-        fetch('/api/branches?all=true')
+        fetch('/api/branches?all=true'),
+        fetch('/api/categories')
       ]);
-      const [settingsData, branchesData] = await Promise.all([
+      const [settingsData, branchesData, categoriesData] = await Promise.all([
         settingsRes.json(),
-        branchesRes.json()
+        branchesRes.json(),
+        categoriesRes.json()
       ]);
       if (settingsData.success && settingsData.data) {
         setSiteSettings(settingsData.data);
@@ -47,6 +50,16 @@ export default function Navbar() {
         try {
           localStorage.setItem('dodong4mua_active_branch_count', String(activeCount));
           localStorage.setItem('dodong4mua_branches', JSON.stringify(branchesData.data));
+        } catch (e) {}
+      }
+      if (categoriesData.success && Array.isArray(categoriesData.data)) {
+        const top4 = [...categoriesData.data]
+          .filter(c => c.status === 1)
+          .sort((a, b) => (b.product_count || 0) - (a.product_count || 0))
+          .slice(0, 4);
+        setTopCategories(top4);
+        try {
+          localStorage.setItem('dodong4mua_top_categories', JSON.stringify(top4));
         } catch (e) {}
       }
     } catch (e) {
@@ -114,6 +127,8 @@ export default function Navbar() {
       if (cachedSettings) setSiteSettings(JSON.parse(cachedSettings));
       const cachedCount = localStorage.getItem('dodong4mua_active_branch_count');
       if (cachedCount !== null) setActiveBranchCount(parseInt(cachedCount, 10));
+      const cachedTopCats = localStorage.getItem('dodong4mua_top_categories');
+      if (cachedTopCats) setTopCategories(JSON.parse(cachedTopCats));
     } catch (e) {}
     loadUser();
     loadNotifications();
@@ -165,13 +180,7 @@ export default function Navbar() {
     }
   };
 
-  const seasons = [
-    { key: '', label: 'Tất cả 4 Mùa', icon: Sparkles },
-    { key: 'xuan', label: 'Mùa Xuân', icon: Flower2 },
-    { key: 'ha', label: 'Mùa Hạ', icon: Sun },
-    { key: 'thu', label: 'Mùa Thu', icon: Wind },
-    { key: 'dong', label: 'Mùa Đông', icon: Snowflake },
-  ];
+
 
   if (pathname?.startsWith('/admin')) return null;
 
@@ -453,30 +462,31 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Four Seasons Filter Sub-navigation */}
+        {/* Top 4 danh mục nhiều sản phẩm nhất (100% động từ CSDL, không hard code) */}
         <div className="mt-2.5 pt-2 border-t border-gray-100 hidden sm:flex items-center justify-between gap-3 overflow-x-auto text-xs pb-0.5">
           <div className="flex items-center gap-1.5 shrink-0">
-            <span className="font-extrabold text-brand-900 uppercase tracking-wider mr-1 text-[11px]">Mùa Vụ:</span>
-            {seasons.map((s) => {
-              const IconComp = s.icon;
-              return (
-                <button
-                  key={s.key}
-                  onClick={() => router.push(s.key ? `/?season=${s.key}` : '/', { scroll: false })}
-                  className="px-3 py-1 rounded-full bg-gray-100 hover:bg-brand-100 hover:text-brand-700 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer active:scale-95 font-semibold text-gray-700"
-                >
-                  <IconComp className="w-3.5 h-3.5 text-brand-600" />
-                  <span>{s.label}</span>
-                </button>
-              );
-            })}
+            <span className="font-extrabold text-brand-900 uppercase tracking-wider mr-1 text-[11px]">Danh Mục:</span>
+            <button
+              onClick={() => router.push('/', { scroll: false })}
+              className="px-3 py-1 rounded-full bg-gray-100 hover:bg-brand-100 hover:text-brand-700 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer active:scale-95 font-semibold text-gray-700"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-brand-600" />
+              <span>Tất cả</span>
+            </button>
+            {topCategories.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => router.push(`/?category=${c.slug}`, { scroll: false })}
+                className="px-3 py-1 rounded-full bg-gray-100 hover:bg-brand-100 hover:text-brand-700 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer active:scale-95 font-semibold text-gray-700"
+              >
+                <span>{c.name}</span>
+              </button>
+            ))}
           </div>
 
           <div className="flex items-center gap-4 shrink-0 text-gray-600 font-semibold text-xs">
-            <Link href="/?category=trai-cay-nhap-khau" scroll={false} className="hover:text-brand-600 transition cursor-pointer">Trái Cây Nhập Khẩu</Link>
-            <Link href="/?category=gio-qua-trai-cay" scroll={false} className="hover:text-brand-600 transition cursor-pointer">Giỏ Quà Cao Cấp</Link>
-            <Link href="/?category=combo-trai-cay-tiet-kiem" scroll={false} className="hover:text-brand-600 transition cursor-pointer">Combo Tiết Kiệm</Link>
             <Link href="/chi-nhanh" className="hover:text-brand-600 transition font-black text-brand-700 cursor-pointer">Chi Nhánh</Link>
+            <Link href="/chinh-sach" className="hover:text-brand-600 transition cursor-pointer">Chính Sách</Link>
           </div>
         </div>
 
@@ -496,22 +506,28 @@ export default function Navbar() {
               </button>
             </form>
             <div className="grid grid-cols-2 gap-2">
-              {seasons.map((s) => {
-                const IconComp = s.icon;
-                return (
-                  <button
-                    key={s.key}
-                    onClick={() => {
-                      router.push(s.key ? `/?season=${s.key}` : '/', { scroll: false });
-                      setMobileMenuOpen(false);
-                    }}
-                    className="p-2.5 rounded-xl bg-brand-50 text-brand-900 font-bold flex items-center gap-2 cursor-pointer text-xs"
-                  >
-                    <IconComp className="w-4 h-4 text-brand-600 shrink-0" />
-                    <span>{s.label}</span>
-                  </button>
-                );
-              })}
+              <button
+                onClick={() => {
+                  router.push('/', { scroll: false });
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2.5 rounded-xl bg-brand-50 text-brand-900 font-bold flex items-center gap-2 cursor-pointer text-xs"
+              >
+                <Sparkles className="w-4 h-4 text-brand-600 shrink-0" />
+                <span>Tất cả</span>
+              </button>
+              {topCategories.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => {
+                    router.push(`/?category=${c.slug}`, { scroll: false });
+                    setMobileMenuOpen(false);
+                  }}
+                  className="p-2.5 rounded-xl bg-brand-50 text-brand-900 font-bold flex items-center gap-2 cursor-pointer text-xs"
+                >
+                  <span className="truncate">{c.name}</span>
+                </button>
+              ))}
             </div>
             <div className="pt-2 border-t border-gray-100 flex flex-col gap-2 text-xs">
               {currentUser && (
