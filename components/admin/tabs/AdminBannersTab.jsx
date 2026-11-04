@@ -22,7 +22,7 @@ export default function AdminBannersTab({
         <div>
           <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
             <ImageIcon className="w-5 h-5 text-emerald-600" />
-            <span>Quản Lý Banner Quảng Cáo (FR-042)</span>
+            <span>Quản Lý Banner Quảng Cáo</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             Banner trượt tự động trên trang chủ chào đón khách hàng theo thứ tự ưu tiên

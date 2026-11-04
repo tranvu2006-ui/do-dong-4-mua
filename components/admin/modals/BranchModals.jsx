@@ -214,7 +214,7 @@ export default function BranchModals({
             </div>
 
             <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-[11px] text-amber-800 leading-relaxed">
-              <strong>Lưu ý nghiệp vụ (BR-025):</strong> Hệ thống sẽ từ chối xóa nếu chi nhánh vẫn còn tài khoản nhân viên hoặc quản trị viên trực thuộc. Trong trường hợp đó, vui lòng chuyển chi nhánh sang trạng thái <strong>Ngừng hoạt động</strong>.
+              <strong>Lưu ý nghiệp vụ:</strong> Hệ thống sẽ từ chối xóa nếu chi nhánh vẫn còn tài khoản nhân viên hoặc quản trị viên trực thuộc. Trong trường hợp đó, vui lòng chuyển chi nhánh sang trạng thái <strong>Ngừng hoạt động</strong>.
             </div>
 
             <p className="text-xs text-slate-600">

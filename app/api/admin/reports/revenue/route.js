@@ -5,7 +5,7 @@ import { query } from '@/lib/db';
  * FR-047 – Quản lý báo cáo doanh thu & BR-028
  * Điều kiện lọc: startDate, endDate
  * Kết quả: total_revenue, total_orders, average_order_value, successful_orders, cancelled_orders
- * Quy tắc nghiệp vụ BR-028: Chỉ tính doanh thu từ các đơn hàng có trạng thái Đã giao (DA_GIAO).
+ * Quy tắc nghiệp vụ Chỉ tính doanh thu từ các đơn hàng có trạng thái Đã giao (DA_GIAO).
  */
 export async function GET(request) {
   try {
@@ -37,7 +37,7 @@ export async function GET(request) {
       dateParams.push(endDate);
     }
 
-    // 1. Chỉ số tổng hợp cốt lõi FR-047 (Áp dụng BR-028: Chỉ tính đơn DA_GIAO vào doanh thu)
+    // 1. Chỉ số tổng hợp cốt lõi FR-047 (Áp dụng Chỉ tính đơn DA_GIAO vào doanh thu)
     const summarySql = `
       SELECT 
         COUNT(o.id) as total_orders,
@@ -124,10 +124,10 @@ export async function GET(request) {
     // Xuất CSV/Excel nếu có tham số format (TC_REPORT_003)
     if (format === 'excel' || format === 'csv') {
       let csv = '\uFEFF'; // BOM UTF-8 for Excel Vietnamese support
-      csv += 'BÁO CÁO DOANH THU HỆ THỐNG - ĐỒ ĐỒNG 4 MÙA (FR-047)\n';
+      csv += 'BÁO CÁO DOANH THU HỆ THỐNG - ĐỒ ĐỒNG 4 MÙA\n';
       csv += `Thời gian xuất: ${new Date().toLocaleString('vi-VN')}\n`;
       csv += `Khoảng thời gian: ${startDate || 'Toàn thời gian'} đến ${endDate || 'Hiện tại'}\n\n`;
-      csv += 'CHỈ SỐ CỐT LÕI (BR-028: Chỉ tính đơn Đã giao)\n';
+      csv += 'CHỈ SỐ CỐT LÕI (Chỉ tính đơn Đã giao)\n';
       csv += `Tổng doanh thu,${totalRevenue}\n`;
       csv += `Tổng số đơn hàng,${totalOrders}\n`;
       csv += `Số đơn thành công (Đã giao),${successfulOrders}\n`;
@@ -168,7 +168,7 @@ export async function GET(request) {
       }
     });
   } catch (error) {
-    console.error('Error fetching revenue report (FR-047):', error);
+    console.error('Error fetching revenue report:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

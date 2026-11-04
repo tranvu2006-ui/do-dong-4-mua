@@ -104,17 +104,17 @@ export default function AdminLogsTab({
         <div>
           <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
             <FileText className="w-5 h-5 text-emerald-600" />
-            <span>Nhật Ký Kiểm Toán Hệ Thống (FR-045)</span>
+            <span>Nhật Ký Kiểm Toán Hệ Thống</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Theo dõi toàn bộ hoạt động của người dùng và quản trị viên kèm Địa chỉ IP thực tế (Quy tắc BR-030)
+            Theo dõi toàn bộ hoạt động của người dùng và quản trị viên kèm Địa chỉ IP thực tế
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold shadow-xs">
             <ShieldCheck className="w-4 h-4 text-purple-600" />
-            <span>Chỉ Admin Tổng (BR-025)</span>
+            <span>Chỉ Admin Tổng</span>
           </div>
           <button
             type="button"
@@ -334,7 +334,7 @@ export default function AdminLogsTab({
         <div className="flex items-center gap-2">
           <Lock className="w-4 h-4 text-slate-400" />
           <span>
-            <strong className="text-slate-800 font-bold">Quy tắc nghiệp vụ FR-045 & BR-030:</strong> Nhật ký kiểm toán được lưu vĩnh viễn, không cho phép sửa hoặc xóa dưới mọi hình thức.
+            <strong className="text-slate-800 font-bold">Quy tắc nghiệp vụ:</strong> Nhật ký kiểm toán được lưu vĩnh viễn, không cho phép sửa hoặc xóa dưới mọi hình thức.
           </span>
         </div>
         <span className="text-[11px] font-bold text-slate-400">

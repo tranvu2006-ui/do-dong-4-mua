@@ -26,7 +26,7 @@ export default function AdminSettingsTab({
                     <div>
                       <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
                         <Settings className="w-5 h-5 text-emerald-600" />
-                        <span>Cấu Hình Website Hệ Thống (FR-043)</span>
+                        <span>Cấu Hình Website Hệ Thống</span>
                       </h2>
                       <p className="text-xs text-slate-500 mt-1">
                         Quản lý nhận diện thương hiệu, thông số vận hành và các văn bản chính sách pháp lý (Chỉ Admin Tổng)
@@ -194,7 +194,7 @@ export default function AdminSettingsTab({
                           </div>
                           <div>
                             <div className="text-[10px] font-extrabold uppercase tracking-wider text-teal-800">
-                              Đối Tác Vận Chuyển Mặc Định (BR-022)
+                              Đối Tác Vận Chuyển Mặc Định
                             </div>
                             <div className="font-heading font-black text-sm text-teal-950 flex items-center gap-2 mt-0.5">
                               <span>GreenSM (GSM Logistics)</span>
@@ -216,10 +216,10 @@ export default function AdminSettingsTab({
                           <div>
                             <h4 className="font-heading font-black text-xs text-slate-900 flex items-center gap-1.5">
                               <Truck className="w-4 h-4 text-emerald-600" />
-                              <span>Biểu Cước Phí Vận Chuyển Theo Khoảng Cách (FR-044)</span>
+                              <span>Biểu Cước Phí Vận Chuyển Theo Khoảng Cách</span>
                             </h4>
                             <p className="text-[11px] text-slate-500 mt-0.5">
-                              Hệ thống tự động tính cước giao GreenSM dựa trên bán kính khoảng cách khi khách hàng đặt hàng (BR-023)
+                              Hệ thống tự động tính cước giao GreenSM dựa trên bán kính khoảng cách khi khách hàng đặt hàng
                             </p>
                           </div>
                           <button

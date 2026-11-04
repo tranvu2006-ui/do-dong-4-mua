@@ -194,20 +194,20 @@ export async function GET(request) {
 
       let csv = '\uFEFF'; // BOM UTF-8 cho Microsoft Excel hiển thị đúng tiếng Việt có dấu
 
-      csv += `BÁO CÁO THỐNG KÊ ĐƠN HÀNG - ĐỒ ĐỔNG 4 MÙA (FR-050)\n`;
+      csv += `BÁO CÁO THỐNG KÊ ĐƠN HÀNG - ĐỒ ĐỔNG 4 MÙA\n`;
       csv += `Thời gian xuất: ${nowStr}\n`;
       csv += `Khoảng thời gian: ${timeFilterStr}\n`;
       csv += `Bộ lọc trạng thái đơn: ${orderStatus || 'Tất cả'}\n`;
       csv += `Bộ lọc trạng thái thanh toán: ${paymentStatus || 'Tất cả'}\n\n`;
 
-      csv += `TỔNG HỢP CHỈ SỐ ĐƠN HÀNG THEO SRS\n`;
+      csv += `TỔNG HỢP CHỈ SỐ ĐƠN HÀNG\n`;
       csv += `Tổng số đơn hàng,${totalOrdersCount}\n`;
       csv += `Đơn chờ xử lý (Chờ xác nhận / chuẩn bị),${summary.pending_orders}\n`;
       csv += `Đơn đang giao hàng,${summary.shipping_orders}\n`;
       csv += `Đơn đã giao thành công,${summary.delivered_orders}\n`;
       csv += `Đơn tạm dừng xử lý,${summary.on_hold_orders}\n`;
       csv += `Đơn đã hủy,${summary.cancelled_orders}\n`;
-      csv += `Doanh thu đơn giao thành công (BR-028),${Math.round(summary.total_revenue)}\n`;
+      csv += `Doanh thu đơn giao thành công,${Math.round(summary.total_revenue)}\n`;
       csv += `Tỷ lệ giao hàng thành công,${completionRate}%\n\n`;
 
       csv += `PHÂN BỔ THEO TRẠNG THÁI ĐƠN HÀNG\n`;
@@ -218,7 +218,7 @@ export async function GET(request) {
       });
       csv += `\n`;
 
-      csv += `DANH SÁCH CHI TIẾT ĐƠN HÀNG (FR-050)\n`;
+      csv += `DANH SÁCH CHI TIẾT ĐƠN HÀNG\n`;
       csv += `Mã đơn hàng,Ngày đặt,Người nhận,Số điện thoại,Địa chỉ giao hàng,Số món,Tổng tiền (VNĐ),Thanh toán,Trạng thái thanh toán,Trạng thái đơn hàng\n`;
       ordersList.forEach(ord => {
         const dateStr = ord.created_at ? new Date(ord.created_at).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '';
@@ -293,7 +293,7 @@ export async function GET(request) {
       }
     });
   } catch (error) {
-    console.error('Lỗi API Báo cáo đơn hàng (FR-050):', error);
+    console.error('Lỗi API Báo cáo đơn hàng:', error);
     return NextResponse.json(
       {
         success: false,

@@ -114,7 +114,7 @@ export async function GET(request) {
     `;
     const categoryStats = await query(categoryStatsQuery);
 
-    // 5. Truy vấn danh sách chi tiết sản phẩm theo bộ lọc (FR-049)
+    // 5. Truy vấn danh sách chi tiết sản phẩm theo bộ lọc
     const productsQuery = `
       SELECT
         p.id,
@@ -156,7 +156,7 @@ export async function GET(request) {
 
       let csv = '\uFEFF'; // BOM UTF-8 cho Microsoft Excel hiển thị đúng tiếng Việt có dấu
 
-      csv += `BÁO CÁO HÀNG TỒN KHO - ĐỒ ĐỔNG 4 MÙA (FR-049)\n`;
+      csv += `BÁO CÁO HÀNG TỒN KHO - ĐỒ ĐỔNG 4 MÙA\n`;
       csv += `Thời gian xuất: ${nowStr}\n`;
       csv += `Khoảng thời gian: ${timeFilterStr}\n`;
       csv += `Bộ lọc danh mục: ${categoryId || 'Tất cả'}\n`;
@@ -177,7 +177,7 @@ export async function GET(request) {
       });
       csv += `\n`;
 
-      csv += `DANH SÁCH CHI TIẾT SẢN PHẨM TỒN KHO (FR-049)\n`;
+      csv += `DANH SÁCH CHI TIẾT SẢN PHẨM TỒN KHO\n`;
       csv += `Mã SP,Tên sản phẩm,Danh mục,Đơn vị tính,Đơn giá (VNĐ),Tồn kho hiện tại,Trạng thái tồn kho,Giá trị tồn kho (VNĐ),Cập nhật gần nhất\n`;
       products.forEach(p => {
         const updatedDateStr = p.updated_at ? new Date(p.updated_at).toLocaleDateString('vi-VN') : 'Mới';
@@ -241,7 +241,7 @@ export async function GET(request) {
       }
     });
   } catch (error) {
-    console.error('Lỗi API Báo cáo tồn kho (FR-049):', error);
+    console.error('Lỗi API Báo cáo tồn kho:', error);
     return NextResponse.json(
       {
         success: false,

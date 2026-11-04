@@ -27,7 +27,7 @@ export default function AdminNotificationsTab({
         <div>
           <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
             <Bell className="w-5 h-5 text-emerald-600" />
-            <span>Quản Lý Thông Báo Hệ Thống (FR-046)</span>
+            <span>Quản Lý Thông Báo Hệ Thống</span>
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
             Gửi thông báo đến khách hàng hoặc quản trị viên chi nhánh & theo dõi lịch sử gửi tin

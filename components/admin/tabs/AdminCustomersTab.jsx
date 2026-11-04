@@ -27,7 +27,7 @@ export default function AdminCustomersTab({
         <div>
           <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
             <Users className="w-5 h-5 text-emerald-600" />
-            <span>Quản Lý Danh Sách Khách Hàng (FR-040)</span>
+            <span>Quản Lý Danh Sách Khách Hàng</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             Hồ sơ người mua hàng, lịch sử mua sắm và trạng thái tài khoản
@@ -161,7 +161,7 @@ export default function AdminCustomersTab({
                       type="button"
                       onClick={() => onViewCustomerDetail(cu)}
                       className="px-2.5 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-[10px] font-bold transition inline-flex items-center gap-1 cursor-pointer border border-brand-200/60"
-                      title="Xem chi tiết hồ sơ & lịch sử đơn hàng (FR-040)"
+                      title="Xem chi tiết hồ sơ & lịch sử đơn hàng"
                     >
                       <Eye className="w-3 h-3" /> Chi tiết
                     </button>

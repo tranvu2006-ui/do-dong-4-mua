@@ -96,7 +96,7 @@ export async function GET(request) {
     // Xuất CSV/Excel nếu có format (TC_REPORT_003)
     if (format === 'excel' || format === 'csv') {
       let csv = '\uFEFF'; // BOM UTF-8
-      csv += 'BÁO CÁO KHÁCH HÀNG - ĐỒ ĐỒNG 4 MÙA (FR-048)\n';
+      csv += 'BÁO CÁO KHÁCH HÀNG - ĐỒ ĐỒNG 4 MÙA\n';
       csv += `Thời gian xuất: ${new Date().toLocaleString('vi-VN')}\n`;
       csv += `Khoảng thời gian lọc: ${startDate || 'Toàn thời gian'} đến ${endDate || 'Hiện tại'}\n\n`;
       csv += 'TỔNG HỢP CHỈ SỐ KHÁCH HÀNG\n';
@@ -142,7 +142,7 @@ export async function GET(request) {
       }
     });
   } catch (error) {
-    console.error('Error fetching customer report (FR-048):', error);
+    console.error('Error fetching customer report:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

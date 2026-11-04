@@ -964,7 +964,7 @@ export default function AdminDashboardPage() {
       isOpen: true,
       actionType: 'PAUSE',
       order,
-      title: 'Tạm Dừng Xử Lý Đơn Hàng (FR-034)',
+      title: 'Tạm Dừng Xử Lý Đơn Hàng',
       message: `Tạm dừng đơn hàng #${order.order_code} khi có sự cố phát sinh. Vui lòng nhập lý do cụ thể (lý do này sẽ hiển thị cho khách hàng và lưu vết hệ thống):`,
       targetStatus: 'TAM_DUNG',
       targetShippingStatus: null,
@@ -984,7 +984,7 @@ export default function AdminDashboardPage() {
       isOpen: true,
       actionType: 'RESUME',
       order,
-      title: 'Tiếp Tục Xử Lý Đơn Hàng (FR-035)',
+      title: 'Tiếp Tục Xử Lý Đơn Hàng',
       message: `Xác nhận đã khắc phục xong sự cố và tiếp tục xử lý đơn hàng #${order.order_code}? Đơn sẽ được chuyển về khâu Đang chuẩn bị đóng gói.`,
       targetStatus: 'DANG_CHUAN_BI',
       targetShippingStatus: null,
@@ -1004,7 +1004,7 @@ export default function AdminDashboardPage() {
       isOpen: true,
       actionType: 'CANCEL',
       order,
-      title: 'Xác Nhận Hủy Đơn Hàng (BR-020)',
+      title: 'Xác Nhận Hủy Đơn Hàng',
       message: `Cảnh báo: Hành động này sẽ hủy đơn hàng #${order.order_code} và tự động hoàn trả số lượng quả vào kho. Vui lòng nhập lý do hủy:`,
       targetStatus: 'DA_HUY',
       targetShippingStatus: null,
@@ -2657,7 +2657,7 @@ export default function AdminDashboardPage() {
               <ShieldCheck className="w-9 h-9 text-slate-950" />
             </div>
             <h1 className="text-2xl font-black tracking-tight font-heading text-white">CỔNG QUẢN TRỊ VIÊN</h1>
-            <p className="text-xs text-emerald-300/80 font-medium">Hệ Thống Bán Trái Cây Đổ Đống 4 Mùa (SRS V1.0)</p>
+            <p className="text-xs text-emerald-300/80 font-medium">Hệ Thống Bán Trái Cây Đổ Đống 4 Mùa </p>
           </div>
 
           {loginError && (

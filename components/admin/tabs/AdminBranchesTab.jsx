@@ -22,7 +22,7 @@ export default function AdminBranchesTab({
         <div>
           <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
             <MapPin className="w-5 h-5 text-emerald-600" />
-            <span>Quản Lý Chi Nhánh Cửa Hàng (FR-041)</span>
+            <span>Quản Lý Chi Nhánh Cửa Hàng</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             Mạng lưới điểm bán, điểm lấy hàng và tiếp nhận xử lý đơn hàng
@@ -186,7 +186,7 @@ export default function AdminBranchesTab({
                       <button
                         type="button"
                         onClick={() => onDeleteBranch(b)}
-                        title="Xóa chi nhánh (BR-025)"
+                        title="Xóa chi nhánh"
                         className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" />

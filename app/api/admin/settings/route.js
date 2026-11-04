@@ -78,7 +78,7 @@ export async function PUT(request) {
       userId: 1,
       action: 'UPDATE_SETTINGS',
       module: 'SYSTEM',
-      description: 'Admin Tổng cập nhật thông số cấu hình hệ thống website (FR-043)'
+      description: 'Admin Tổng cập nhật thông số cấu hình hệ thống website'
     });
 
     const updated = await ensureTableAndGetSettings();

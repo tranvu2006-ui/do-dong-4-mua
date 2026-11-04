@@ -138,7 +138,7 @@ export default function OrderDetailModals({
                 {/* Thông tin khách hàng & nhận hàng */}
                 <div className="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/60 space-y-2">
                   <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs pb-1.5 border-b border-slate-200/60">
-                    <User className="w-4 h-4 text-brand-600" /> Thông Tin Khách Hàng (FR-030)
+                    <User className="w-4 h-4 text-brand-600" /> Thông Tin Khách Hàng
                   </div>
                   <div className="space-y-1.5 text-slate-700">
                     <div className="flex justify-between">
@@ -286,7 +286,7 @@ export default function OrderDetailModals({
                 <div className="font-bold text-slate-900 flex items-center justify-between text-xs pb-2 border-b border-slate-200/60">
                   <div className="flex items-center gap-1.5">
                     <Clock className="w-4 h-4 text-brand-600" />
-                    <span>Lịch Sử Xử Lý Đơn Hàng (FR-030)</span>
+                    <span>Lịch Sử Xử Lý Đơn Hàng</span>
                   </div>
                   <span className="text-[10px] text-slate-400 font-normal">
                     {selectedOrder.logs?.length || 1} mốc xử lý
@@ -339,7 +339,7 @@ export default function OrderDetailModals({
                   <button
                     onClick={() => {
                       requestConfirm({
-                        title: 'Xác Nhận Đã Thu Tiền (FR-032)',
+                        title: 'Xác Nhận Đã Thu Tiền',
                         message: `Xác nhận đã thu đủ ${parseFloat(selectedOrder.total_amount || 0).toLocaleString('vi-VN')} đ cho đơn ${selectedOrder.order_code}?`,
                         confirmText: 'Xác nhận thu tiền',
                         type: 'success',

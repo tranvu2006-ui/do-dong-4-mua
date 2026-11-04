@@ -87,7 +87,7 @@ export default function AdminReportsTab({
                       }`}
                     >
                       <TrendingUp className="w-4 h-4 text-emerald-600" />
-                      <span>Báo Cáo Doanh Thu (FR-047)</span>
+                      <span>Báo Cáo Doanh Thu</span>
                     </button>
 
                     <button
@@ -103,7 +103,7 @@ export default function AdminReportsTab({
                       }`}
                     >
                       <Users className="w-4 h-4 text-indigo-600" />
-                      <span>Báo Cáo Khách Hàng (FR-048)</span>
+                      <span>Báo Cáo Khách Hàng</span>
                     </button>
 
                     <button
@@ -119,7 +119,7 @@ export default function AdminReportsTab({
                       }`}
                     >
                       <Box className="w-4 h-4 text-amber-600" />
-                      <span>Báo Cáo Hàng Tồn Kho (FR-049)</span>
+                      <span>Báo Cáo Hàng Tồn Kho</span>
                     </button>
 
                     <button
@@ -135,7 +135,7 @@ export default function AdminReportsTab({
                       }`}
                     >
                       <ShoppingCart className="w-4 h-4 text-blue-600" />
-                      <span>Báo Cáo Đơn Hàng (FR-050)</span>
+                      <span>Báo Cáo Đơn Hàng</span>
                     </button>
                   </div>
 
@@ -147,10 +147,10 @@ export default function AdminReportsTab({
                       <div>
                         <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
                           <BarChart3 className="w-5 h-5 text-emerald-600" />
-                          <span>Báo Cáo Doanh Thu Hệ Thống (FR-047)</span>
+                          <span>Báo Cáo Doanh Thu Hệ Thống</span>
                         </h2>
                         <p className="text-xs text-slate-500 mt-1">
-                          Thống kê doanh thu theo khoảng thời gian dựa trên các đơn hàng đã giao thành công (Quy tắc BR-028)
+                          Thống kê doanh thu theo khoảng thời gian dựa trên các đơn hàng đã giao thành công
                         </p>
                       </div>
 
@@ -266,7 +266,7 @@ export default function AdminReportsTab({
                           {((revenueData?.total_revenue ?? 0)).toLocaleString('vi-VN')} đ
                         </div>
                         <div className="text-[10px] text-emerald-700 font-semibold mt-1">
-                          Chỉ tính đơn Đã giao (BR-028)
+                          Chỉ tính đơn Đã giao
                         </div>
                       </div>
 
@@ -353,7 +353,7 @@ export default function AdminReportsTab({
                               <th className="py-2.5 px-4 text-center">Tổng đơn</th>
                               <th className="py-2.5 px-4 text-center text-emerald-700">Đơn thành công</th>
                               <th className="py-2.5 px-4 text-center text-rose-600">Đơn hủy</th>
-                              <th className="py-2.5 px-4 text-right">Doanh thu thực tế (BR-028)</th>
+                              <th className="py-2.5 px-4 text-right">Doanh thu thực tế</th>
                               <th className="py-2.5 px-4 text-right">Tỷ lệ thành công</th>
                             </tr>
                           </thead>
@@ -445,7 +445,7 @@ export default function AdminReportsTab({
                           <Package className="w-5 h-5 text-emerald-600" />
                           <span>Top Sản Phẩm Mang Lại Doanh Thu Cao</span>
                         </h3>
-                        <span className="text-[10px] text-slate-400 font-bold uppercase">BR-028</span>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase">ĐÃ GIAO</span>
                       </div>
 
                       {(!revenueData?.topProducts || revenueData.topProducts.length === 0) ? (
@@ -479,7 +479,7 @@ export default function AdminReportsTab({
                     </div>
                   )}
 
-                  {/* NỘI DUNG 2: BÁO CÁO KHÁCH HÀNG (FR-048) */}
+                  {/* NỘI DUNG 2: BÁO CÁO KHÁCH HÀNG */}
                   {reportSubTab === 'customers' && (
                     <div className="space-y-6 animate-in fade-in duration-200">
                       {/* Header & Action Buttons */}
@@ -488,7 +488,7 @@ export default function AdminReportsTab({
                           <div>
                             <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
                               <Users className="w-5 h-5 text-indigo-600" />
-                              <span>Báo Cáo Khách Hàng Hệ Thống (FR-048)</span>
+                              <span>Báo Cáo Khách Hàng Hệ Thống</span>
                             </h2>
                             <p className="text-xs text-slate-500 mt-1">
                               Thống kê số lượng, khách mới và hoạt động mua hàng theo từng khách (Định danh duy nhất bằng SĐT)
@@ -817,10 +817,10 @@ export default function AdminReportsTab({
                           <div>
                             <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
                               <Box className="w-5 h-5 text-amber-600" />
-                              <span>Báo Cáo Hàng Tồn Kho (FR-049)</span>
+                              <span>Báo Cáo Hàng Tồn Kho</span>
                             </h2>
                             <p className="text-xs text-slate-500 mt-1">
-                              Theo dõi số lượng tồn kho từng sản phẩm, cảnh báo sắp hết hàng và tổng giá trị vốn lưu kho (BR-029)
+                              Theo dõi số lượng tồn kho từng sản phẩm, cảnh báo sắp hết hàng và tổng giá trị vốn lưu kho
                             </p>
                           </div>
                           <div className="flex items-center gap-2 flex-wrap">
@@ -983,7 +983,7 @@ export default function AdminReportsTab({
                             </div>
                           </div>
 
-                          {/* Báo động hết hàng (BR-029) */}
+                          {/* Báo động hết hàng */}
                           <div className="bg-white p-5 rounded-2xl border border-rose-200 shadow-2xs space-y-3 bg-gradient-to-br from-white to-rose-50/30">
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-bold text-rose-700 uppercase tracking-wider">Hết hàng (Tồn = 0)</span>
@@ -1087,10 +1087,10 @@ export default function AdminReportsTab({
                           <div>
                             <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
                               <Box className="w-4 h-4 text-amber-600" />
-                              <span>Danh Sách Chi Tiết Hàng Tồn Kho (FR-049)</span>
+                              <span>Danh Sách Chi Tiết Hàng Tồn Kho</span>
                             </h3>
                             <p className="text-xs text-slate-500 mt-0.5">
-                              Đầy đủ thông tin: Mã sản phẩm, Tên sản phẩm, Danh mục, Tồn kho hiện tại và Trạng thái theo quy tắc SRS
+                              Đầy đủ thông tin: Mã sản phẩm, Tên sản phẩm, Danh mục, Tồn kho hiện tại và Trạng thái
                             </p>
                           </div>
                           <span className="text-xs px-3 py-1 rounded-xl bg-slate-100 text-slate-600 font-bold self-start sm:self-auto">
@@ -1119,7 +1119,7 @@ export default function AdminReportsTab({
                                   <th className="py-3 px-3">Danh mục</th>
                                   <th className="py-3 px-3 text-right">Đơn giá</th>
                                   <th className="py-3 px-3 text-center">Tồn kho hiện tại</th>
-                                  <th className="py-3 px-3 text-center">Trạng thái (BR-029)</th>
+                                  <th className="py-3 px-3 text-center">Trạng thái</th>
                                   <th className="py-3 px-3 text-right">Giá trị tồn kho</th>
                                   <th className="py-3 px-3 text-center">Cập nhật</th>
                                 </tr>
@@ -1225,7 +1225,7 @@ export default function AdminReportsTab({
                     </div>
                   )}
 
-                  {/* BÁO CÁO ĐƠN HÀNG (FR-050) */}
+                  {/* BÁO CÁO ĐƠN HÀNG */}
                   {reportSubTab === 'orders' && (
                     <div className="space-y-6 animate-in fade-in duration-200">
                       {/* Tiêu đề & Bộ lọc đơn hàng */}
@@ -1234,10 +1234,10 @@ export default function AdminReportsTab({
                           <div>
                             <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
                               <ShoppingCart className="w-5 h-5 text-blue-600" />
-                              <span>Báo Cáo Thống Kê Đơn Hàng (FR-050)</span>
+                              <span>Báo Cáo Thống Kê Đơn Hàng</span>
                             </h2>
                             <p className="text-xs text-slate-500 mt-1">
-                              Thống kê số lượng, tiến độ xử lý và diễn biến đơn hàng theo khoảng thời gian (SRS FR-050)
+                              Thống kê số lượng, tiến độ xử lý và diễn biến đơn hàng theo khoảng thời gian
                             </p>
                           </div>
                           <div className="flex items-center gap-2 flex-wrap">
@@ -1528,13 +1528,13 @@ export default function AdminReportsTab({
                         </div>
                       )}
 
-                      {/* Bảng chi tiết toàn bộ đơn hàng (FR-050) */}
+                      {/* Bảng chi tiết toàn bộ đơn hàng */}
                       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-6 space-y-4">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                           <div>
                             <h3 className="font-heading font-black text-base text-slate-900 flex items-center gap-2">
                               <ShoppingCart className="w-4 h-4 text-blue-600" />
-                              <span>Danh Sách Chi Tiết Đơn Hàng (FR-050)</span>
+                              <span>Danh Sách Chi Tiết Đơn Hàng</span>
                             </h3>
                             <p className="text-xs text-slate-500 mt-0.5">
                               Thống kê đầy đủ thông tin: Mã đơn, Thời gian đặt, Khách hàng, Địa chỉ giao, Số món, Tổng tiền và Trạng thái

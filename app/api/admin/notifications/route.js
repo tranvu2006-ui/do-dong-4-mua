@@ -65,7 +65,7 @@ export async function GET(request) {
     const notifications = await query(sql, params);
     return NextResponse.json({ success: true, data: notifications });
   } catch (error) {
-    console.error('Error fetching admin notifications (FR-046):', error);
+    console.error('Error fetching admin notifications:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
@@ -168,7 +168,7 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating notification (FR-046):', error);
+    console.error('Error creating notification:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

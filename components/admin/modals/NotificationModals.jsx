@@ -38,7 +38,7 @@ export default function NotificationModals({
                 </div>
                 <div>
                   <h3 className="font-heading font-black text-base text-slate-900">Soạn Thông Báo Mới</h3>
-                  <p className="text-[11px] text-slate-500">Phát thông báo đến khách hàng hoặc quản trị viên (FR-046)</p>
+                  <p className="text-[11px] text-slate-500">Phát thông báo đến khách hàng hoặc quản trị viên</p>
                 </div>
               </div>
               <button
@@ -269,7 +269,7 @@ export default function NotificationModals({
         </div>
       )}
 
-      {/* MODAL 2: XEM CHI TIẾT THÔNG BÁO (FR-046) */}
+      {/* MODAL 2: XEM CHI TIẾT THÔNG BÁO */}
       {selectedNotificationDetail && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
@@ -380,7 +380,7 @@ export default function NotificationModals({
         </div>
       )}
 
-      {/* MODAL 3: XÓA THÔNG BÁO (FR-046) */}
+      {/* MODAL 3: XÓA THÔNG BÁO */}
       {deletingNotification && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">

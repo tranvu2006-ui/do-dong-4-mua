@@ -21,7 +21,7 @@ export async function POST(request) {
       return NextResponse.json(
         {
           success: false,
-          message: `Dung lượng ảnh (${sizeMB} MB) vượt quá giới hạn 5 MB theo quy định SRS!`,
+          message: `Dung lượng ảnh (${sizeMB} MB) vượt quá giới hạn 5 MB!`,
         },
         { status: 400 }
       );

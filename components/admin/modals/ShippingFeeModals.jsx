@@ -27,7 +27,7 @@ export default function ShippingFeeModals({
                   <Truck className="w-5 h-5 text-emerald-600" />
                   <span>Thêm Nấc Phí Vận Chuyển</span>
                 </h3>
-                <p className="text-[11px] text-slate-500 mt-0.5">Thiết lập cước giao hàng GreenSM theo khoảng cách (FR-044)</p>
+                <p className="text-[11px] text-slate-500 mt-0.5">Thiết lập cước giao hàng GreenSM theo khoảng cách</p>
               </div>
               <button
                 type="button"
@@ -115,7 +115,7 @@ export default function ShippingFeeModals({
         </div>
       )}
 
-      {/* MODAL SỬA NẤC PHÍ VẬN CHUYỂN (FR-044) */}
+      {/* MODAL SỬA NẤC PHÍ VẬN CHUYỂN */}
       {editingShippingFee && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
@@ -221,7 +221,7 @@ export default function ShippingFeeModals({
         </div>
       )}
 
-      {/* MODAL XÓA NẤC PHÍ VẬN CHUYỂN (FR-044) */}
+      {/* MODAL XÓA NẤC PHÍ VẬN CHUYỂN */}
       {deletingShippingFee && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">

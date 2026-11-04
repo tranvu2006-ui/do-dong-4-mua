@@ -17,7 +17,7 @@ export default function ProfileBreadcrumbHeader({ onLogout }) {
           <User className="w-7 h-7 text-brand-600" />
           <span>Quản Lý Thông Tin Cá Nhân</span>
         </h1>
-        <p className="text-xs text-gray-500 mt-1">Cập nhật hồ sơ nhận hàng và bảo mật tài khoản theo đúng đặc tả SRS</p>
+        <p className="text-xs text-gray-500 mt-1">Cập nhật hồ sơ nhận hàng và bảo mật tài khoản</p>
       </div>
 
       {/* Quick Nav Links */}

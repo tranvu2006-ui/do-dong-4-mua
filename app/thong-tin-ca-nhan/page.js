@@ -199,7 +199,7 @@ export default function ProfilePage() {
           <User className="w-8 h-8" />
         </div>
         <h2 className="text-xl font-black text-gray-900">Bạn chưa đăng nhập</h2>
-        <p className="text-xs text-gray-500">Vui lòng đăng nhập để xem và quản lý thông tin cá nhân của bạn theo chuẩn SRS.</p>
+        <p className="text-xs text-gray-500">Vui lòng đăng nhập để xem và quản lý thông tin cá nhân của bạn.</p>
         <Link
           href="/dang-nhap"
           className="inline-flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-2xl text-xs shadow-md transition"

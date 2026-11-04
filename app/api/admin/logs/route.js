@@ -70,24 +70,24 @@ export async function GET(request) {
       availableModules: modulesRows.map((r) => r.module)
     });
   } catch (error) {
-    console.error('Error fetching system logs (FR-045):', error);
+    console.error('Error fetching system logs:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
 
-// Quy tắc nghiệp vụ FR-045: Không cho phép chỉnh sửa nhật ký
+// Quy tắc hệ thống: Không cho phép chỉnh sửa nhật ký
 export async function PUT() {
   return NextResponse.json({
     success: false,
-    message: 'Quy tắc nghiệp vụ FR-045: Nhật ký hệ thống là bất biến, không cho phép chỉnh sửa!'
+    message: 'Quy tắc hệ thống: Nhật ký hệ thống là bất biến, không cho phép chỉnh sửa!'
   }, { status: 403 });
 }
 
-// Quy tắc nghiệp vụ FR-045: Không cho phép xóa nhật ký
+// Quy tắc hệ thống: Không cho phép xóa nhật ký
 export async function DELETE() {
   return NextResponse.json({
     success: false,
-    message: 'Quy tắc nghiệp vụ FR-045: Nhật ký hệ thống là bất biến, không cho phép xóa!'
+    message: 'Quy tắc hệ thống: Nhật ký hệ thống là bất biến, không cho phép xóa!'
   }, { status: 403 });
 }
 

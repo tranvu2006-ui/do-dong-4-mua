@@ -241,7 +241,7 @@ export default function AdminOrdersTab({
                       type="button"
                       onClick={() => onViewOrderDetail(o)}
                       className="px-2 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-[10px] font-bold transition inline-flex items-center gap-1 cursor-pointer border border-brand-200/60"
-                      title="Xem chi tiết đơn hàng (FR-030)"
+                      title="Xem chi tiết đơn hàng"
                     >
                       <Eye className="w-3 h-3" /> Chi tiết
                     </button>
@@ -256,7 +256,7 @@ export default function AdminOrdersTab({
                               onPromptChangeOrderStatus(o, 'DA_XAC_NHAN', 'DA_TAO_VAN_DON', 'Duyệt đơn')
                             }
                             className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
-                            title="Duyệt đơn hàng (FR-031)"
+                            title="Duyệt đơn hàng"
                           >
                             Duyệt đơn
                           </button>
@@ -270,7 +270,7 @@ export default function AdminOrdersTab({
                               onPromptChangeOrderStatus(o, 'DANG_CHUAN_BI', null, 'Đóng gói')
                             }
                             className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
-                            title="Chuyển sang đóng gói (FR-033)"
+                            title="Chuyển sang đóng gói"
                           >
                             Đóng gói
                           </button>
@@ -284,7 +284,7 @@ export default function AdminOrdersTab({
                               onPromptChangeOrderStatus(o, 'DANG_GIAO', 'DANG_GIAO', 'Bàn giao GreenSM')
                             }
                             className="px-2 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
-                            title="Bàn giao GreenSM (FR-036)"
+                            title="Bàn giao GreenSM"
                           >
                             Giao hàng
                           </button>
@@ -298,7 +298,7 @@ export default function AdminOrdersTab({
                               onPromptChangeOrderStatus(o, 'DA_GIAO', 'GIAO_THANH_CONG', 'Hoàn tất đơn')
                             }
                             className="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
-                            title="Hoàn tất đơn hàng (FR-037)"
+                            title="Hoàn tất đơn hàng"
                           >
                             Hoàn tất
                           </button>
@@ -324,7 +324,7 @@ export default function AdminOrdersTab({
                         type="button"
                         onClick={() => onPromptPauseOrder(o)}
                         className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
-                        title="Tạm dừng xử lý đơn hàng (FR-034)"
+                        title="Tạm dừng xử lý đơn hàng"
                       >
                         Tạm dừng
                       </button>
@@ -333,7 +333,7 @@ export default function AdminOrdersTab({
                         type="button"
                         onClick={() => onPromptResumeOrder(o)}
                         className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition shadow-sm"
-                        title="Tiếp tục xử lý đơn hàng (FR-035)"
+                        title="Tiếp tục xử lý đơn hàng"
                       >
                         Tiếp tục
                       </button>
@@ -354,7 +354,7 @@ export default function AdminOrdersTab({
                         type="button"
                         onClick={() => onPromptCancelOrder(o)}
                         className="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-[10px] font-bold cursor-pointer transition border border-red-200 hover:border-red-300"
-                        title="Hủy đơn hàng và hoàn trả tồn kho (BR-020)"
+                        title="Hủy đơn hàng và hoàn trả tồn kho"
                       >
                         Hủy
                       </button>
