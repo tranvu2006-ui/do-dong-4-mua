@@ -172,16 +172,8 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <Link href="/chi-nhanh" className="flex items-center gap-1 font-semibold hover:text-brand-200 transition cursor-pointer">
               <MapPin className="w-3.5 h-3.5 text-accent-400 shrink-0" />
-              <span>
-                Hệ thống {activeBranchCount > 0 ? activeBranchCount : (branches.filter(b => b.status === 1).length || branches.length || 0)} Chi nhánh
-                {branches.filter(b => b.status === 1).length > 0 && ` (${branches.filter(b => b.status === 1).slice(0, 2).map(b => b.branch_name.replace(/^Chi Nhánh\s*/i, '')).join(' & ')}${branches.filter(b => b.status === 1).length > 2 ? '...' : ''})`}
-              </span>
+              <span>Hệ thống {activeBranchCount > 0 ? activeBranchCount : (branches.filter(b => b.status === 1).length || branches.length || 0)} Chi nhánh</span>
             </Link>
-            <span className="hidden md:inline-block text-brand-700">|</span>
-            <span className="hidden md:flex items-center gap-1.5 text-emerald-100">
-              <Sparkles className="w-3.5 h-3.5 text-yellow-300 shrink-0" />
-              <span>Bao ăn 1 đổi 1 trong 24h & Giao hỏa tốc {siteSettings?.shipping_partner || 'GreenSM'}</span>
-            </span>
           </div>
 
           <div className="flex items-center gap-4">
