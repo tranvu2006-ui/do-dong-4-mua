@@ -180,7 +180,7 @@ export default function Navbar() {
   if (pathname?.startsWith('/admin')) return null;
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all w-full overflow-hidden">
       {/* Top announcement bar */}
       <div className="bg-brand-900 text-white py-1.5 px-4 border-b border-brand-800 text-xs">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">

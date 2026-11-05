@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { ensureBranchInventoriesTable, syncProductTotalStock } from '@/lib/inventory';
 import { calculateShippingFee } from '@/lib/shipping';
 import { hashPassword } from '@/lib/auth-passwords';
 
@@ -139,12 +140,24 @@ export async function POST(request) {
       }
     }
 
+    // Đảm bảo bảng tồn kho chi nhánh sẵn sàng
+    await ensureBranchInventoriesTable();
+    const selectedBranchId = branch_id ? parseInt(branch_id, 10) : 1;
+
     // Verify and calculate item prices from DB to avoid client-side tampering
     const productIds = items.map(item => item.id || item.product_id);
     const dbProducts = await query(
-      `SELECT id, name, price, discount_price, stock FROM products WHERE id IN (${productIds.map(() => '?').join(',')})`,
+      `SELECT id, name, price, discount_price, stock, unit FROM products WHERE id IN (${productIds.map(() => '?').join(',')})`,
       productIds
     );
+
+    // Lấy số lượng tồn kho thực tế tại chi nhánh đã chọn (FR-011, BR-027)
+    const branchStockRows = await query(
+      `SELECT product_id, stock_quantity FROM branch_inventories WHERE branch_id = ? AND product_id IN (${productIds.map(() => '?').join(',')})`,
+      [selectedBranchId, ...productIds]
+    );
+    const branchStockMap = {};
+    branchStockRows.forEach(r => { branchStockMap[r.product_id] = parseInt(r.stock_quantity, 10); });
 
     const productMap = {};
     dbProducts.forEach(p => {
@@ -160,10 +173,15 @@ export async function POST(request) {
       if (!prod) {
         return NextResponse.json({ success: false, message: `Sản phẩm mã #${pId} không tồn tại` }, { status: 400 });
       }
-      if (prod.stock < item.quantity) {
+
+      // Kiểm tra tồn kho tại chính chi nhánh được chọn
+      const availableStock = branchStockMap[pId] !== undefined ? branchStockMap[pId] : prod.stock;
+      if (availableStock < item.quantity) {
+        const [bInfo] = await query('SELECT branch_name FROM branches WHERE id = ?', [selectedBranchId]);
+        const bName = bInfo?.branch_name || `Chi nhánh #${selectedBranchId}`;
         return NextResponse.json({
           success: false,
-          message: `Sản phẩm "${prod.name}" chỉ còn ${prod.stock} trong kho, không đủ số lượng ${item.quantity} bạn yêu cầu`
+          message: `Sản phẩm "${prod.name}" tại ${bName} chỉ còn ${availableStock} ${prod.unit || 'sản phẩm'} trong kho, không đủ số lượng ${item.quantity} bạn yêu cầu. Vui lòng giảm số lượng hoặc chọn chi nhánh khác.`
         }, { status: 400 });
       }
 
@@ -202,11 +220,12 @@ export async function POST(request) {
     const initialOrderStatus = isVietQr ? 'CHO_THANH_TOAN' : 'CHO_XAC_NHAN';
 
     const orderResult = await query(
-      `INSERT INTO orders (order_code, user_id, receiver_name, phone, address, note, subtotal, shipping_fee, total_amount, payment_status, order_status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO orders (order_code, user_id, branch_id, receiver_name, phone, address, note, subtotal, shipping_fee, total_amount, payment_status, order_status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         order_code,
         finalUserId,
+        selectedBranchId,
         receiver_name,
         cleanPhone,
         address,
@@ -221,7 +240,7 @@ export async function POST(request) {
 
     const order_id = orderResult.insertId;
 
-    // Insert Order Details and decrement product stock (BR-004, BR-011)
+    // Insert Order Details and decrement branch stock (FR-011, BR-004, BR-011)
     for (const detail of verifiedDetails) {
       await query(
         `INSERT INTO order_details (order_id, product_id, quantity, unit_price, total_price)
@@ -229,10 +248,16 @@ export async function POST(request) {
         [order_id, detail.product_id, detail.quantity, detail.unit_price, detail.subtotal]
       );
 
+      // Trừ tồn kho tại chi nhánh phục vụ đơn
       await query(
-        `UPDATE products SET stock = GREATEST(0, stock - ?) WHERE id = ?`,
-        [detail.quantity, detail.product_id]
+        `UPDATE branch_inventories 
+         SET stock_quantity = GREATEST(0, stock_quantity - ?), updated_at = NOW() 
+         WHERE branch_id = ? AND product_id = ?`,
+        [detail.quantity, selectedBranchId, detail.product_id]
       );
+
+      // Tự động đồng bộ lại tổng tồn kho toàn hệ thống
+      await syncProductTotalStock(detail.product_id);
     }
 
     // Insert Payment Record (BR-014, BR-015)

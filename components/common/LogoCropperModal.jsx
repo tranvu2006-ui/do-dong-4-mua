@@ -203,7 +203,7 @@ export default function LogoCropperModal({
                 ref={imgRef}
                 src={imageSrc}
                 alt="Crop Source"
-                crossOrigin="anonymous"
+                crossOrigin={imageSrc && !imageSrc.startsWith("blob:") && !imageSrc.startsWith("data:") ? "anonymous" : undefined}
                 draggable={false}
                 onLoad={() => setImageLoaded((v) => !v)}
                 className="max-w-none pointer-events-none select-none"

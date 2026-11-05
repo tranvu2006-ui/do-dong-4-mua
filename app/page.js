@@ -137,7 +137,7 @@ function HomeContent() {
   };
 
   return (
-    <div className="space-y-12 pb-20">
+    <div className="space-y-12 pb-20 overflow-x-hidden w-full">
       {/* 1. Hero Section */}
       <HomeHeroBanner
         banners={banners}
@@ -148,7 +148,7 @@ function HomeContent() {
       />
 
       {/* 2. Main Content Container */}
-      <div id="product-section" className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
+      <div id="product-section" className={`max-w-7xl mx-auto px-4 sm:px-6 space-y-8 ${banners.length === 0 ? "pt-6 sm:pt-10" : ""}`}>
         {/* 3. Filter Toolbar */}
         <ProductFilterSection
           categories={categories}

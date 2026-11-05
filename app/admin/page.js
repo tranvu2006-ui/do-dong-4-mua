@@ -8,10 +8,11 @@ import {
   ArrowLeft, Filter, Tag, Percent, Image as ImageIcon, MapPin,
   FileText, Play, Pause, XCircle, Search, Upload, Lock, LogOut,
   ExternalLink, ShieldCheck, Leaf, ChevronRight, Sparkles, Store,
-  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar, RotateCcw, X, Settings, Bell, Send, Download, ZoomIn, ZoomOut, Move, Globe, Crop, Check
+  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar, RotateCcw, X, Settings, Bell, Send, Download, ZoomIn, ZoomOut, Move, Globe, Crop, Check, Menu
 } from 'lucide-react';
 import Pagination from '@/components/Pagination';
 import LogoCropperModal from '@/components/common/LogoCropperModal';
+import BranchStockModal from '@/components/admin/modals/BranchStockModal';
 import { getAuthSession, saveAuthSession, clearAuthSession } from '@/lib/auth-session';
 
 // ADMIN TABS (Modularized JSX)
@@ -584,6 +585,9 @@ export default function AdminDashboardPage() {
     imageSrc: '',
     shape: 'circle',
   });
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [selectedInventoryBranch, setSelectedInventoryBranch] = useState('all');
+  const [branchStockModal, setBranchStockModal] = useState({ isOpen: false, product: null });
 
   // Form states
   const [newAdmin, setNewAdmin] = useState({
@@ -2986,12 +2990,22 @@ export default function AdminDashboardPage() {
   const isSuperAdmin = currentUser?.role_id === 1;
 
   return (
-    <div className="min-h-screen bg-slate-50/80 flex font-sans">
-      {/* 1. LEFT SIDEBAR (MODERN ENTERPRISE STUDIO) */}
-      <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 h-screen sticky top-0 z-30 shadow-2xl">
+    <div className="h-screen bg-slate-50/80 flex font-sans relative overflow-hidden">
+      {/* Mobile Sidebar Backdrop Overlay */}
+      {isMobileSidebarOpen && (
+        <div
+          onClick={() => setIsMobileSidebarOpen(false)}
+          className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+        />
+      )}
+
+      {/* 1. LEFT SIDEBAR (MODERN ENTERPRISE STUDIO - RESPONSIVE DRAWER) */}
+      <aside className={`fixed inset-y-0 left-0 lg:static z-50 lg:z-30 h-full w-72 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 shadow-2xl transition-transform duration-300 ease-in-out ${
+        isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
         <div className="flex flex-col h-full overflow-hidden">
           {/* Brand Logo Header (Có hiệu ứng làm mờ khi chưa có dữ liệu để tránh hardcode) */}
-          <div className="p-5 border-b border-slate-800/80 flex items-center gap-3 shrink-0">
+          <div className="p-5 border-b border-slate-800/80 flex items-center justify-between gap-3 shrink-0">
             {siteSettings?.site_name ? (
               <>
                 {siteSettings.logo_url ? (
@@ -3012,6 +3026,14 @@ export default function AdminDashboardPage() {
                     <span>Admin Studio Pro</span>
                   </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                  className="lg:hidden p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition shrink-0"
+                  aria-label="Đóng menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </>
             ) : (
               <div className="flex items-center gap-3 w-full filter blur-[1.5px] opacity-40 animate-pulse transition-all duration-300">
@@ -3041,6 +3063,7 @@ export default function AdminDashboardPage() {
                       key={item.key}
                       onClick={() => {
                         setActiveTab(item.key);
+                        setIsMobileSidebarOpen(false);
                         window.history.replaceState(null, '', `?tab=${item.key}`);
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${isActive
@@ -3097,14 +3120,25 @@ export default function AdminDashboardPage() {
       </aside>
 
       {/* 2. MAIN CONTENT AREA */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Top Header Bar */}
-        <header className="h-16 bg-white border-b border-slate-200/80 px-8 flex items-center justify-between sticky top-0 z-20 shadow-sm backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <div className="text-slate-400 text-xs font-medium flex items-center gap-1.5">
-              <span>Hệ Thống</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-              <span className="text-slate-900 font-extrabold">{currentTabLabel}</span>
+        <header className="h-16 bg-white border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between shrink-0 z-20 shadow-sm backdrop-blur-md">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            {/* Mobile Hamburger Button */}
+            <button
+              type="button"
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition shrink-0"
+              aria-label="Mở menu quản trị"
+              title="Mở menu quản trị"
+            >
+              <Menu className="w-5 h-5 text-slate-800" />
+            </button>
+
+            <div className="text-slate-400 text-xs font-medium flex items-center gap-1.5 min-w-0">
+              <span className="hidden sm:inline">Hệ Thống</span>
+              <ChevronRight className="w-3.5 h-3.5 hidden sm:inline shrink-0" />
+              <span className="text-slate-900 font-extrabold truncate max-w-[140px] sm:max-w-none">{currentTabLabel}</span>
             </div>
           </div>
 
@@ -3131,10 +3165,11 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => loadData(true)}
               disabled={loading}
-              className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+              className="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0"
+              title="Làm mới dữ liệu"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-emerald-600' : ''}`} />
-              <span>Làm mới</span>
+              <span className="hidden sm:inline">Làm mới</span>
             </button>
 
             {/* Admin Notification Bell Dropdown (FR-046) */}
@@ -3220,16 +3255,17 @@ export default function AdminDashboardPage() {
             <Link
               href="/"
               target="_blank"
-              className="px-3.5 py-1.5 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+              title="Xem cửa hàng phía khách hàng"
+              className="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              <span>Xem Cửa Hàng</span>
+              <span className="hidden sm:inline">Xem Cửa Hàng</span>
             </Link>
           </div>
         </header>
 
         {/* Dashboard Content Canvas */}
-        <main className="p-8 space-y-8 flex-1 overflow-y-auto">
+        <main className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 flex-1 overflow-y-auto min-w-0">
           {!hasPermissionForTab(activeTab) ? (
             <div className="bg-white rounded-3xl p-12 text-center max-w-lg mx-auto my-16 border border-slate-200/80 shadow-xl animate-in fade-in zoom-in-95 duration-200">
               <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center mx-auto mb-4 shadow-sm">
@@ -3396,10 +3432,14 @@ export default function AdminDashboardPage() {
                 />
               )}
 
-              {/* TAB 2: QUẢN LÝ SẢN PHẨM */}
+              {/* TAB 2: QUẢN LÝ SẢN PHẨM & TỒN KHO CHI NHÁNH (FR-011, BR-027) */}
               {activeTab === 'products' && (
                 <AdminProductsTab
                   categories={categories}
+                  branches={branches}
+                  selectedInventoryBranch={selectedInventoryBranch}
+                  setSelectedInventoryBranch={setSelectedInventoryBranch}
+                  currentUser={currentUser}
                   filteredProducts={filteredProducts}
                   paginatedProducts={paginatedProducts}
                   productSearch={productSearch}
@@ -3414,6 +3454,7 @@ export default function AdminDashboardPage() {
                   setProductPageSize={setProductPageSize}
                   onOpenAddProductModal={() => setShowAddProductModal(true)}
                   onOpenEditProductModal={openEditProductModal}
+                  onOpenBranchStockModal={(prod) => setBranchStockModal({ isOpen: true, product: prod })}
                   onToggleProductStatus={handleToggleProductStatus}
                   onDeleteProduct={handleDeleteProduct}
                 />
@@ -3806,6 +3847,19 @@ export default function AdminDashboardPage() {
         handleConfirmDeleteNotification={handleConfirmDeleteNotification}
       />
 
+      {/* MODAL ĐIỀU CHỈNH TỒN KHO CHI NHÁNH (FR-011, BR-027) */}
+      <BranchStockModal
+        isOpen={branchStockModal.isOpen}
+        onClose={() => setBranchStockModal({ isOpen: false, product: null })}
+        product={branchStockModal.product}
+        branches={branches}
+        currentUser={currentUser}
+        onStockUpdated={async () => {
+          await loadData();
+        }}
+        showToast={showToast}
+      />
+
       {/* MODAL CĂN CHỈNH & XEM TRƯỚC LOGO (ĐÃ TÁCH COMPONENT ĐỘC LẬP) */}
       <LogoCropperModal
         isOpen={logoCropperModal.isOpen}
@@ -3815,6 +3869,7 @@ export default function AdminDashboardPage() {
         initialShape={logoCropperModal.shape}
         onClose={() => setLogoCropperModal(prev => ({ ...prev, isOpen: false }))}
         onSave={async (blob) => {
+          const oldLogoUrl = siteSettings?.logo_url;
           const formData = new FormData();
           formData.append('file', blob, `brand-logo-${Date.now()}.png`);
           const res = await fetch('/api/upload', { method: 'POST', body: formData });
@@ -3822,6 +3877,10 @@ export default function AdminDashboardPage() {
           if (data.success && data.url) {
             setSiteSettings(prev => ({ ...prev, logo_url: data.url }));
             showToast('Đã căn chỉnh và cập nhật logo thương hiệu thành công!', 'success');
+            // Dọn rác logo cũ khỏi ổ cứng server
+            if (oldLogoUrl && oldLogoUrl.startsWith('/uploads/') && oldLogoUrl !== data.url) {
+              fetch(`/api/upload?url=${encodeURIComponent(oldLogoUrl)}`, { method: 'DELETE' }).catch(() => {});
+            }
           } else {
             throw new Error(data.message || 'Lỗi khi tải ảnh lên máy chủ');
           }

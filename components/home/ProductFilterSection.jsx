@@ -63,7 +63,7 @@ export default function ProductFilterSection({
     <div className="space-y-3">
       <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
         {/* Category tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none overscroll-x-contain touch-pan-x max-w-full">
           <button
             type="button"
             onClick={() => onUpdateFilters({ category: '' })}

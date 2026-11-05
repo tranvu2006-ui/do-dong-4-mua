@@ -2,42 +2,73 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Package, Search, Plus } from 'lucide-react';
+import { Package, Search, Plus, Store } from 'lucide-react';
 import Pagination from '@/components/Pagination';
 
 export default function AdminProductsTab({
-  categories,
-  filteredProducts,
-  paginatedProducts,
-  productSearch,
+  categories = [],
+  branches = [],
+  selectedInventoryBranch = 'all',
+  setSelectedInventoryBranch,
+  currentUser = null,
+  filteredProducts = [],
+  paginatedProducts = [],
+  productSearch = '',
   setProductSearch,
-  productCategoryFilter,
+  productCategoryFilter = '',
   setProductCategoryFilter,
-  productStatusFilter,
+  productStatusFilter = '',
   setProductStatusFilter,
-  productPage,
+  productPage = 1,
   setProductPage,
-  productPageSize,
+  productPageSize = 10,
   setProductPageSize,
   onOpenAddProductModal,
   onOpenEditProductModal,
+  onOpenBranchStockModal,
   onToggleProductStatus,
   onDeleteProduct,
 }) {
+  const isSuperAdmin = currentUser?.role_id === 1;
+  const currentBranchName = branches.find(b => Number(b.id) === Number(currentUser?.branch_id))?.branch_name || 'Chi nhánh';
+
   return (
     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden space-y-5 p-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
         <div>
           <h2 className="font-heading font-black text-lg text-slate-900 flex items-center gap-2">
             <Package className="w-5 h-5 text-emerald-600" />
-            <span>Danh Mục Sản Phẩm 4 Mùa</span>
+            <span>Danh Mục Sản Phẩm 4 Mùa & Tồn Kho Chi Nhánh</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Quản lý kho hàng, giá bán, tồn kho và hình ảnh sản phẩm
+            FR-011 & BR-027: Quản lý chi tiết tồn kho từng chi nhánh, giá bán và hình ảnh sản phẩm
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          {/* Bộ lọc chi nhánh kho hàng (FR-011, BR-027) */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700">
+            <Store className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            {!isSuperAdmin ? (
+              <span className="text-emerald-700 font-extrabold truncate max-w-[160px]" title={currentBranchName}>
+                Kho: {currentBranchName}
+              </span>
+            ) : (
+              <select
+                value={selectedInventoryBranch}
+                onChange={(e) => setSelectedInventoryBranch?.(e.target.value)}
+                className="bg-transparent font-bold text-slate-800 focus:outline-none cursor-pointer text-xs"
+              >
+                <option value="all">🏢 Toàn hệ thống (Tổng kho)</option>
+                {branches.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    📍 {b.branch_name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+
           <div className="relative">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
             <input
@@ -107,139 +138,184 @@ export default function AdminProductsTab({
             <thead>
               <tr className="bg-slate-50 text-slate-500 font-extrabold uppercase tracking-wider border-b border-slate-200">
                 <th className="py-3 px-4 whitespace-nowrap w-16">#Mã SP</th>
-                <th className="py-3 px-4 min-w-[280px]">Ảnh & Tên sản phẩm</th>
+                <th className="py-3 px-4 min-w-[260px]">Ảnh & Tên sản phẩm</th>
                 <th className="py-3 px-4 whitespace-nowrap">Danh mục</th>
                 <th className="py-3 px-4 whitespace-nowrap">Giá bán</th>
-                <th className="py-3 px-4 whitespace-nowrap">Giá khuyến mãi</th>
-                <th className="py-3 px-4 whitespace-nowrap">Đơn vị</th>
-                <th className="py-3 px-4 whitespace-nowrap">Tồn kho</th>
+                <th className="py-3 px-4 whitespace-nowrap">Giá KM</th>
+                <th className="py-3 px-4 whitespace-nowrap">ĐVT</th>
+                <th className="py-3 px-4 min-w-[180px]">
+                  {selectedInventoryBranch === 'all' ? 'Tồn Kho Toàn Hệ Thống' : 'Tồn Kho Tại Chi Nhánh'}
+                </th>
                 <th className="py-3 px-4 whitespace-nowrap">Trạng thái</th>
                 <th className="py-3 px-4 text-right whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {paginatedProducts.map((p) => (
-                <tr key={p.id} className="hover:bg-slate-50/80 transition">
-                  <td className="py-3 px-4 font-mono font-bold text-slate-400 whitespace-nowrap">#{p.id}</td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 shrink-0 overflow-hidden flex items-center justify-center">
-                        {p.thumbnail ? (
-                          <img
-                            src={p.thumbnail}
-                            alt={p.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.onerror = null;
-                              e.currentTarget.src =
-                                'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=200';
-                            }}
-                          />
-                        ) : (
-                          <Package className="w-6 h-6 text-slate-400" />
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="font-bold text-slate-900 text-sm flex items-center gap-1.5 flex-wrap">
-                          <span className="truncate max-w-[220px]">{p.name}</span>
-                          {p.is_featured === 1 && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-black shrink-0">
-                              Nổi bật
-                            </span>
+              {paginatedProducts.map((p) => {
+                // Xác định số lượng tồn kho hiển thị theo chi nhánh
+                let branchStockValue = p.total_stock !== undefined ? p.total_stock : (p.stock || 0);
+                if (selectedInventoryBranch !== 'all' && Array.isArray(p.branch_stocks)) {
+                  const found = p.branch_stocks.find(bs => Number(bs.branch_id) === Number(selectedInventoryBranch));
+                  branchStockValue = found ? found.stock_quantity : 0;
+                }
+
+                return (
+                  <tr key={p.id} className="hover:bg-slate-50/80 transition">
+                    <td className="py-3 px-4 font-mono font-bold text-slate-400 whitespace-nowrap">#{p.id}</td>
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 shrink-0 overflow-hidden flex items-center justify-center">
+                          {p.thumbnail ? (
+                            <img
+                              src={p.thumbnail}
+                              alt={p.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src =
+                                  'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=200';
+                              }}
+                            />
+                          ) : (
+                            <Package className="w-6 h-6 text-slate-400" />
                           )}
                         </div>
-                        <span className="text-xs text-slate-500 line-clamp-1">{p.description}</span>
+                        <div className="min-w-0">
+                          <div className="font-bold text-slate-900 text-sm flex items-center gap-1.5 flex-wrap">
+                            <span className="truncate max-w-[200px]" title={p.name}>{p.name}</span>
+                            {p.is_featured === 1 && (
+                              <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-black shrink-0">
+                                Nổi bật
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-xs text-slate-500 line-clamp-1">{p.description}</span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 text-slate-600 font-medium whitespace-nowrap">
-                    {p.category_name}
-                  </td>
-                  <td className="py-3 px-4 font-bold text-slate-900 whitespace-nowrap">
-                    {parseFloat(p.price).toLocaleString('vi-VN')} đ
-                  </td>
-                  <td className="py-3 px-4 text-brand-600 font-bold whitespace-nowrap">
-                    {p.discount_price ? `${parseFloat(p.discount_price).toLocaleString('vi-VN')} đ` : '-'}
-                  </td>
-                  <td className="py-3 px-4 text-slate-500 whitespace-nowrap">{p.unit}</td>
-                  <td className="py-3 px-4 font-bold whitespace-nowrap">
-                    <span
-                      className={
-                        p.stock <= 0
-                          ? 'inline-block text-rose-600 font-black bg-rose-50 px-2.5 py-0.5 rounded-md border border-rose-200 whitespace-nowrap'
-                          : p.stock <= 10
-                          ? 'text-amber-600 font-black'
-                          : 'text-slate-900'
-                      }
-                    >
-                      {p.stock <= 0 ? '0 (Hết hàng)' : p.stock}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    {p.status === 1 ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
-                        <span>Đang hiển thị</span>
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-500 border border-slate-200 whitespace-nowrap">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                        <span>Đã ẩn</span>
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-4 text-right whitespace-nowrap">
-                    <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
-                      <button
-                        type="button"
-                        onClick={() => onOpenEditProductModal(p)}
-                        className="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold transition cursor-pointer"
-                        title="Chỉnh sửa thông tin sản phẩm"
-                      >
-                        Chỉnh sửa
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onToggleProductStatus(p)}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
-                          p.status === 1
-                            ? 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                            : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                        }`}
-                        title={
-                          p.status === 1
-                            ? 'Ẩn sản phẩm khỏi website'
-                            : 'Hiển thị sản phẩm lên website'
-                        }
-                      >
-                        {p.status === 1 ? 'Ẩn' : 'Hiển thị'}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onDeleteProduct(p)}
-                        className="px-2.5 py-1 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg text-xs font-bold transition cursor-pointer"
-                        title="Xóa sản phẩm"
-                      >
-                        Xóa
-                      </button>
-                      <Link
-                        href={`/san-pham/${p.id}`}
-                        target="_blank"
-                        className="px-2.5 py-1 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg text-xs font-bold transition inline-block"
-                        title="Xem chi tiết trên website"
-                      >
-                        Xem
-                      </Link>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="py-3 px-4 text-slate-600 font-medium whitespace-nowrap">
+                      {p.category_name}
+                    </td>
+                    <td className="py-3 px-4 font-bold text-slate-900 whitespace-nowrap">
+                      {parseFloat(p.price).toLocaleString('vi-VN')} đ
+                    </td>
+                    <td className="py-3 px-4 text-brand-600 font-bold whitespace-nowrap">
+                      {p.discount_price ? `${parseFloat(p.discount_price).toLocaleString('vi-VN')} đ` : '-'}
+                    </td>
+                    <td className="py-3 px-4 text-slate-500 whitespace-nowrap">{p.unit || 'kg'}</td>
+                    
+                    {/* Cột Tồn kho chi nhánh (FR-011, BR-027) */}
+                    <td className="py-3 px-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`font-black px-2 py-0.5 rounded-md text-xs border ${
+                              branchStockValue <= 0
+                                ? 'text-rose-700 bg-rose-50 border-rose-200'
+                                : branchStockValue <= 10
+                                ? 'text-amber-700 bg-amber-50 border-amber-200'
+                                : 'text-emerald-800 bg-emerald-50 border-emerald-200'
+                            }`}
+                          >
+                            {branchStockValue <= 0
+                              ? '0 (Hết hàng)'
+                              : `${branchStockValue} ${p.unit || 'kg'}`}
+                          </span>
+                        </div>
+
+                        {/* Phân bổ từng chi nhánh khi xem toàn hệ thống */}
+                        {selectedInventoryBranch === 'all' && Array.isArray(p.branch_stocks) && p.branch_stocks.length > 0 && (
+                          <div className="flex flex-wrap gap-1 text-[10px]">
+                            {p.branch_stocks.map((bs) => (
+                              <span
+                                key={bs.branch_id}
+                                className={`px-1.5 py-0.2 rounded border font-medium ${
+                                  bs.stock_quantity === 0
+                                    ? 'bg-rose-50 text-rose-600 border-rose-100'
+                                    : 'bg-slate-100 text-slate-600 border-slate-200'
+                                }`}
+                                title={`${bs.branch_name}: ${bs.stock_quantity} ${p.unit || 'kg'}`}
+                              >
+                                {bs.branch_name.replace('Chi nhánh ', 'CN').split('-')[0].trim()}: <strong>{bs.stock_quantity}</strong>
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      {p.status === 1 ? (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                          <span>Đang hiển thị</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-500 border border-slate-200 whitespace-nowrap">
+                          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                          <span>Đã ẩn</span>
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
+                        {/* Nút Điều chỉnh tồn kho chi nhánh */}
+                        <button
+                          type="button"
+                          onClick={() => onOpenBranchStockModal?.(p)}
+                          className="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                          title="Cập nhật tồn kho chi nhánh"
+                        >
+                          <Store className="w-3 h-3 text-emerald-600" />
+                          <span>Kho CN</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => onOpenEditProductModal(p)}
+                          className="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold transition cursor-pointer"
+                          title="Chỉnh sửa thông tin sản phẩm"
+                        >
+                          Sửa
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => onToggleProductStatus(p)}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                            p.status === 1
+                              ? 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                              : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                          }`}
+                          title={
+                            p.status === 1
+                              ? 'Ẩn sản phẩm khỏi website'
+                              : 'Hiển thị sản phẩm lên website'
+                          }
+                        >
+                          {p.status === 1 ? 'Ẩn' : 'Hiện'}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => onDeleteProduct(p)}
+                          className="px-2.5 py-1 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg text-xs font-bold transition cursor-pointer"
+                          title="Xóa sản phẩm"
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
 
-      {/* Phân trang sản phẩm */}
+      {/* Phân trang */}
       {filteredProducts.length > 0 && (
         <Pagination
           currentPage={productPage}
@@ -247,11 +323,10 @@ export default function AdminProductsTab({
           pageSize={productPageSize}
           onPageChange={setProductPage}
           onPageSizeChange={setProductPageSize}
-          pageSizeOptions={[5, 10, 20, 50]}
+          pageSizeOptions={[10, 15, 30, 50, 100]}
           itemName="sản phẩm"
         />
       )}
     </div>
   );
 }
-

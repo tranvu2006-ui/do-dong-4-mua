@@ -97,6 +97,39 @@ export async function GET(request) {
     }
 
     const products = await query(sql, params);
+
+    // Đính kèm thông tin tồn kho từng chi nhánh (FR-011, BR-027)
+    if (products.length > 0) {
+      const pIds = products.map((p) => p.id);
+      try {
+        const biRows = await query(
+          `SELECT bi.product_id, bi.branch_id, bi.stock_quantity, b.branch_name
+           FROM branch_inventories bi
+           JOIN branches b ON bi.branch_id = b.id
+           WHERE bi.product_id IN (${pIds.map(() => '?').join(',')}) AND b.status = 1`,
+          pIds
+        );
+        const biMap = {};
+        for (const row of biRows) {
+          if (!biMap[row.product_id]) biMap[row.product_id] = [];
+          biMap[row.product_id].push({
+            branch_id: row.branch_id,
+            branch_name: row.branch_name,
+            stock_quantity: parseInt(row.stock_quantity, 10),
+          });
+        }
+        for (const p of products) {
+          p.total_stock = p.stock;
+          p.branch_stocks = biMap[p.id] || [];
+        }
+      } catch (biErr) {
+        for (const p of products) {
+          p.total_stock = p.stock;
+          p.branch_stocks = [];
+        }
+      }
+    }
+
     return NextResponse.json({ success: true, count: products.length, data: products });
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -146,6 +179,23 @@ export async function POST(request) {
         is_featured ? 1 : 0
       ]
     );
+
+    const newProductId = result.insertId;
+
+    // Tự động phân bổ tồn kho ban đầu vào các chi nhánh (FR-011, BR-027)
+    try {
+      const activeBranches = await query('SELECT id FROM branches WHERE status = 1');
+      for (const b of activeBranches) {
+        const initStock = b.id === 1 ? numericStock : 0;
+        await query(
+          `INSERT INTO branch_inventories (branch_id, product_id, stock_quantity) VALUES (?, ?, ?)
+           ON DUPLICATE KEY UPDATE stock_quantity = VALUES(stock_quantity)`,
+          [b.id, newProductId, initStock]
+        );
+      }
+    } catch (biErr) {
+      console.warn('Lỗi phân bổ kho chi nhánh cho sản phẩm mới:', biErr.message);
+    }
 
     await query(
       'INSERT INTO system_logs (user_id, action, module, description) VALUES (1, ?, ?, ?)',

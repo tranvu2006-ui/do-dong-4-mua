@@ -81,6 +81,30 @@ LOCK TABLES `branches` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table ranch_inventories
+--
+
+DROP TABLE IF EXISTS ranch_inventories;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE ranch_inventories (
+  id bigint unsigned NOT NULL AUTO_INCREMENT,
+  ranch_id bigint unsigned NOT NULL COMMENT 'Khóa ngoại chi nhánh',
+  product_id bigint unsigned NOT NULL COMMENT 'Khóa ngoại sản phẩm',
+  stock_quantity int NOT NULL DEFAULT '0' COMMENT 'Số lượng tồn kho tại chi nhánh này',
+  low_stock_threshold int NOT NULL DEFAULT '10' COMMENT 'Ngưỡng cảnh báo sắp hết hàng',
+  created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY ranch_product_unique (ranch_id,product_id),
+  KEY idx_branch_id (ranch_id),
+  KEY idx_product_id (product_id),
+  CONSTRAINT k_bi_branch FOREIGN KEY (ranch_id) REFERENCES ranches (id) ON DELETE CASCADE,
+  CONSTRAINT k_bi_product FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Quản lý tồn kho riêng biệt theo từng chi nhánh (FR-011, BR-027)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `cart_items`
 --
 
@@ -626,7 +650,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1,NULL,'Trần Vũ (Admin Tổng)','0929894248','$2a$10$6Wq6V7Zc9S9jG4rWJc9H2eF5qJ3kL7mN9pQ1rS3tU5vW7xY9zA1bC','53 Võ Văn Ngân, Thủ Đức',1,'2026-10-28 06:30:18','2026-10-30 21:50:46',NULL);
+INSERT INTO `users` VALUES (1,1,NULL,'Trần Vũ (Admin Tổng)','0929894248','$2b$10$0lxTDX.5KZMRk6PAVphz.eWVUJuhwGB7/r4koEhxZQzscwIf.YDP2','53 Võ Văn Ngân, Thủ Đức',1,'2026-10-28 06:30:18','2026-10-30 21:50:46',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -12,7 +12,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="vi">
-      <body className="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+      <body className="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white overflow-x-hidden w-full">
         <CartProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

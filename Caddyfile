@@ -1,4 +1,10 @@
 dodongbonmua.duckdns.org, localhost {
-    reverse_proxy app:8080
-}
+    handle /uploads/* {
+        root * /srv
+        file_server
+    }
 
+    handle {
+        reverse_proxy app:8080
+    }
+}
