@@ -2,41 +2,8 @@ import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { logSystemAction } from '@/lib/logger';
 
-async function ensureNotificationsTable() {
-  await query(`
-    CREATE TABLE IF NOT EXISTS notifications (
-      id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      title VARCHAR(255) NOT NULL,
-      content TEXT NOT NULL,
-      recipient_type VARCHAR(50) NOT NULL DEFAULT 'ALL',
-      recipient_ids TEXT NULL,
-      recipient_names TEXT NULL,
-      sender_id BIGINT UNSIGNED NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      INDEX idx_recipient (recipient_type),
-      INDEX idx_created (created_at),
-      CONSTRAINT fk_notifications_sender FOREIGN KEY (sender_id) REFERENCES users (id) ON DELETE CASCADE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-  `);
-
-  try {
-    const cols = await query("DESCRIBE notifications");
-    const colNames = cols.map((c) => c.Field);
-    if (!colNames.includes('recipient_ids')) {
-      await query("ALTER TABLE notifications ADD COLUMN recipient_ids TEXT NULL AFTER recipient_type");
-    }
-    if (!colNames.includes('recipient_names')) {
-      await query("ALTER TABLE notifications ADD COLUMN recipient_names TEXT NULL AFTER recipient_ids");
-    }
-  } catch (e) {
-    // Already exists
-  }
-}
-
 export async function GET(request) {
   try {
-    await ensureNotificationsTable();
     const { searchParams } = new URL(request.url);
     const recipient_type = searchParams.get('recipient_type');
     const search = searchParams.get('search');
@@ -72,7 +39,6 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    await ensureNotificationsTable();
     const body = await request.json();
     const {
       title,
@@ -175,7 +141,6 @@ export async function POST(request) {
 
 export async function DELETE(request) {
   try {
-    await ensureNotificationsTable();
     const body = await request.json();
     const { id } = body;
 

@@ -1,41 +1,8 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 
-const DEFAULT_TIERS = [
-  { name: 'Nội thành gần (Dưới 5 km)', min_km: 0, max_km: 5, fee: 15000, status: 1 },
-  { name: 'Tiêu chuẩn nội thành (5 - 10 km)', min_km: 5, max_km: 10, fee: 25000, status: 1 },
-  { name: 'Nội thành xa (10 - 20 km)', min_km: 10, max_km: 20, fee: 40000, status: 1 },
-  { name: 'Ngoại thành / Liên quận (Trên 20 km)', min_km: 20, max_km: 50, fee: 60000, status: 1 },
-];
-
-async function ensureShippingFeesTable() {
-  await query(`
-    CREATE TABLE IF NOT EXISTS shipping_fees (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(100) NOT NULL COMMENT 'Tên gói/nấc cước',
-      min_km DECIMAL(6,2) NOT NULL DEFAULT 0.00 COMMENT 'Khoảng cách từ (km)',
-      max_km DECIMAL(6,2) NOT NULL DEFAULT 0.00 COMMENT 'Khoảng cách đến (km)',
-      fee DECIMAL(12,2) NOT NULL DEFAULT 0.00 COMMENT 'Mức phí vận chuyển (VNĐ)',
-      status TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1: Áp dụng, 0: Tạm dừng',
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  `);
-
-  const rows = await query('SELECT COUNT(*) as count FROM shipping_fees');
-  if (rows[0]?.count === 0) {
-    for (const tier of DEFAULT_TIERS) {
-      await query(
-        `INSERT INTO shipping_fees (name, min_km, max_km, fee, status) VALUES (?, ?, ?, ?, ?)`,
-        [tier.name, tier.min_km, tier.max_km, tier.fee, tier.status]
-      );
-    }
-  }
-}
-
 export async function GET(request) {
   try {
-    await ensureShippingFeesTable();
     const { searchParams } = new URL(request.url);
     const onlyActive = searchParams.get('active') === 'true';
 
@@ -53,7 +20,6 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    await ensureShippingFeesTable();
     const { name, min_km, max_km, fee, status } = await request.json();
 
     if (!name || name.trim() === '') {
