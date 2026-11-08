@@ -52,14 +52,14 @@ DROP TABLE IF EXISTS `banners`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `banners` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `title` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tiêu đề banner',
   `image_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Đường dẫn ảnh banner',
   `link_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Đường dẫn liên kết khi bấm vào banner',
   `display_order` int NOT NULL DEFAULT '0' COMMENT 'Thứ tự ưu tiên hiển thị',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: Hiển thị, 0: Ẩn',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Quản lý banner khuyến mãi và quảng cáo';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -84,13 +84,13 @@ DROP TABLE IF EXISTS `branches`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `branches` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `branch_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tên chi nhánh',
   `phone` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Số điện thoại chi nhánh',
   `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Địa chỉ chi nhánh',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: Hoạt động, 0: Tạm đóng',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   KEY `branches_status_index` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Quản lý danh sách chi nhánh';
@@ -115,14 +115,14 @@ DROP TABLE IF EXISTS `cart_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cart_items` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `cart_id` bigint unsigned NOT NULL,
-  `product_id` bigint unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
+  `cart_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng carts(id)',
+  `product_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng products(id)',
   `quantity` int NOT NULL DEFAULT '1' COMMENT 'Số lượng',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `unit_price` decimal(12,2) DEFAULT '0.00',
-  `subtotal` decimal(12,2) DEFAULT '0.00',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
+  `unit_price` decimal(12,2) DEFAULT '0.00' COMMENT 'Đơn giá sản phẩm tại thời điểm thêm vào giỏ',
+  `subtotal` decimal(12,2) DEFAULT '0.00' COMMENT 'Thành tiền dòng = quantity * unit_price',
   PRIMARY KEY (`id`),
   UNIQUE KEY `cart_items_cart_product_unique` (`cart_id`,`product_id`),
   KEY `cart_items_product_id_foreign` (`product_id`),
@@ -149,11 +149,11 @@ DROP TABLE IF EXISTS `carts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `carts` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `user_id` bigint unsigned NOT NULL COMMENT 'Khách hàng sở hữu giỏ',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `status` tinyint DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
+  `status` tinyint DEFAULT '1' COMMENT 'Trạng thái giỏ hàng (1: Đang kích hoạt, 0: Đã hủy/hoàn tất)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `carts_user_id_unique` (`user_id`),
   CONSTRAINT `carts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -179,13 +179,13 @@ DROP TABLE IF EXISTS `categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `categories` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tên danh mục',
   `slug` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Đường dẫn tĩnh SEO',
   `description` text COLLATE utf8mb4_unicode_ci COMMENT 'Mô tả danh mục',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: Hiển thị, 0: Ẩn',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   UNIQUE KEY `categories_slug_unique` (`slug`),
   KEY `categories_status_index` (`status`)
@@ -212,14 +212,14 @@ DROP TABLE IF EXISTS `order_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order_details` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `order_id` bigint unsigned NOT NULL,
-  `product_id` bigint unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
+  `order_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng orders(id)',
+  `product_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng products(id)',
   `quantity` int NOT NULL DEFAULT '1' COMMENT 'Số lượng mua',
   `unit_price` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT 'Đơn giá tại thời điểm mua',
   `subtotal` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT 'Thành tiền = quantity * unit_price',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   KEY `order_details_order_id_foreign` (`order_id`),
   KEY `order_details_product_id_foreign` (`product_id`),
@@ -247,7 +247,7 @@ DROP TABLE IF EXISTS `orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `order_code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Mã đơn dạng OD...',
   `user_id` bigint unsigned NOT NULL COMMENT 'Khách hàng đặt mua',
   `receiver_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tên người nhận hàng',
@@ -259,8 +259,8 @@ CREATE TABLE `orders` (
   `total_amount` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT 'Tổng thanh toán',
   `payment_status` enum('UNPAID','PAID') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'UNPAID' COMMENT 'Trạng thái thanh toán',
   `order_status` enum('CHO_THANH_TOAN','CHO_XAC_NHAN','DA_XAC_NHAN','DANG_CHUAN_BI','TAM_DUNG','DANG_GIAO','DA_GIAO','DA_HUY') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CHO_XAC_NHAN' COMMENT 'Vòng đời 8 trạng thái',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   UNIQUE KEY `orders_order_code_unique` (`order_code`),
   KEY `orders_user_id_foreign` (`user_id`),
@@ -287,16 +287,16 @@ DROP TABLE IF EXISTS `payments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `payments` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `order_id` bigint unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
+  `order_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng orders(id)',
   `payment_method` enum('COD','VIETQR','MOMO') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'COD' COMMENT 'Phương thức thanh toán',
   `transaction_code` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Mã giao dịch ngân hàng/ví',
   `payment_amount` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT 'Số tiền thanh toán',
   `payment_status` enum('PENDING','PAID','FAILED') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'PENDING' COMMENT 'Trạng thái thanh toán',
   `payment_time` datetime DEFAULT NULL COMMENT 'Thời gian thanh toán',
   `note` text COLLATE utf8mb4_unicode_ci COMMENT 'Ghi chú',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   UNIQUE KEY `payments_order_id_unique` (`order_id`),
   KEY `payments_transaction_code_index` (`transaction_code`),
@@ -323,11 +323,11 @@ DROP TABLE IF EXISTS `permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `permissions` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `permission_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tên quyền',
   `description` text COLLATE utf8mb4_unicode_ci COMMENT 'Mô tả quyền',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   UNIQUE KEY `permissions_permission_name_unique` (`permission_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Danh mục quyền hệ thống';
@@ -352,13 +352,13 @@ DROP TABLE IF EXISTS `product_images`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product_images` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `product_id` bigint unsigned NOT NULL COMMENT 'Sản phẩm tương ứng',
   `image_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Đường dẫn ảnh',
   `display_order` int NOT NULL DEFAULT '0' COMMENT 'Thứ tự hiển thị',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `sort_order` int DEFAULT '1',
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `sort_order` int DEFAULT '1' COMMENT 'Thứ tự sắp xếp hiển thị ảnh',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   KEY `product_images_product_id_foreign` (`product_id`),
   CONSTRAINT `product_images_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
@@ -384,7 +384,7 @@ DROP TABLE IF EXISTS `products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `products` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `category_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại danh mục',
   `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tên sản phẩm',
   `slug` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Đường dẫn tĩnh SEO',
@@ -396,8 +396,8 @@ CREATE TABLE `products` (
   `thumbnail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Ảnh đại diện chính',
   `is_featured` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1: Nổi bật, 0: Bình thường',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: Đang bán, 0: Ngừng bán',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   UNIQUE KEY `products_slug_unique` (`slug`),
   KEY `products_category_id_foreign` (`category_id`),
@@ -425,9 +425,9 @@ DROP TABLE IF EXISTS `promotion_products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `promotion_products` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `promotion_id` bigint unsigned NOT NULL,
-  `product_id` bigint unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
+  `promotion_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng promotions(id)',
+  `product_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng products(id)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `promotion_products_unique` (`promotion_id`,`product_id`),
   KEY `promotion_products_product_id_foreign` (`product_id`),
@@ -455,15 +455,15 @@ DROP TABLE IF EXISTS `promotions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `promotions` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `title` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tiêu đề khuyến mãi',
   `description` text COLLATE utf8mb4_unicode_ci COMMENT 'Nội dung chi tiết',
   `discount_percent` decimal(5,2) NOT NULL DEFAULT '0.00' COMMENT 'Phần trăm giảm giá',
   `start_date` datetime NOT NULL COMMENT 'Thời gian bắt đầu',
   `end_date` datetime NOT NULL COMMENT 'Thời gian kết thúc',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: Hoạt động, 0: Hết hạn/Tắt',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   KEY `promotions_status_index` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Chương trình khuyến mãi';
@@ -488,10 +488,10 @@ DROP TABLE IF EXISTS `role_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `role_permissions` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `role_id` bigint unsigned NOT NULL,
-  `permission_id` bigint unsigned NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
+  `role_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng roles(id)',
+  `permission_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng permissions(id)',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
   PRIMARY KEY (`id`),
   UNIQUE KEY `role_permissions_role_perm_unique` (`role_id`,`permission_id`),
   KEY `role_permissions_permission_id_foreign` (`permission_id`),
@@ -520,11 +520,11 @@ DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `roles` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `role_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tên vai trò',
   `description` text COLLATE utf8mb4_unicode_ci COMMENT 'Mô tả vai trò',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   UNIQUE KEY `roles_role_name_unique` (`role_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bảng vai trò người dùng';
@@ -550,7 +550,7 @@ DROP TABLE IF EXISTS `shipments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `shipments` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `order_id` bigint unsigned NOT NULL COMMENT 'Đơn hàng vận chuyển',
   `shipping_company` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'GreenSM' COMMENT 'Đơn vị vận chuyển (mặc định GreenSM)',
   `tracking_code` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Mã vận đơn tra cứu',
@@ -558,8 +558,8 @@ CREATE TABLE `shipments` (
   `shipping_status` enum('CHO_TAO_VAN_DON','DA_TAO_VAN_DON','DA_BAN_GIAO_GREENSM','DANG_GIAO','GIAO_THANH_CONG','GIAO_THAT_BAI') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CHO_TAO_VAN_DON' COMMENT 'Trạng thái vận chuyển',
   `ship_date` datetime DEFAULT NULL COMMENT 'Ngày bàn giao đơn vị vận chuyển',
   `delivery_date` datetime DEFAULT NULL COMMENT 'Ngày giao hàng thành công',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   UNIQUE KEY `shipments_order_id_unique` (`order_id`),
   UNIQUE KEY `shipments_tracking_code_unique` (`tracking_code`),
@@ -586,7 +586,7 @@ DROP TABLE IF EXISTS `system_logs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `system_logs` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `user_id` bigint unsigned DEFAULT NULL COMMENT 'Người thực hiện hành động (NULL nếu là khách vãng lai hoặc hệ thống tự động)',
   `action` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Hành động: CREATE, UPDATE, DELETE, LOGIN, EXPORT...',
   `module` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Phân hệ: PRODUCT, ORDER, AUTH, BRANCH...',
@@ -619,16 +619,16 @@ DROP TABLE IF EXISTS `user_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_permissions` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `permission_id` bigint unsigned NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
+  `user_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng users(id)',
+  `permission_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng permissions(id)',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_user_perm` (`user_id`,`permission_id`),
   KEY `permission_id` (`permission_id`),
   CONSTRAINT `user_permissions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `user_permissions_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bảng phân quyền riêng biệt cho từng tài khoản (FR-039)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -652,7 +652,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `role_id` bigint unsigned NOT NULL COMMENT 'Khóa ngoại tới bảng roles',
   `branch_id` bigint unsigned DEFAULT NULL COMMENT 'Khóa ngoại tới branches (nếu là quản trị chi nhánh)',
   `full_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Họ và tên',
@@ -660,9 +660,9 @@ CREATE TABLE `users` (
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Mật khẩu đã mã hóa',
   `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Địa chỉ mặc định',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: Hoạt động, 0: Bị khóa',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Token ghi nhớ đăng nhập',
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_phone_unique` (`phone`),
   KEY `users_role_id_foreign` (`role_id`),
@@ -691,15 +691,15 @@ DROP TABLE IF EXISTS `notifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notifications` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tiêu đề thông báo',
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Nội dung chi tiết thông báo',
   `recipient_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ALL' COMMENT 'ALL, BRANCH_ADMIN, CUSTOMER, SPECIFIC',
   `recipient_ids` text COLLATE utf8mb4_unicode_ci COMMENT 'Danh sách ID nhận dạng JSON nếu là SPECIFIC',
   `recipient_names` text COLLATE utf8mb4_unicode_ci COMMENT 'Tên hiển thị người nhận',
   `sender_id` bigint unsigned NOT NULL COMMENT 'ID tài khoản quản trị gửi',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`),
   KEY `idx_recipient` (`recipient_type`),
   KEY `idx_created` (`created_at`),
@@ -718,14 +718,14 @@ DROP TABLE IF EXISTS `shipping_fees`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `shipping_fees` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tên gói/nấc cước',
   `min_km` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT 'Khoảng cách từ (km)',
   `max_km` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT 'Khoảng cách đến (km)',
   `fee` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT 'Mức phí vận chuyển (VNĐ)',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: Áp dụng, 0: Tạm dừng',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm tạo bản ghi',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Cấu hình nấc cước phí vận chuyển theo khoảng cách';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -743,7 +743,7 @@ DROP TABLE IF EXISTS `system_settings`;
 CREATE TABLE `system_settings` (
   `setting_key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Mã định danh cấu hình',
   `setting_value` text COLLATE utf8mb4_unicode_ci COMMENT 'Giá trị cấu hình JSON hoặc chuỗi',
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật gần nhất',
   PRIMARY KEY (`setting_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Cấu hình thông số hệ thống website';
 /*!40101 SET character_set_client = @saved_cs_client */;
