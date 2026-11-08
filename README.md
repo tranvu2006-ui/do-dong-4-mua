@@ -152,15 +152,18 @@ curl -i https://dodongbonmua.duckdns.org/api/health
 
 ---
 
-## 🔐 5. Thông Tin Tài Khoản Kiểm Thử
+## 🔐 5. Thông Tin Tài Khoản Khởi Tạo Mặc Định
 
-Hệ thống đã nạp sẵn các tài khoản mẫu tương ứng với từng vai trò người dùng trong cơ sở dữ liệu:
+Cơ sở dữ liệu được làm sạch chuẩn hóa, khởi tạo duy nhất 01 tài khoản Admin Tổng có toàn quyền quản trị:
 
-| Vai Trò | Số Điện Thoại | Mật Khẩu | Quyền Hạn |
+| Vai Trò | Số Điện Thoại | Mật Khẩu | Quyền Hạn & Ghi Chú |
 | :--- | :---: | :---: | :--- |
-| **Admin Tổng (Super Admin)** | `0929894248` | `123@Vu456` | Toàn quyền kiểm soát, cấu hình website, phân quyền và quản trị báo cáo |
-| **Admin Chi Nhánh (Quận 1)** | `0911223344` | `123456` | Quản lý sản phẩm, tồn kho và xử lý đơn hàng tại chi nhánh |
-| **Khách Hàng Mẫu** | `0912345678` | `123456` | Đặt hàng, theo dõi lịch sử đơn hàng, cập nhật thông tin cá nhân |
+| **Admin Tổng (Super Admin)** | `0929894248` | `123@Vu456` | Toàn quyền hệ thống, cấu hình website, phân quyền Quản trị viên chi nhánh và quản lý toàn bộ báo cáo doanh thu |
+
+> [!NOTE]
+> **Các tài khoản khác được tạo động theo đúng quy trình nghiệp vụ:**
+> - **Quản trị viên Chi nhánh:** Do Admin Tổng trực tiếp tạo mới và phân quyền theo từng chi nhánh tại phân hệ *Quản lý phân quyền* (`/admin?tab=permissions`).
+> - **Khách hàng:** Người dùng tự tạo tài khoản thông qua trang *Đăng ký* (`/dang-ky`) hoặc được hệ thống tự động khởi tạo khi tiến hành đặt hàng lần đầu.
 
 ---
 
