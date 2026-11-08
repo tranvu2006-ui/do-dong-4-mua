@@ -129,54 +129,89 @@ const SRS_FUNCTIONAL_MODULES = [
 
 // Bảng chuyển đổi ngôn ngữ tự nhiên tiếng Việt cho Nhật Ký Kiểm Toán (FR-045)
 const LOG_ACTION_LABELS = {
-  UPDATE_SETTINGS: 'Cập nhật cấu hình',
-  CREATE_PROMOTION: 'Tạo khuyến mãi',
-  UPDATE_PROMOTION: 'Cập nhật khuyến mãi',
-  DELETE_PROMOTION: 'Xóa khuyến mãi',
-  TOGGLE_PROMOTION: 'Bật/Tắt khuyến mãi',
-  ASSIGN_PROMOTION_PRODUCTS: 'Gán SP khuyến mãi',
-  REMOVE_PROMOTION_PRODUCT: 'Gỡ SP khuyến mãi',
+  // Đơn hàng & Vận chuyển
   UPDATE_STATUS: 'Đổi trạng thái đơn',
-  CREATE: 'Đặt hàng mới',
-  CREATE_ORDER: 'Đặt hàng mới',
-  CANCEL: 'Hủy đơn hàng',
+  UPDATE_ORDER_STATUS: 'Đổi trạng thái đơn',
+  CREATE_ORDER: 'Tạo đơn hàng',
   CANCEL_ORDER: 'Hủy đơn hàng',
-  ORDER_NOTE: 'Thêm ghi chú đơn',
+  CANCEL: 'Hủy đơn hàng',
+  APPROVE: 'Duyệt đơn hàng',
+  PAUSE: 'Tạm dừng đơn',
+  RESUME: 'Tiếp tục xử lý',
+  ORDER_NOTE: 'Thêm ghi chú',
+  ADD_ORDER_NOTE: 'Thêm ghi chú',
   CREATE_SHIPMENT: 'Tạo vận đơn GreenSM',
   UPDATE_SHIPMENT: 'Cập nhật giao hàng',
-  CREATE_PRODUCT: 'Thêm sản phẩm mới',
-  UPDATE_PRODUCT: 'Cập nhật sản phẩm',
-  PATCH_PRODUCT: 'Sửa nhanh sản phẩm',
-  DELETE_PRODUCT: 'Xóa sản phẩm',
-  CREATE_CATEGORY: 'Thêm danh mục mới',
-  UPDATE_CATEGORY: 'Cập nhật danh mục',
-  DELETE_CATEGORY: 'Xóa danh mục',
-  TOGGLE_CATEGORY_STATUS: 'Bật/Tắt danh mục',
-  CREATE_BRANCH: 'Thêm chi nhánh',
-  UPDATE_BRANCH: 'Cập nhật chi nhánh',
-  DELETE_BRANCH: 'Xóa chi nhánh',
-  CREATE_BANNER: 'Thêm banner',
-  UPDATE_BANNER: 'Cập nhật banner',
-  DELETE_BANNER: 'Xóa banner',
-  CREATE_ADMIN: 'Thêm quản trị viên',
-  UPDATE_ADMIN: 'Sửa thông tin Admin',
-  DELETE_ADMIN: 'Xóa quản trị viên',
-  ASSIGN_PERMISSIONS: 'Phân quyền quản trị',
-  UPDATE_PERMISSIONS: 'Cập nhật phân quyền',
-  LOGIN: 'Đăng nhập hệ thống',
-  LOGOUT: 'Đăng xuất',
+
+  // Khách hàng & Tài khoản
+  AUTO_REGISTER: 'Tự động tạo tài khoản',
   REGISTER: 'Đăng ký tài khoản',
-  AUTO_REGISTER: 'Tự động tạo tài khoản khi mua',
+  LOGIN: 'Đăng nhập',
+  LOGOUT: 'Đăng xuất',
   CHANGE_PASSWORD: 'Đổi mật khẩu',
   RESET_PASSWORD: 'Đặt lại mật khẩu',
   FORGOT_PASSWORD: 'Quên mật khẩu',
   UPDATE_PROFILE: 'Cập nhật hồ sơ',
-  PAYMENT_WEBHOOK: 'Xác nhận thanh toán',
+  LOCK: 'Khóa tài khoản',
+  UNLOCK: 'Mở khóa',
+  LOCK_USER: 'Khóa tài khoản',
+  UNLOCK_USER: 'Mở khóa tài khoản',
+
+  // Sản phẩm
+  CREATE_PRODUCT: 'Thêm sản phẩm',
+  UPDATE_PRODUCT: 'Sửa sản phẩm',
+  PATCH_PRODUCT: 'Sửa nhanh sản phẩm',
+  DELETE_PRODUCT: 'Xóa sản phẩm',
+  UPDATE_STOCK: 'Cập nhật tồn kho',
+
+  // Danh mục
+  CREATE_CATEGORY: 'Thêm danh mục',
+  UPDATE_CATEGORY: 'Sửa danh mục',
+  DELETE_CATEGORY: 'Xóa danh mục',
+  TOGGLE_CATEGORY_STATUS: 'Bật/Tắt danh mục',
+
+  // Khuyến mãi
+  CREATE_PROMOTION: 'Tạo khuyến mãi',
+  UPDATE_PROMOTION: 'Sửa khuyến mãi',
+  DELETE_PROMOTION: 'Xóa khuyến mãi',
+  TOGGLE_PROMOTION: 'Bật/Tắt khuyến mãi',
+  ASSIGN_PROMOTION_PRODUCTS: 'Gán SP khuyến mãi',
+  REMOVE_PROMOTION_PRODUCT: 'Gỡ SP khuyến mãi',
+
+  // Banner
+  CREATE_BANNER: 'Thêm banner',
+  UPDATE_BANNER: 'Sửa banner',
+  DELETE_BANNER: 'Xóa banner',
+
+  // Chi nhánh
+  CREATE_BRANCH: 'Thêm chi nhánh',
+  UPDATE_BRANCH: 'Sửa chi nhánh',
+  DELETE_BRANCH: 'Xóa chi nhánh',
+
+  // Cấu hình & Quản trị
+  UPDATE_SETTINGS: 'Đổi cấu hình web',
+  ASSIGN_PERMISSIONS: 'Phân quyền',
+  UPDATE_PERMISSIONS: 'Cập nhật phân quyền',
+  UPDATE_ROLE_PERMISSIONS: 'Cập nhật quyền vai trò',
+  CREATE_ADMIN: 'Tạo quản trị viên',
+  UPDATE_ADMIN: 'Sửa quản trị viên',
+  DELETE_ADMIN: 'Xóa quản trị viên',
+
+  // Nấc cước & Thông báo
   CREATE_SHIPPING_FEE: 'Thêm nấc cước phí',
   UPDATE_SHIPPING_FEE: 'Cập nhật nấc cước phí',
   DELETE_SHIPPING_FEE: 'Xóa nấc cước phí',
   CREATE_NOTIFICATION: 'Gửi thông báo',
-  DELETE_NOTIFICATION: 'Xóa thông báo'
+  DELETE_NOTIFICATION: 'Xóa thông báo',
+
+  // Thanh toán & Báo cáo
+  PAYMENT: 'Thanh toán đơn hàng',
+  PAYMENT_WEBHOOK: 'Xác nhận thanh toán',
+  EXPORT_EXCEL: 'Xuất báo cáo Excel',
+  EXPORT_PDF: 'Xuất báo cáo PDF',
+  CREATE: 'Thêm mới',
+  UPDATE: 'Cập nhật',
+  DELETE: 'Xóa bỏ',
 };
 
 const LOG_MODULE_LABELS = {
@@ -193,23 +228,52 @@ const LOG_MODULE_LABELS = {
   CUSTOMER: 'Khách hàng',
   ADMIN: 'Quản trị viên',
   PERMISSION: 'Phân quyền',
-  PAYMENT: 'Thanh toán'
+  PAYMENT: 'Thanh toán',
+  NOTIFICATION: 'Thông báo',
+  SHIPPING: 'Vận chuyển',
 };
 
-const getLogActionLabel = (action) => LOG_ACTION_LABELS[action] || action;
-const getLogModuleLabel = (module) => LOG_MODULE_LABELS[module] || module || 'Hệ thống';
+const getLogActionLabel = (action) => {
+  if (!action) return 'Thao tác';
+  if (LOG_ACTION_LABELS[action]) return LOG_ACTION_LABELS[action];
+  const upper = String(action).toUpperCase();
+  if (LOG_ACTION_LABELS[upper]) return LOG_ACTION_LABELS[upper];
+  return action
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/^\w/, (c) => c.toUpperCase());
+};
+
+const getLogModuleLabel = (module) => {
+  if (!module) return 'Hệ thống';
+  if (LOG_MODULE_LABELS[module]) return LOG_MODULE_LABELS[module];
+  const upper = String(module).toUpperCase();
+  if (LOG_MODULE_LABELS[upper]) return LOG_MODULE_LABELS[upper];
+  return module
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/^\w/, (c) => c.toUpperCase());
+};
 
 const formatLogDescription = (desc) => {
   if (!desc || typeof desc !== 'string') return desc || '';
   return desc
-    .replace(/sang trạng thái:\s*DANG_GIAO/g, 'sang trạng thái: Đang giao hàng (GreenSM)')
-    .replace(/sang trạng thái:\s*DA_GIAO/g, 'sang trạng thái: Giao hàng thành công')
-    .replace(/sang trạng thái:\s*DANG_CHUAN_BI/g, 'sang trạng thái: Đang chuẩn bị hàng')
-    .replace(/sang trạng thái:\s*DA_XAC_NHAN/g, 'sang trạng thái: Đã xác nhận đơn hàng')
-    .replace(/sang trạng thái:\s*CHO_XAC_NHAN/g, 'sang trạng thái: Chờ xác nhận (COD)')
-    .replace(/sang trạng thái:\s*CHO_THANH_TOAN/g, 'sang trạng thái: Chờ thanh toán (VietQR)')
-    .replace(/sang trạng thái:\s*TAM_DUNG/g, 'sang trạng thái: Tạm dừng xử lý')
-    .replace(/sang trạng thái:\s*DA_HUY/g, 'sang trạng thái: Đã hủy đơn hàng');
+    // Trạng thái đơn hàng
+    .replace(/\bCHO_XAC_NHAN\b/g, 'Chờ xác nhận (COD)')
+    .replace(/\bCHO_THANH_TOAN\b/g, 'Chờ thanh toán (VietQR)')
+    .replace(/\bDA_XAC_NHAN\b/g, 'Đã xác nhận đơn hàng')
+    .replace(/\bDANG_CHUAN_BI\b/g, 'Đang chuẩn bị hàng')
+    .replace(/\bDANG_GIAO\b/g, 'Đang giao hàng (GreenSM)')
+    .replace(/\bDA_GIAO\b/g, 'Giao hàng thành công')
+    .replace(/\bTAM_DUNG\b/g, 'Tạm dừng xử lý')
+    .replace(/\bDA_HUY\b/g, 'Đã hủy đơn hàng')
+    // Vận chuyển & thanh toán
+    .replace(/\bDA_TAO_VAN_DON\b/g, 'Đã tạo vận đơn')
+    .replace(/\bDA_BAN_GIAO_GREENSM\b/g, 'Đã bàn giao GreenSM')
+    .replace(/\bGIAO_THANH_CONG\b/g, 'Giao thành công')
+    .replace(/\bGIAO_THAT_BAI\b/g, 'Giao thất bại')
+    .replace(/\bPAID\b/g, 'Đã thanh toán')
+    .replace(/\bUNPAID\b/g, 'Chưa thanh toán');
 };
 
 export default function AdminDashboardPage() {
@@ -238,7 +302,7 @@ export default function AdminDashboardPage() {
           const parsed = JSON.parse(cachedSettings);
           if (parsed && parsed.site_name) setSiteSettings(parsed);
         }
-      } catch (e) {}
+      } catch (e) { }
 
       const u = getAuthSession();
       if (u && (u.isAdmin || u.role_id === 1 || u.role_id === 2)) {
@@ -449,7 +513,7 @@ export default function AdminDashboardPage() {
     try {
       const stored = localStorage.getItem('dodong4mua_admin_read_notifs');
       if (stored) setReadAdminNotifIds(JSON.parse(stored));
-    } catch (e) {}
+    } catch (e) { }
   }, []);
 
   const unreadAdminNotifCount = notifications.filter((n) => !readAdminNotifIds.includes(n.id)).length;
@@ -460,7 +524,7 @@ export default function AdminDashboardPage() {
     setReadAdminNotifIds(updated);
     try {
       localStorage.setItem('dodong4mua_admin_read_notifs', JSON.stringify(updated));
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const markSingleAdminNotifAsRead = (id) => {
@@ -469,7 +533,7 @@ export default function AdminDashboardPage() {
       setReadAdminNotifIds(updated);
       try {
         localStorage.setItem('dodong4mua_admin_read_notifs', JSON.stringify(updated));
-      } catch (e) {}
+      } catch (e) { }
     }
   };
   const [notificationSearch, setNotificationSearch] = useState('');
@@ -697,25 +761,25 @@ export default function AdminDashboardPage() {
         if (type === 'product') {
           // Xóa ảnh tạm cũ nếu người dùng chọn đổi ảnh khác trước khi bấm Lưu
           if (newProduct.thumbnail && newProduct.thumbnail.startsWith('/uploads/')) {
-            fetch(`/api/upload?url=${encodeURIComponent(newProduct.thumbnail)}`, { method: 'DELETE' }).catch(() => {});
+            fetch(`/api/upload?url=${encodeURIComponent(newProduct.thumbnail)}`, { method: 'DELETE' }).catch(() => { });
           }
           setNewProduct((prev) => ({ ...prev, thumbnail: data.url }));
         } else if (type === 'edit_product') {
           // Xóa ảnh vừa upload đè trước đó nếu đổi ảnh tiếp trong cùng 1 phiên sửa
           if (editProductModal.tempUploaded && editProductModal.tempUploaded.startsWith('/uploads/')) {
-            fetch(`/api/upload?url=${encodeURIComponent(editProductModal.tempUploaded)}`, { method: 'DELETE' }).catch(() => {});
+            fetch(`/api/upload?url=${encodeURIComponent(editProductModal.tempUploaded)}`, { method: 'DELETE' }).catch(() => { });
           }
           setEditProductModal((prev) => ({ ...prev, thumbnail: data.url, tempUploaded: data.url }));
         } else if (type === 'product_extra') {
           handleAddExtraImage(data.url);
         } else if (type === 'banner') {
           if (newBanner.image_url && newBanner.image_url.startsWith('/uploads/')) {
-            fetch(`/api/upload?url=${encodeURIComponent(newBanner.image_url)}`, { method: 'DELETE' }).catch(() => {});
+            fetch(`/api/upload?url=${encodeURIComponent(newBanner.image_url)}`, { method: 'DELETE' }).catch(() => { });
           }
           setNewBanner((prev) => ({ ...prev, image_url: data.url }));
         } else if (type === 'edit_banner') {
           if (editingBanner && editingBanner.tempUploaded && editingBanner.tempUploaded.startsWith('/uploads/')) {
-            fetch(`/api/upload?url=${encodeURIComponent(editingBanner.tempUploaded)}`, { method: 'DELETE' }).catch(() => {});
+            fetch(`/api/upload?url=${encodeURIComponent(editingBanner.tempUploaded)}`, { method: 'DELETE' }).catch(() => { });
           }
           setEditingBanner((prev) => prev ? ({ ...prev, image_url: data.url, tempUploaded: data.url }) : prev);
         } else if (type === 'settings_logo') {
@@ -825,7 +889,7 @@ export default function AdminDashboardPage() {
       if (usersData.success) setAdminUsers(usersData.data);
       if (settingsData && settingsData.success) {
         setSiteSettings(settingsData.data);
-        try { localStorage.setItem('dodong4mua_site_settings', JSON.stringify(settingsData.data)); } catch (e) {}
+        try { localStorage.setItem('dodong4mua_site_settings', JSON.stringify(settingsData.data)); } catch (e) { }
       }
       if (shippingFeesData && shippingFeesData.success) setShippingFees(shippingFeesData.data);
       if (notificationsData && notificationsData.success) setNotifications(notificationsData.data);
@@ -1756,8 +1820,8 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (data.success) {
         showToast(
-          targetStatus === 1 
-            ? `Đã kích hoạt lại chi nhánh "${toggleStatusBranch.branch_name}"!` 
+          targetStatus === 1
+            ? `Đã kích hoạt lại chi nhánh "${toggleStatusBranch.branch_name}"!`
             : `Đã tạm ngưng hoạt động chi nhánh "${toggleStatusBranch.branch_name}"!`
         );
         setToggleStatusBranch(null);
@@ -1873,8 +1937,8 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (data.success) {
         showToast(
-          targetStatus === 1 
-            ? `Đã kích hoạt hiển thị banner "${banner.title}"!` 
+          targetStatus === 1
+            ? `Đã kích hoạt hiển thị banner "${banner.title}"!`
             : `Đã tạm ẩn banner "${banner.title}"!`
         );
         loadData();
@@ -1917,7 +1981,7 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (data.success) {
         setSiteSettings(data.data);
-        try { localStorage.setItem('dodong4mua_site_settings', JSON.stringify(data.data)); } catch (e) {}
+        try { localStorage.setItem('dodong4mua_site_settings', JSON.stringify(data.data)); } catch (e) { }
         showToast('Cập nhật cấu hình website thành công!');
         loadData();
         if (typeof window !== 'undefined') {
@@ -2049,8 +2113,8 @@ export default function AdminDashboardPage() {
     }
   };
 
-    // Quản lý thông báo hệ thống (FR-046)
-    // Quản lý báo cáo doanh thu (FR-047 & BR-028)
+  // Quản lý thông báo hệ thống (FR-046)
+  // Quản lý báo cáo doanh thu (FR-047 & BR-028)
   const loadRevenueReport = async (overrideStart, overrideEnd) => {
     const sDate = overrideStart !== undefined ? overrideStart : revenueStartDate;
     const eDate = overrideEnd !== undefined ? overrideEnd : revenueEndDate;
@@ -2097,7 +2161,7 @@ export default function AdminDashboardPage() {
     showToast('Đang tạo và tải tệp PDF báo cáo doanh thu...', 'success');
   };
 
-    // Quản lý báo cáo khách hàng (FR-048)
+  // Quản lý báo cáo khách hàng (FR-048)
   const loadCustomerReport = async (overrideStart, overrideEnd, overrideSearch) => {
     const sDate = overrideStart !== undefined ? overrideStart : customerReportStartDate;
     const eDate = overrideEnd !== undefined ? overrideEnd : customerReportEndDate;
@@ -2846,8 +2910,8 @@ export default function AdminDashboardPage() {
   const filteredCustomers = customers.filter(cu => {
     const matchSearch = customerSearch
       ? ((cu.full_name && cu.full_name.toLowerCase().includes(customerSearch.toLowerCase())) ||
-         (cu.phone && cu.phone.includes(customerSearch)) ||
-         (cu.address && cu.address.toLowerCase().includes(customerSearch.toLowerCase())))
+        (cu.phone && cu.phone.includes(customerSearch)) ||
+        (cu.address && cu.address.toLowerCase().includes(customerSearch.toLowerCase())))
       : true;
     const matchStatus = customerStatusFilter !== ''
       ? cu.status === parseInt(customerStatusFilter, 10)
@@ -2860,8 +2924,8 @@ export default function AdminDashboardPage() {
     const matchStatus = bannerStatusFilter === 'ACTIVE'
       ? bn.status === 1
       : bannerStatusFilter === 'INACTIVE'
-      ? bn.status === 0
-      : true;
+        ? bn.status === 0
+        : true;
     return matchSearch && matchStatus;
   });
 
@@ -2926,7 +2990,7 @@ export default function AdminDashboardPage() {
     return matchSearch && matchStatus;
   });
 
-      // Danh sách người dùng để chọn người nhận thông báo đích danh (FR-046)
+  // Danh sách người dùng để chọn người nhận thông báo đích danh (FR-046)
   const allAvailableUsers = [
     ...adminUsers.map(a => ({ id: a.id, full_name: a.full_name, phone: a.phone, role_name: a.role_name || 'Admin Chi nhánh', type: 'ADMIN' })),
     ...customers.map(c => ({ id: c.id, full_name: c.full_name, phone: c.phone, role_name: 'Khách hàng', type: 'CUSTOMER' }))
@@ -2951,7 +3015,7 @@ export default function AdminDashboardPage() {
     return matchType && matchSearch;
   });
 
-    // Phân trang danh sách Báo cáo khách hàng (FR-048)
+  // Phân trang danh sách Báo cáo khách hàng (FR-048)
   const custReportList = customerReportData?.customers || [];
   const paginatedCustReport = custReportList.slice(
     (customerReportPage - 1) * customerReportPageSize,
@@ -2971,14 +3035,14 @@ export default function AdminDashboardPage() {
   const filteredBranches = branches.filter(b => {
     const matchSearch = branchSearch
       ? ((b.branch_name && b.branch_name.toLowerCase().includes(branchSearch.toLowerCase())) ||
-         (b.phone && b.phone.includes(branchSearch)) ||
-         (b.address && b.address.toLowerCase().includes(branchSearch.toLowerCase())))
+        (b.phone && b.phone.includes(branchSearch)) ||
+        (b.address && b.address.toLowerCase().includes(branchSearch.toLowerCase())))
       : true;
     const matchStatus = branchStatusFilter === 'ACTIVE'
       ? b.status === 1
       : branchStatusFilter === 'INACTIVE'
-      ? b.status === 0
-      : true;
+        ? b.status === 0
+        : true;
     return matchSearch && matchStatus;
   });
 
@@ -2995,9 +3059,8 @@ export default function AdminDashboardPage() {
       )}
 
       {/* 1. LEFT SIDEBAR (MODERN ENTERPRISE STUDIO - RESPONSIVE DRAWER) */}
-      <aside className={`fixed inset-y-0 left-0 lg:static z-50 lg:z-30 h-full w-72 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 shadow-2xl transition-transform duration-300 ease-in-out ${
-        isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      }`}>
+      <aside className={`fixed inset-y-0 left-0 lg:static z-50 lg:z-30 h-full w-72 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 shadow-2xl transition-transform duration-300 ease-in-out ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}>
         <div className="flex flex-col h-full overflow-hidden">
           {/* Brand Logo Header (Có hiệu ứng làm mờ khi chưa có dữ liệu để tránh hardcode) */}
           <div className="p-5 border-b border-slate-800/80 flex items-center justify-between gap-3 shrink-0">
@@ -3062,8 +3125,8 @@ export default function AdminDashboardPage() {
                         window.history.replaceState(null, '', `?tab=${item.key}`);
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${isActive
-                          ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/25 font-black'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
+                        ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/25 font-black'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
                         }`}
                     >
                       <div className="flex items-center gap-3">
@@ -3072,8 +3135,8 @@ export default function AdminDashboardPage() {
                       </div>
                       {item.count !== undefined && (
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive
-                            ? 'bg-slate-950 text-emerald-400'
-                            : 'bg-slate-800 text-slate-400'
+                          ? 'bg-slate-950 text-emerald-400'
+                          : 'bg-slate-800 text-slate-400'
                           }`}>
                           {item.count}
                         </span>
@@ -3395,284 +3458,284 @@ export default function AdminDashboardPage() {
                 </div>
               ) : (
                 <div>
-              {/* TAB 1: QUẢN LÝ ĐƠN HÀNG & GREENSM */}
+                  {/* TAB 1: QUẢN LÝ ĐƠN HÀNG & GREENSM */}
 
-              {/* TAB 1: QUẢN LÝ ĐƠN HÀNG & GREENSM */}
-              {activeTab === 'orders' && (
-                <AdminOrdersTab
-                  orders={orders}
-                  paginatedOrders={paginatedOrders}
-                  orderSearch={orderSearch}
-                  setOrderSearch={setOrderSearch}
-                  orderStatusFilter={orderStatusFilter}
-                  setOrderStatusFilter={setOrderStatusFilter}
-                  orderStartDate={orderStartDate}
-                  setOrderStartDate={setOrderStartDate}
-                  orderEndDate={orderEndDate}
-                  setOrderEndDate={setOrderEndDate}
-                  orderPage={orderPage}
-                  setOrderPage={setOrderPage}
-                  orderPageSize={orderPageSize}
-                  setOrderPageSize={setOrderPageSize}
-                  onViewOrderDetail={(o) => setSelectedOrder(o)}
-                  onPromptChangeOrderStatus={promptChangeOrderStatus}
-                  onPromptPauseOrder={promptPauseOrder}
-                  onPromptResumeOrder={promptResumeOrder}
-                  onPromptCancelOrder={promptCancelOrder}
-                />
-              )}
+                  {/* TAB 1: QUẢN LÝ ĐƠN HÀNG & GREENSM */}
+                  {activeTab === 'orders' && (
+                    <AdminOrdersTab
+                      orders={orders}
+                      paginatedOrders={paginatedOrders}
+                      orderSearch={orderSearch}
+                      setOrderSearch={setOrderSearch}
+                      orderStatusFilter={orderStatusFilter}
+                      setOrderStatusFilter={setOrderStatusFilter}
+                      orderStartDate={orderStartDate}
+                      setOrderStartDate={setOrderStartDate}
+                      orderEndDate={orderEndDate}
+                      setOrderEndDate={setOrderEndDate}
+                      orderPage={orderPage}
+                      setOrderPage={setOrderPage}
+                      orderPageSize={orderPageSize}
+                      setOrderPageSize={setOrderPageSize}
+                      onViewOrderDetail={(o) => setSelectedOrder(o)}
+                      onPromptChangeOrderStatus={promptChangeOrderStatus}
+                      onPromptPauseOrder={promptPauseOrder}
+                      onPromptResumeOrder={promptResumeOrder}
+                      onPromptCancelOrder={promptCancelOrder}
+                    />
+                  )}
 
-              {/* TAB 2: QUẢN LÝ SẢN PHẨM */}
-              {activeTab === 'products' && (
-                <AdminProductsTab
-                  categories={categories}
-                  filteredProducts={filteredProducts}
-                  paginatedProducts={paginatedProducts}
-                  productSearch={productSearch}
-                  setProductSearch={setProductSearch}
-                  productCategoryFilter={productCategoryFilter}
-                  setProductCategoryFilter={setProductCategoryFilter}
-                  productStatusFilter={productStatusFilter}
-                  setProductStatusFilter={setProductStatusFilter}
-                  productPage={productPage}
-                  setProductPage={setProductPage}
-                  productPageSize={productPageSize}
-                  setProductPageSize={setProductPageSize}
-                  onOpenAddProductModal={() => setShowAddProductModal(true)}
-                  onOpenEditProductModal={openEditProductModal}
-                  onToggleProductStatus={handleToggleProductStatus}
-                  onDeleteProduct={handleDeleteProduct}
-                />
-              )}
+                  {/* TAB 2: QUẢN LÝ SẢN PHẨM */}
+                  {activeTab === 'products' && (
+                    <AdminProductsTab
+                      categories={categories}
+                      filteredProducts={filteredProducts}
+                      paginatedProducts={paginatedProducts}
+                      productSearch={productSearch}
+                      setProductSearch={setProductSearch}
+                      productCategoryFilter={productCategoryFilter}
+                      setProductCategoryFilter={setProductCategoryFilter}
+                      productStatusFilter={productStatusFilter}
+                      setProductStatusFilter={setProductStatusFilter}
+                      productPage={productPage}
+                      setProductPage={setProductPage}
+                      productPageSize={productPageSize}
+                      setProductPageSize={setProductPageSize}
+                      onOpenAddProductModal={() => setShowAddProductModal(true)}
+                      onOpenEditProductModal={openEditProductModal}
+                      onToggleProductStatus={handleToggleProductStatus}
+                      onDeleteProduct={handleDeleteProduct}
+                    />
+                  )}
 
-              {/* TAB 3: QUẢN LÝ DANH MỤC */}
-              {activeTab === 'categories' && (
-                <AdminCategoriesTab
-                  categories={categories}
-                  onOpenAddCategoryModal={() => setShowAddCategoryModal(true)}
-                  onOpenEditCategoryModal={(c) => setEditCategoryModal({ isOpen: true, category: { ...c } })}
-                  onToggleCategoryStatus={handleToggleCategoryStatus}
-                  onDeleteCategory={handleDeleteCategory}
-                />
-              )}
+                  {/* TAB 3: QUẢN LÝ DANH MỤC */}
+                  {activeTab === 'categories' && (
+                    <AdminCategoriesTab
+                      categories={categories}
+                      onOpenAddCategoryModal={() => setShowAddCategoryModal(true)}
+                      onOpenEditCategoryModal={(c) => setEditCategoryModal({ isOpen: true, category: { ...c } })}
+                      onToggleCategoryStatus={handleToggleCategoryStatus}
+                      onDeleteCategory={handleDeleteCategory}
+                    />
+                  )}
 
-              {/* TAB 4: QUẢN LÝ KHUYẾN MÃI */}
-              {activeTab === 'promotions' && (
-                <AdminPromotionsTab
-                  promotions={promotions}
-                  filteredPromotions={filteredPromotions}
-                  paginatedPromotions={paginatedPromotions}
-                  promotionSearch={promotionSearch}
-                  setPromotionSearch={setPromotionSearch}
-                  promotionStatusFilter={promotionStatusFilter}
-                  setPromotionStatusFilter={setPromotionStatusFilter}
-                  promotionPage={promotionPage}
-                  setPromotionPage={setPromotionPage}
-                  promotionPageSize={promotionPageSize}
-                  setPromotionPageSize={setPromotionPageSize}
-                  onOpenAddPromotionModal={() => setShowAddPromotionModal(true)}
-                  onOpenEditPromotionModal={(p) => setEditPromotionModal({ isOpen: true, promotion: { ...p } })}
-                  onOpenAssignProductsModal={openAssignProductsModal}
-                  onTogglePromotionStatus={handleTogglePromotionStatus}
-                  onDeletePromotion={handleDeletePromotion}
-                />
-              )}
+                  {/* TAB 4: QUẢN LÝ KHUYẾN MÃI */}
+                  {activeTab === 'promotions' && (
+                    <AdminPromotionsTab
+                      promotions={promotions}
+                      filteredPromotions={filteredPromotions}
+                      paginatedPromotions={paginatedPromotions}
+                      promotionSearch={promotionSearch}
+                      setPromotionSearch={setPromotionSearch}
+                      promotionStatusFilter={promotionStatusFilter}
+                      setPromotionStatusFilter={setPromotionStatusFilter}
+                      promotionPage={promotionPage}
+                      setPromotionPage={setPromotionPage}
+                      promotionPageSize={promotionPageSize}
+                      setPromotionPageSize={setPromotionPageSize}
+                      onOpenAddPromotionModal={() => setShowAddPromotionModal(true)}
+                      onOpenEditPromotionModal={(p) => setEditPromotionModal({ isOpen: true, promotion: { ...p } })}
+                      onOpenAssignProductsModal={openAssignProductsModal}
+                      onTogglePromotionStatus={handleTogglePromotionStatus}
+                      onDeletePromotion={handleDeletePromotion}
+                    />
+                  )}
 
-              {/* TAB 5: QUẢN LÝ CHI NHÁNH */}
-              {activeTab === 'branches' && (
-                <AdminBranchesTab
-                  branches={branches}
-                  filteredBranches={filteredBranches}
-                  branchSearch={branchSearch}
-                  setBranchSearch={setBranchSearch}
-                  branchStatusFilter={branchStatusFilter}
-                  setBranchStatusFilter={setBranchStatusFilter}
-                  onOpenAddBranchModal={() => setShowAddBranchModal(true)}
-                  onEditBranch={(b) => setEditingBranch({ ...b })}
-                  onToggleStatusBranch={(b) => setToggleStatusBranch(b)}
-                  onDeleteBranch={(b) => setDeletingBranch(b)}
-                />
-              )}
+                  {/* TAB 5: QUẢN LÝ CHI NHÁNH */}
+                  {activeTab === 'branches' && (
+                    <AdminBranchesTab
+                      branches={branches}
+                      filteredBranches={filteredBranches}
+                      branchSearch={branchSearch}
+                      setBranchSearch={setBranchSearch}
+                      branchStatusFilter={branchStatusFilter}
+                      setBranchStatusFilter={setBranchStatusFilter}
+                      onOpenAddBranchModal={() => setShowAddBranchModal(true)}
+                      onEditBranch={(b) => setEditingBranch({ ...b })}
+                      onToggleStatusBranch={(b) => setToggleStatusBranch(b)}
+                      onDeleteBranch={(b) => setDeletingBranch(b)}
+                    />
+                  )}
 
-              {/* TAB 6: QUẢN LÝ BANNER & MARKETING */}
-              {activeTab === 'banners' && (
-                <AdminBannersTab
-                  banners={banners}
-                  filteredBanners={filteredBanners}
-                  bannerSearch={bannerSearch}
-                  setBannerSearch={setBannerSearch}
-                  bannerStatusFilter={bannerStatusFilter}
-                  setBannerStatusFilter={setBannerStatusFilter}
-                  onOpenAddBannerModal={() => setShowAddBannerModal(true)}
-                  onToggleBannerStatus={handleToggleBannerStatus}
-                  onEditBanner={(banner) => setEditingBanner({ ...banner })}
-                  onDeleteBanner={(banner) => setDeletingBanner(banner)}
-                />
-              )}
+                  {/* TAB 6: QUẢN LÝ BANNER & MARKETING */}
+                  {activeTab === 'banners' && (
+                    <AdminBannersTab
+                      banners={banners}
+                      filteredBanners={filteredBanners}
+                      bannerSearch={bannerSearch}
+                      setBannerSearch={setBannerSearch}
+                      bannerStatusFilter={bannerStatusFilter}
+                      setBannerStatusFilter={setBannerStatusFilter}
+                      onOpenAddBannerModal={() => setShowAddBannerModal(true)}
+                      onToggleBannerStatus={handleToggleBannerStatus}
+                      onEditBanner={(banner) => setEditingBanner({ ...banner })}
+                      onDeleteBanner={(banner) => setDeletingBanner(banner)}
+                    />
+                  )}
 
-              {/* TAB 7: QUẢN LÝ ADMIN CHI NHÁNH */}
-              {activeTab === 'admins' && (
-                <AdminUsersTab
-                  adminUsers={adminUsers}
-                  onOpenAddAdminModal={() => setShowAddAdminModal(true)}
-                  onOpenEditAdminModal={(a) => setEditAdminModal({ isOpen: true, admin: { ...a } })}
-                  onOpenResetPasswordModal={(a) => setResetPasswordModal({ isOpen: true, admin: a, password: '', confirm_password: '' })}
-                  onOpenAssignPermissionsModal={openAssignPermissionsModal}
-                  onLockUser={(a) => setActionModal({ isOpen: true, actionType: 'lock', targetUser: a })}
-                  onUnlockUser={(a) => setActionModal({ isOpen: true, actionType: 'unlock', targetUser: a })}
-                  onDeleteUser={(a) => setActionModal({ isOpen: true, actionType: 'delete', targetUser: a })}
-                />
-              )}
+                  {/* TAB 7: QUẢN LÝ ADMIN CHI NHÁNH */}
+                  {activeTab === 'admins' && (
+                    <AdminUsersTab
+                      adminUsers={adminUsers}
+                      onOpenAddAdminModal={() => setShowAddAdminModal(true)}
+                      onOpenEditAdminModal={(a) => setEditAdminModal({ isOpen: true, admin: { ...a } })}
+                      onOpenResetPasswordModal={(a) => setResetPasswordModal({ isOpen: true, admin: a, password: '', confirm_password: '' })}
+                      onOpenAssignPermissionsModal={openAssignPermissionsModal}
+                      onLockUser={(a) => setActionModal({ isOpen: true, actionType: 'lock', targetUser: a })}
+                      onUnlockUser={(a) => setActionModal({ isOpen: true, actionType: 'unlock', targetUser: a })}
+                      onDeleteUser={(a) => setActionModal({ isOpen: true, actionType: 'delete', targetUser: a })}
+                    />
+                  )}
 
-              {/* TAB 8: QUẢN LÝ KHÁCH HÀNG */}
-              {activeTab === 'customers' && (
-                <AdminCustomersTab
-                  customers={customers}
-                  filteredCustomers={filteredCustomers}
-                  paginatedCustomers={paginatedCustomers}
-                  customerSearch={customerSearch}
-                  setCustomerSearch={setCustomerSearch}
-                  customerStatusFilter={customerStatusFilter}
-                  setCustomerStatusFilter={setCustomerStatusFilter}
-                  customerPage={customerPage}
-                  setCustomerPage={setCustomerPage}
-                  customerPageSize={customerPageSize}
-                  setCustomerPageSize={setCustomerPageSize}
-                  onViewCustomerDetail={handleViewCustomerDetail}
-                  onLockCustomer={(c) => setActionModal({ isOpen: true, actionType: 'lock', targetUser: c })}
-                  onUnlockCustomer={(c) => setActionModal({ isOpen: true, actionType: 'unlock', targetUser: c })}
-                />
-              )}
+                  {/* TAB 8: QUẢN LÝ KHÁCH HÀNG */}
+                  {activeTab === 'customers' && (
+                    <AdminCustomersTab
+                      customers={customers}
+                      filteredCustomers={filteredCustomers}
+                      paginatedCustomers={paginatedCustomers}
+                      customerSearch={customerSearch}
+                      setCustomerSearch={setCustomerSearch}
+                      customerStatusFilter={customerStatusFilter}
+                      setCustomerStatusFilter={setCustomerStatusFilter}
+                      customerPage={customerPage}
+                      setCustomerPage={setCustomerPage}
+                      customerPageSize={customerPageSize}
+                      setCustomerPageSize={setCustomerPageSize}
+                      onViewCustomerDetail={handleViewCustomerDetail}
+                      onLockCustomer={(c) => setActionModal({ isOpen: true, actionType: 'lock', targetUser: c })}
+                      onUnlockCustomer={(c) => setActionModal({ isOpen: true, actionType: 'unlock', targetUser: c })}
+                    />
+                  )}
 
-              {/* TAB 9: NHẬT KÝ HỆ THỐNG */}
-              {activeTab === 'logs' && (
-                <AdminLogsTab
-                  logs={logs}
-                  logStats={logStats}
-                  filteredLogs={filteredLogs}
-                  paginatedLogs={paginatedLogs}
-                  logSearch={logSearch}
-                  setLogSearch={setLogSearch}
-                  logModuleFilter={logModuleFilter}
-                  setLogModuleFilter={setLogModuleFilter}
-                  logPage={logPage}
-                  setLogPage={setLogPage}
-                  logPageSize={logPageSize}
-                  setLogPageSize={setLogPageSize}
-                  reloadLogs={reloadLogs}
-                  refreshingLogs={refreshingLogs}
-                />
-              )}
+                  {/* TAB 9: NHẬT KÝ HỆ THỐNG */}
+                  {activeTab === 'logs' && (
+                    <AdminLogsTab
+                      logs={logs}
+                      logStats={logStats}
+                      filteredLogs={filteredLogs}
+                      paginatedLogs={paginatedLogs}
+                      logSearch={logSearch}
+                      setLogSearch={setLogSearch}
+                      logModuleFilter={logModuleFilter}
+                      setLogModuleFilter={setLogModuleFilter}
+                      logPage={logPage}
+                      setLogPage={setLogPage}
+                      logPageSize={logPageSize}
+                      setLogPageSize={setLogPageSize}
+                      reloadLogs={reloadLogs}
+                      refreshingLogs={refreshingLogs}
+                    />
+                  )}
 
-              {/* TAB 10: BÁO CÁO THỐNG KÊ */}
-              {activeTab === 'reports' && (
-                <AdminReportsTab
-                  reportSubTab={reportSubTab}
-                  setReportSubTab={setReportSubTab}
-                  revenueData={revenueData}
-                  revenueLoading={revenueLoading}
-                  revenueStartDate={revenueStartDate}
-                  setRevenueStartDate={setRevenueStartDate}
-                  revenueEndDate={revenueEndDate}
-                  setRevenueEndDate={setRevenueEndDate}
-                  handleExportRevenueExcel={handleExportRevenueExcel}
-                  handleExportRevenuePdf={handleExportRevenuePdf}
-                  loadRevenueReport={loadRevenueReport}
-                  handleQuickDateFilter={handleQuickDateFilter}
-                  customerReportData={customerReportData}
-                  customerReportLoading={customerReportLoading}
-                  customerReportStartDate={customerReportStartDate}
-                  setCustomerReportStartDate={setCustomerReportStartDate}
-                  customerReportEndDate={customerReportEndDate}
-                  setCustomerReportEndDate={setCustomerReportEndDate}
-                  customerReportSearch={customerReportSearch}
-                  setCustomerReportSearch={setCustomerReportSearch}
-                  handleExportCustomerExcel={handleExportCustomerExcel}
-                  handleExportCustomerPdf={handleExportCustomerPdf}
-                  handleQuickCustomerDateFilter={handleQuickCustomerDateFilter}
-                  loadCustomerReport={loadCustomerReport}
-                  customerReportPage={customerReportPage}
-                  setCustomerReportPage={setCustomerReportPage}
-                  customerReportPageSize={customerReportPageSize}
-                  setCustomerReportPageSize={setCustomerReportPageSize}
-                  inventoryReportData={inventoryReportData}
-                  inventoryReportLoading={inventoryReportLoading}
-                  inventoryReportSearch={inventoryReportSearch}
-                  setInventoryReportSearch={setInventoryReportSearch}
-                  inventoryReportPage={inventoryReportPage}
-                  setInventoryReportPage={setInventoryReportPage}
-                  inventoryReportCategory={inventoryReportCategory}
-                  setInventoryReportCategory={setInventoryReportCategory}
-                  inventoryReportStockStatus={inventoryReportStockStatus}
-                  setInventoryReportStockStatus={setInventoryReportStockStatus}
-                  inventoryReportStartDate={inventoryReportStartDate}
-                  setInventoryReportStartDate={setInventoryReportStartDate}
-                  inventoryReportEndDate={inventoryReportEndDate}
-                  setInventoryReportEndDate={setInventoryReportEndDate}
-                  inventoryReportPageSize={inventoryReportPageSize}
-                  setInventoryReportPageSize={setInventoryReportPageSize}
-                  exportInventoryReportCsv={exportInventoryReportCsv}
-                  exportInventoryReportPdf={exportInventoryReportPdf}
-                  loadInventoryReport={loadInventoryReport}
-                  orderReportData={orderReportData}
-                  orderReportLoading={orderReportLoading}
-                  orderReportSearch={orderReportSearch}
-                  setOrderReportSearch={setOrderReportSearch}
-                  orderReportPage={orderReportPage}
-                  setOrderReportPage={setOrderReportPage}
-                  orderReportStatus={orderReportStatus}
-                  setOrderReportStatus={setOrderReportStatus}
-                  orderReportPaymentStatus={orderReportPaymentStatus}
-                  setOrderReportPaymentStatus={setOrderReportPaymentStatus}
-                  orderReportStartDate={orderReportStartDate}
-                  setOrderReportStartDate={setOrderReportStartDate}
-                  orderReportEndDate={orderReportEndDate}
-                  setOrderReportEndDate={setOrderReportEndDate}
-                  orderReportPageSize={orderReportPageSize}
-                  setOrderReportPageSize={setOrderReportPageSize}
-                  exportOrderReportCsv={exportOrderReportCsv}
-                  exportOrderReportPdf={exportOrderReportPdf}
-                  loadOrderReport={loadOrderReport}
-                  categories={categories}
-                />
-              )}
+                  {/* TAB 10: BÁO CÁO THỐNG KÊ */}
+                  {activeTab === 'reports' && (
+                    <AdminReportsTab
+                      reportSubTab={reportSubTab}
+                      setReportSubTab={setReportSubTab}
+                      revenueData={revenueData}
+                      revenueLoading={revenueLoading}
+                      revenueStartDate={revenueStartDate}
+                      setRevenueStartDate={setRevenueStartDate}
+                      revenueEndDate={revenueEndDate}
+                      setRevenueEndDate={setRevenueEndDate}
+                      handleExportRevenueExcel={handleExportRevenueExcel}
+                      handleExportRevenuePdf={handleExportRevenuePdf}
+                      loadRevenueReport={loadRevenueReport}
+                      handleQuickDateFilter={handleQuickDateFilter}
+                      customerReportData={customerReportData}
+                      customerReportLoading={customerReportLoading}
+                      customerReportStartDate={customerReportStartDate}
+                      setCustomerReportStartDate={setCustomerReportStartDate}
+                      customerReportEndDate={customerReportEndDate}
+                      setCustomerReportEndDate={setCustomerReportEndDate}
+                      customerReportSearch={customerReportSearch}
+                      setCustomerReportSearch={setCustomerReportSearch}
+                      handleExportCustomerExcel={handleExportCustomerExcel}
+                      handleExportCustomerPdf={handleExportCustomerPdf}
+                      handleQuickCustomerDateFilter={handleQuickCustomerDateFilter}
+                      loadCustomerReport={loadCustomerReport}
+                      customerReportPage={customerReportPage}
+                      setCustomerReportPage={setCustomerReportPage}
+                      customerReportPageSize={customerReportPageSize}
+                      setCustomerReportPageSize={setCustomerReportPageSize}
+                      inventoryReportData={inventoryReportData}
+                      inventoryReportLoading={inventoryReportLoading}
+                      inventoryReportSearch={inventoryReportSearch}
+                      setInventoryReportSearch={setInventoryReportSearch}
+                      inventoryReportPage={inventoryReportPage}
+                      setInventoryReportPage={setInventoryReportPage}
+                      inventoryReportCategory={inventoryReportCategory}
+                      setInventoryReportCategory={setInventoryReportCategory}
+                      inventoryReportStockStatus={inventoryReportStockStatus}
+                      setInventoryReportStockStatus={setInventoryReportStockStatus}
+                      inventoryReportStartDate={inventoryReportStartDate}
+                      setInventoryReportStartDate={setInventoryReportStartDate}
+                      inventoryReportEndDate={inventoryReportEndDate}
+                      setInventoryReportEndDate={setInventoryReportEndDate}
+                      inventoryReportPageSize={inventoryReportPageSize}
+                      setInventoryReportPageSize={setInventoryReportPageSize}
+                      exportInventoryReportCsv={exportInventoryReportCsv}
+                      exportInventoryReportPdf={exportInventoryReportPdf}
+                      loadInventoryReport={loadInventoryReport}
+                      orderReportData={orderReportData}
+                      orderReportLoading={orderReportLoading}
+                      orderReportSearch={orderReportSearch}
+                      setOrderReportSearch={setOrderReportSearch}
+                      orderReportPage={orderReportPage}
+                      setOrderReportPage={setOrderReportPage}
+                      orderReportStatus={orderReportStatus}
+                      setOrderReportStatus={setOrderReportStatus}
+                      orderReportPaymentStatus={orderReportPaymentStatus}
+                      setOrderReportPaymentStatus={setOrderReportPaymentStatus}
+                      orderReportStartDate={orderReportStartDate}
+                      setOrderReportStartDate={setOrderReportStartDate}
+                      orderReportEndDate={orderReportEndDate}
+                      setOrderReportEndDate={setOrderReportEndDate}
+                      orderReportPageSize={orderReportPageSize}
+                      setOrderReportPageSize={setOrderReportPageSize}
+                      exportOrderReportCsv={exportOrderReportCsv}
+                      exportOrderReportPdf={exportOrderReportPdf}
+                      loadOrderReport={loadOrderReport}
+                      categories={categories}
+                    />
+                  )}
 
-              {/* TAB 11: CẤU HÌNH WEBSITE */}
-              {activeTab === 'settings' && (
-                <AdminSettingsTab
-                  siteSettings={siteSettings}
-                  setSiteSettings={setSiteSettings}
-                  savingSettings={savingSettings}
-                  handleSaveSettings={handleSaveSettings}
-                  openLogoCropperWithCurrentUrl={openLogoCropperWithCurrentUrl}
-                  handleLogoFileSelect={handleLogoFileSelect}
-                  shippingFees={shippingFees}
-                  setShowAddShippingFeeModal={setShowAddShippingFeeModal}
-                  handleToggleShippingFeeStatus={handleToggleShippingFeeStatus}
-                  setEditingShippingFee={setEditingShippingFee}
-                  setDeletingShippingFee={setDeletingShippingFee}
-                />
-              )}
+                  {/* TAB 11: CẤU HÌNH WEBSITE */}
+                  {activeTab === 'settings' && (
+                    <AdminSettingsTab
+                      siteSettings={siteSettings}
+                      setSiteSettings={setSiteSettings}
+                      savingSettings={savingSettings}
+                      handleSaveSettings={handleSaveSettings}
+                      openLogoCropperWithCurrentUrl={openLogoCropperWithCurrentUrl}
+                      handleLogoFileSelect={handleLogoFileSelect}
+                      shippingFees={shippingFees}
+                      setShowAddShippingFeeModal={setShowAddShippingFeeModal}
+                      handleToggleShippingFeeStatus={handleToggleShippingFeeStatus}
+                      setEditingShippingFee={setEditingShippingFee}
+                      setDeletingShippingFee={setDeletingShippingFee}
+                    />
+                  )}
 
-              {/* TAB 12: QUẢN LÝ THÔNG BÁO */}
-              {activeTab === 'notifications' && (
-                <AdminNotificationsTab
-                  notifications={notifications}
-                  filteredNotifications={filteredNotifications}
-                  paginatedNotifications={paginatedNotifications}
-                  notificationSearch={notificationSearch}
-                  setNotificationSearch={setNotificationSearch}
-                  notificationRecipientFilter={notificationRecipientFilter}
-                  setNotificationRecipientFilter={setNotificationRecipientFilter}
-                  notificationPage={notificationPage}
-                  setNotificationPage={setNotificationPage}
-                  notificationPageSize={notificationPageSize}
-                  setNotificationPageSize={setNotificationPageSize}
-                  onOpenCreateNotificationModal={() => setShowCreateNotificationModal(true)}
-                  onSelectNotificationDetail={(n) => setSelectedNotificationDetail(n)}
-                  onDeleteNotification={(n) => setDeletingNotification(n)}
-                />
-              )}
+                  {/* TAB 12: QUẢN LÝ THÔNG BÁO */}
+                  {activeTab === 'notifications' && (
+                    <AdminNotificationsTab
+                      notifications={notifications}
+                      filteredNotifications={filteredNotifications}
+                      paginatedNotifications={paginatedNotifications}
+                      notificationSearch={notificationSearch}
+                      setNotificationSearch={setNotificationSearch}
+                      notificationRecipientFilter={notificationRecipientFilter}
+                      setNotificationRecipientFilter={setNotificationRecipientFilter}
+                      notificationPage={notificationPage}
+                      setNotificationPage={setNotificationPage}
+                      notificationPageSize={notificationPageSize}
+                      setNotificationPageSize={setNotificationPageSize}
+                      onOpenCreateNotificationModal={() => setShowCreateNotificationModal(true)}
+                      onSelectNotificationDetail={(n) => setSelectedNotificationDetail(n)}
+                      onDeleteNotification={(n) => setDeletingNotification(n)}
+                    />
+                  )}
                 </div>
               )}
             </>
@@ -3870,13 +3933,12 @@ export default function AdminDashboardPage() {
       {toast && (
         <div className="fixed top-6 right-6 z-[9999] animate-in slide-in-from-top-4 fade-in duration-300 max-w-md">
           <div
-            className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl shadow-2xl border transition-all ${
-              toast.type === 'error'
+            className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl shadow-2xl border transition-all ${toast.type === 'error'
                 ? 'bg-rose-600 border-rose-400 text-white shadow-rose-950/40 ring-4 ring-rose-500/20'
                 : toast.type === 'warning'
-                ? 'bg-amber-500 border-amber-400 text-slate-950 shadow-amber-950/30 ring-4 ring-amber-500/20'
-                : 'bg-emerald-600 border-emerald-400 text-white shadow-emerald-950/40 ring-4 ring-emerald-500/20'
-            }`}
+                  ? 'bg-amber-500 border-amber-400 text-slate-950 shadow-amber-950/30 ring-4 ring-amber-500/20'
+                  : 'bg-emerald-600 border-emerald-400 text-white shadow-emerald-950/40 ring-4 ring-emerald-500/20'
+              }`}
           >
             <div className="shrink-0">
               {toast.type === 'error' ? (
@@ -3894,19 +3956,17 @@ export default function AdminDashboardPage() {
               )}
             </div>
             <div className="flex-1 pr-1">
-              <span className={`text-xs font-black font-sans leading-relaxed drop-shadow-xs ${
-                toast.type === 'warning' ? 'text-slate-950' : 'text-white'
-              }`}>
+              <span className={`text-xs font-black font-sans leading-relaxed drop-shadow-xs ${toast.type === 'warning' ? 'text-slate-950' : 'text-white'
+                }`}>
                 {toast.message}
               </span>
             </div>
             <button
               onClick={() => setToast(null)}
-              className={`ml-auto p-1.5 rounded-lg transition cursor-pointer text-xs font-bold ${
-                toast.type === 'warning'
+              className={`ml-auto p-1.5 rounded-lg transition cursor-pointer text-xs font-bold ${toast.type === 'warning'
                   ? 'text-slate-800 hover:text-black hover:bg-black/10'
                   : 'text-white/80 hover:text-white hover:bg-white/20'
-              }`}
+                }`}
               aria-label="Đóng thông báo"
             >
               ✕

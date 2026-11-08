@@ -307,7 +307,9 @@ export default function OrderDetailModals({
                       <div key={log.id || idx} className="relative text-xs">
                         <div className="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-brand-600 border-2 border-white ring-2 ring-brand-100" />
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                          <strong className="text-slate-900 font-bold">{log.title || log.action}</strong>
+                          <strong className="text-slate-900 font-bold">
+                            {log.title || (log.action === 'UPDATE_STATUS' ? 'Đổi trạng thái đơn' : log.action === 'AUTO_REGISTER' ? 'Tự động tạo tài khoản' : log.action) || 'Cập nhật đơn hàng'}
+                          </strong>
                           <span className="text-[10px] text-slate-400 font-mono">
                             {formatDateTime(log.created_at)}
                           </span>

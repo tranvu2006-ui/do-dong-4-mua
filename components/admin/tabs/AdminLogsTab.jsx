@@ -6,47 +6,89 @@ import Pagination from '@/components/Pagination';
 import { formatDateTime } from '@/lib/date';
 
 const LOG_ACTION_LABELS = {
+  // Đơn hàng & Vận chuyển
+  UPDATE_STATUS: 'Đổi trạng thái đơn',
+  UPDATE_ORDER_STATUS: 'Đổi trạng thái đơn',
+  CREATE_ORDER: 'Tạo đơn hàng',
+  CANCEL_ORDER: 'Hủy đơn hàng',
+  CANCEL: 'Hủy đơn hàng',
+  APPROVE: 'Duyệt đơn hàng',
+  PAUSE: 'Tạm dừng đơn',
+  RESUME: 'Tiếp tục xử lý',
+  ORDER_NOTE: 'Thêm ghi chú',
+  ADD_ORDER_NOTE: 'Thêm ghi chú',
+  CREATE_SHIPMENT: 'Tạo vận đơn GreenSM',
+  UPDATE_SHIPMENT: 'Cập nhật giao hàng',
+
+  // Khách hàng & Tài khoản
+  AUTO_REGISTER: 'Tự động tạo tài khoản',
+  REGISTER: 'Đăng ký tài khoản',
   LOGIN: 'Đăng nhập',
   LOGOUT: 'Đăng xuất',
-  CREATE: 'Thêm mới',
-  UPDATE: 'Cập nhật',
-  DELETE: 'Xóa bỏ',
+  CHANGE_PASSWORD: 'Đổi mật khẩu',
+  RESET_PASSWORD: 'Đặt lại mật khẩu',
+  FORGOT_PASSWORD: 'Quên mật khẩu',
+  UPDATE_PROFILE: 'Cập nhật hồ sơ',
   LOCK: 'Khóa tài khoản',
   UNLOCK: 'Mở khóa',
-  APPROVE: 'Phê duyệt',
-  CANCEL: 'Hủy bỏ',
-  CREATE_ORDER: 'Tạo đơn hàng',
-  UPDATE_ORDER_STATUS: 'Đổi trạng thái đơn',
-  CANCEL_ORDER: 'Hủy đơn hàng',
-  ADD_ORDER_NOTE: 'Thêm ghi chú',
+  LOCK_USER: 'Khóa tài khoản',
+  UNLOCK_USER: 'Mở khóa tài khoản',
+
+  // Sản phẩm
   CREATE_PRODUCT: 'Thêm sản phẩm',
   UPDATE_PRODUCT: 'Sửa sản phẩm',
+  PATCH_PRODUCT: 'Sửa nhanh sản phẩm',
   DELETE_PRODUCT: 'Xóa sản phẩm',
   UPDATE_STOCK: 'Cập nhật tồn kho',
+
+  // Danh mục
   CREATE_CATEGORY: 'Thêm danh mục',
   UPDATE_CATEGORY: 'Sửa danh mục',
   DELETE_CATEGORY: 'Xóa danh mục',
+  TOGGLE_CATEGORY_STATUS: 'Bật/Tắt danh mục',
+
+  // Khuyến mãi
   CREATE_PROMOTION: 'Tạo khuyến mãi',
   UPDATE_PROMOTION: 'Sửa khuyến mãi',
   DELETE_PROMOTION: 'Xóa khuyến mãi',
+  TOGGLE_PROMOTION: 'Bật/Tắt khuyến mãi',
+  ASSIGN_PROMOTION_PRODUCTS: 'Gán SP khuyến mãi',
+  REMOVE_PROMOTION_PRODUCT: 'Gỡ SP khuyến mãi',
+
+  // Banner
   CREATE_BANNER: 'Thêm banner',
   UPDATE_BANNER: 'Sửa banner',
   DELETE_BANNER: 'Xóa banner',
+
+  // Chi nhánh
   CREATE_BRANCH: 'Thêm chi nhánh',
   UPDATE_BRANCH: 'Sửa chi nhánh',
   DELETE_BRANCH: 'Xóa chi nhánh',
+
+  // Cấu hình & Quản trị
   UPDATE_SETTINGS: 'Đổi cấu hình web',
   ASSIGN_PERMISSIONS: 'Phân quyền',
-  RESET_PASSWORD: 'Đặt lại mật khẩu',
+  UPDATE_PERMISSIONS: 'Cập nhật phân quyền',
+  UPDATE_ROLE_PERMISSIONS: 'Cập nhật quyền vai trò',
   CREATE_ADMIN: 'Tạo quản trị viên',
   UPDATE_ADMIN: 'Sửa quản trị viên',
-  LOCK_USER: 'Khóa tài khoản',
-  UNLOCK_USER: 'Mở khóa tài khoản',
+  DELETE_ADMIN: 'Xóa quản trị viên',
+
+  // Nấc cước & Thông báo
   CREATE_SHIPPING_FEE: 'Thêm nấc cước phí',
   UPDATE_SHIPPING_FEE: 'Cập nhật nấc cước phí',
   DELETE_SHIPPING_FEE: 'Xóa nấc cước phí',
   CREATE_NOTIFICATION: 'Gửi thông báo',
   DELETE_NOTIFICATION: 'Xóa thông báo',
+
+  // Thanh toán & Báo cáo
+  PAYMENT: 'Thanh toán đơn hàng',
+  PAYMENT_WEBHOOK: 'Xác nhận thanh toán',
+  EXPORT_EXCEL: 'Xuất báo cáo Excel',
+  EXPORT_PDF: 'Xuất báo cáo PDF',
+  CREATE: 'Thêm mới',
+  UPDATE: 'Cập nhật',
+  DELETE: 'Xóa bỏ',
 };
 
 const LOG_MODULE_LABELS = {
@@ -64,22 +106,51 @@ const LOG_MODULE_LABELS = {
   ADMIN: 'Quản trị viên',
   PERMISSION: 'Phân quyền',
   PAYMENT: 'Thanh toán',
+  NOTIFICATION: 'Thông báo',
+  SHIPPING: 'Vận chuyển',
 };
 
-const getLogActionLabel = (action) => LOG_ACTION_LABELS[action] || action;
-const getLogModuleLabel = (module) => LOG_MODULE_LABELS[module] || module || 'Hệ thống';
+const getLogActionLabel = (action) => {
+  if (!action) return 'Thao tác';
+  if (LOG_ACTION_LABELS[action]) return LOG_ACTION_LABELS[action];
+  const upper = String(action).toUpperCase();
+  if (LOG_ACTION_LABELS[upper]) return LOG_ACTION_LABELS[upper];
+  return action
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/^\w/, (c) => c.toUpperCase());
+};
+
+const getLogModuleLabel = (module) => {
+  if (!module) return 'Hệ thống';
+  if (LOG_MODULE_LABELS[module]) return LOG_MODULE_LABELS[module];
+  const upper = String(module).toUpperCase();
+  if (LOG_MODULE_LABELS[upper]) return LOG_MODULE_LABELS[upper];
+  return module
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/^\w/, (c) => c.toUpperCase());
+};
 
 const formatLogDescription = (desc) => {
   if (!desc || typeof desc !== 'string') return desc || '';
   return desc
-    .replace(/sang trạng thái:\s*DANG_GIAO/g, 'sang trạng thái: Đang giao hàng (GreenSM)')
-    .replace(/sang trạng thái:\s*DA_GIAO/g, 'sang trạng thái: Giao hàng thành công')
-    .replace(/sang trạng thái:\s*DANG_CHUAN_BI/g, 'sang trạng thái: Đang chuẩn bị hàng')
-    .replace(/sang trạng thái:\s*DA_XAC_NHAN/g, 'sang trạng thái: Đã xác nhận đơn hàng')
-    .replace(/sang trạng thái:\s*CHO_XAC_NHAN/g, 'sang trạng thái: Chờ xác nhận (COD)')
-    .replace(/sang trạng thái:\s*CHO_THANH_TOAN/g, 'sang trạng thái: Chờ thanh toán (VietQR)')
-    .replace(/sang trạng thái:\s*TAM_DUNG/g, 'sang trạng thái: Tạm dừng xử lý')
-    .replace(/sang trạng thái:\s*DA_HUY/g, 'sang trạng thái: Đã hủy đơn hàng');
+    // Trạng thái đơn hàng
+    .replace(/\bCHO_XAC_NHAN\b/g, 'Chờ xác nhận (COD)')
+    .replace(/\bCHO_THANH_TOAN\b/g, 'Chờ thanh toán (VietQR)')
+    .replace(/\bDA_XAC_NHAN\b/g, 'Đã xác nhận đơn hàng')
+    .replace(/\bDANG_CHUAN_BI\b/g, 'Đang chuẩn bị hàng')
+    .replace(/\bDANG_GIAO\b/g, 'Đang giao hàng (GreenSM)')
+    .replace(/\bDA_GIAO\b/g, 'Giao hàng thành công')
+    .replace(/\bTAM_DUNG\b/g, 'Tạm dừng xử lý')
+    .replace(/\bDA_HUY\b/g, 'Đã hủy đơn hàng')
+    // Vận chuyển & thanh toán
+    .replace(/\bDA_TAO_VAN_DON\b/g, 'Đã tạo vận đơn')
+    .replace(/\bDA_BAN_GIAO_GREENSM\b/g, 'Đã bàn giao GreenSM')
+    .replace(/\bGIAO_THANH_CONG\b/g, 'Giao thành công')
+    .replace(/\bGIAO_THAT_BAI\b/g, 'Giao thất bại')
+    .replace(/\bPAID\b/g, 'Đã thanh toán')
+    .replace(/\bUNPAID\b/g, 'Chưa thanh toán');
 };
 
 export default function AdminLogsTab({
