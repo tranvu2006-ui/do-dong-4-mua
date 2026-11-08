@@ -88,14 +88,14 @@ const SRS_FUNCTIONAL_MODULES = [
   {
     id: 'payments',
     title: 'Quản lý thanh toán',
-    description: 'Xác nhận và kiểm tra đối soát thanh toán chuyển khoản, MoMo, VNPAY',
+    description: 'Xác nhận và kiểm tra đối soát thanh toán chuyển khoản',
     permissionIds: [18],
     permissionNames: ['payment.confirm'],
     tabKey: 'orders'
   },
   {
     id: 'shipments',
-    title: 'Quản lý giao hàng GreenSM',
+    title: 'Quản lý giao hàng',
     description: 'Tạo mã vận đơn, theo dõi lộ trình và kết nối tài xế GreenSM',
     permissionIds: [9],
     permissionNames: ['shipment.manage'],
