@@ -18,14 +18,6 @@ const DEFAULT_SETTINGS = {
 };
 
 async function ensureTableAndGetSettings() {
-  await query(`
-    CREATE TABLE IF NOT EXISTS system_settings (
-      setting_key VARCHAR(100) PRIMARY KEY,
-      setting_value TEXT,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  `);
-
   const rows = await query('SELECT setting_key, setting_value FROM system_settings');
   const settingsMap = {};
   rows.forEach((r) => {

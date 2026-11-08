@@ -8,7 +8,7 @@ import {
   ArrowLeft, Filter, Tag, Percent, Image as ImageIcon, MapPin,
   FileText, Play, Pause, XCircle, Search, Upload, Lock, LogOut,
   ExternalLink, ShieldCheck, Leaf, ChevronRight, Sparkles, Store,
-  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar, RotateCcw, X, Settings, Bell, Send, Download, ZoomIn, ZoomOut, Move, Globe, Crop, Check
+  Box, BarChart3, PackageOpen, Layers, UserPlus, Unlock, KeyRound, ShieldAlert, EyeOff, Calendar, RotateCcw, X, Settings, Bell, Send, Download, ZoomIn, ZoomOut, Move, Globe, Crop, Check, Menu
 } from 'lucide-react';
 import Pagination from '@/components/Pagination';
 import LogoCropperModal from '@/components/common/LogoCropperModal';
@@ -584,6 +584,7 @@ export default function AdminDashboardPage() {
     imageSrc: '',
     shape: 'circle',
   });
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Form states
   const [newAdmin, setNewAdmin] = useState({
@@ -2986,12 +2987,22 @@ export default function AdminDashboardPage() {
   const isSuperAdmin = currentUser?.role_id === 1;
 
   return (
-    <div className="min-h-screen bg-slate-50/80 flex font-sans">
-      {/* 1. LEFT SIDEBAR (MODERN ENTERPRISE STUDIO) */}
-      <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 h-screen sticky top-0 z-30 shadow-2xl">
+    <div className="h-screen bg-slate-50/80 flex font-sans relative overflow-hidden">
+      {/* Mobile Sidebar Backdrop Overlay */}
+      {isMobileSidebarOpen && (
+        <div
+          onClick={() => setIsMobileSidebarOpen(false)}
+          className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+        />
+      )}
+
+      {/* 1. LEFT SIDEBAR (MODERN ENTERPRISE STUDIO - RESPONSIVE DRAWER) */}
+      <aside className={`fixed inset-y-0 left-0 lg:static z-50 lg:z-30 h-full w-72 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 shadow-2xl transition-transform duration-300 ease-in-out ${
+        isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
         <div className="flex flex-col h-full overflow-hidden">
           {/* Brand Logo Header (Có hiệu ứng làm mờ khi chưa có dữ liệu để tránh hardcode) */}
-          <div className="p-5 border-b border-slate-800/80 flex items-center gap-3 shrink-0">
+          <div className="p-5 border-b border-slate-800/80 flex items-center justify-between gap-3 shrink-0">
             {siteSettings?.site_name ? (
               <>
                 {siteSettings.logo_url ? (
@@ -3012,6 +3023,14 @@ export default function AdminDashboardPage() {
                     <span>Admin Studio Pro</span>
                   </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                  className="lg:hidden p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition shrink-0"
+                  aria-label="Đóng menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </>
             ) : (
               <div className="flex items-center gap-3 w-full filter blur-[1.5px] opacity-40 animate-pulse transition-all duration-300">
@@ -3041,6 +3060,7 @@ export default function AdminDashboardPage() {
                       key={item.key}
                       onClick={() => {
                         setActiveTab(item.key);
+                        setIsMobileSidebarOpen(false);
                         window.history.replaceState(null, '', `?tab=${item.key}`);
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${isActive
@@ -3097,10 +3117,18 @@ export default function AdminDashboardPage() {
       </aside>
 
       {/* 2. MAIN CONTENT AREA */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Top Header Bar */}
-        <header className="h-16 bg-white border-b border-slate-200/80 px-8 flex items-center justify-between sticky top-0 z-20 shadow-sm backdrop-blur-md">
+        <header className="h-16 bg-white border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between shrink-0 z-20 shadow-sm backdrop-blur-md">
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition mr-1"
+              aria-label="Mở danh mục quản trị"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
             <div className="text-slate-400 text-xs font-medium flex items-center gap-1.5">
               <span>Hệ Thống</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -3229,7 +3257,7 @@ export default function AdminDashboardPage() {
         </header>
 
         {/* Dashboard Content Canvas */}
-        <main className="p-8 space-y-8 flex-1 overflow-y-auto">
+        <main className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 flex-1 overflow-y-auto min-w-0">
           {!hasPermissionForTab(activeTab) ? (
             <div className="bg-white rounded-3xl p-12 text-center max-w-lg mx-auto my-16 border border-slate-200/80 shadow-xl animate-in fade-in zoom-in-95 duration-200">
               <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center mx-auto mb-4 shadow-sm">

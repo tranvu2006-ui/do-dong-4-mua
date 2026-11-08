@@ -629,6 +629,102 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,1,NULL,'Trần Vũ (Admin Tổng)','0929894248','$2a$10$6Wq6V7Zc9S9jG4rWJc9H2eF5qJ3kL7mN9pQ1rS3tU5vW7xY9zA1bC','53 Võ Văn Ngân, Thủ Đức',1,'2026-10-28 06:30:18','2026-10-30 21:50:46',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `notifications`
+--
+
+DROP TABLE IF EXISTS `notifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notifications` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tiêu đề thông báo',
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Nội dung chi tiết thông báo',
+  `recipient_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ALL' COMMENT 'ALL, BRANCH_ADMIN, CUSTOMER, SPECIFIC',
+  `recipient_ids` text COLLATE utf8mb4_unicode_ci COMMENT 'Danh sách ID nhận dạng JSON nếu là SPECIFIC',
+  `recipient_names` text COLLATE utf8mb4_unicode_ci COMMENT 'Tên hiển thị người nhận',
+  `sender_id` bigint unsigned NOT NULL COMMENT 'ID tài khoản quản trị gửi',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_recipient` (`recipient_type`),
+  KEY `idx_created` (`created_at`),
+  KEY `fk_notifications_sender` (`sender_id`),
+  CONSTRAINT `fk_notifications_sender` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Hệ thống thông báo đẩy quản trị (FR-046)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `shipping_fees`
+--
+
+DROP TABLE IF EXISTS `shipping_fees`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `shipping_fees` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tên gói/nấc cước',
+  `min_km` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT 'Khoảng cách từ (km)',
+  `max_km` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT 'Khoảng cách đến (km)',
+  `fee` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT 'Mức phí vận chuyển (VNĐ)',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: Áp dụng, 0: Tạm dừng',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Cấu hình nấc cước phí vận chuyển theo khoảng cách';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `shipping_fees`
+--
+
+LOCK TABLES `shipping_fees` WRITE;
+/*!40000 ALTER TABLE `shipping_fees` DISABLE KEYS */;
+INSERT INTO `shipping_fees` VALUES 
+(1,'Nội thành gần (Dưới 5 km)',0.00,5.00,15000.00,1,'2026-11-04 18:38:27','2026-11-04 18:38:27'),
+(2,'Tiêu chuẩn nội thành (5 - 10 km)',5.00,10.00,25000.00,1,'2026-11-04 18:38:27','2026-11-04 18:38:27'),
+(3,'Nội thành xa (10 - 20 km)',10.00,20.00,40000.00,1,'2026-11-04 18:38:27','2026-11-04 18:38:27'),
+(4,'Ngoại thành / Liên quận (Trên 20 km)',20.00,50.00,60000.00,1,'2026-11-04 18:38:27','2026-11-04 18:38:27');
+/*!40000 ALTER TABLE `shipping_fees` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `system_settings`
+--
+
+DROP TABLE IF EXISTS `system_settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `system_settings` (
+  `setting_key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Mã định danh cấu hình',
+  `setting_value` text COLLATE utf8mb4_unicode_ci COMMENT 'Giá trị cấu hình JSON hoặc chuỗi',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Cấu hình thông số hệ thống website';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `system_settings`
+--
+
+LOCK TABLES `system_settings` WRITE;
+/*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
+INSERT INTO `system_settings` (`setting_key`, `setting_value`) VALUES 
+('site_name', 'Đồ Đồng 4 Mùa'),
+('hotline', '0929894248'),
+('contact_email', 'tranvukuroko@gmail.com'),
+('company_address', '53 Võ Văn Ngân, TP. Thủ Đức, TP. Hồ Chí Minh'),
+('default_shipping_fee', '25000'),
+('freeship_threshold', '500000'),
+('shipping_partner', 'GreenSM'),
+('shipping_policy', ''),
+('exchange_policy', ''),
+('terms_of_service', ''),
+('privacy_policy', '')
+ON DUPLICATE KEY UPDATE `setting_value` = VALUES(`setting_value`);
+/*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

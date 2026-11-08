@@ -47,8 +47,8 @@ export async function POST(request) {
     // Tạo vận đơn
     const result = await query(
       `INSERT INTO shipments (order_id, shipping_company, tracking_code, shipping_fee, shipping_status, ship_date)
-       VALUES (?, 'GreenSM', ?, ?, 'CHO_LAY_HANG', NOW())
-       ON DUPLICATE KEY UPDATE tracking_code = VALUES(tracking_code), shipping_status = 'CHO_LAY_HANG'`,
+       VALUES (?, 'GreenSM', ?, ?, 'DA_TAO_VAN_DON', NOW())
+       ON DUPLICATE KEY UPDATE tracking_code = VALUES(tracking_code), shipping_status = 'DA_TAO_VAN_DON'`,
       [order_id, trackingCode, shipping_fee]
     );
 
@@ -68,7 +68,7 @@ export async function POST(request) {
       data: {
         tracking_code: trackingCode,
         shipping_company: 'GreenSM',
-        shipping_status: 'CHO_LAY_HANG'
+        shipping_status: 'DA_TAO_VAN_DON'
       }
     }, { status: 201 });
   } catch (error) {

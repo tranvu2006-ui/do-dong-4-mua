@@ -254,10 +254,10 @@ export async function POST(request) {
     );
 
     // Insert Shipment Record (GreenSM) (BR-022, BR-024)
-    // Đơn mới tạo chưa bàn giao shipper nên tracking_code = NULL, shipping_status = "CHUA_TAO"
+    // Đơn mới tạo ở trạng thái Chờ tạo vận đơn theo đúng chuẩn SRS Mục 9.29
     await query(
       `INSERT INTO shipments (order_id, shipping_company, tracking_code, shipping_fee, shipping_status)
-       VALUES (?, 'GreenSM', NULL, ?, 'CHUA_TAO')`,
+       VALUES (?, 'GreenSM', NULL, ?, 'CHO_TAO_VAN_DON')`,
       [order_id, shipping_fee]
     );
 
