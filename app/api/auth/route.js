@@ -84,8 +84,8 @@ export async function POST(request) {
       const ip = await getRealClientIp(request);
       const userAgent = request.headers.get('user-agent') || 'NextJS Client';
       await query(
-        `INSERT INTO system_logs (user_id, action, description, ip_address, user_agent, created_at)
-         VALUES (?, 'LOGIN', ?, ?, ?, NOW())`,
+        `INSERT INTO system_logs (user_id, action, module, description, ip_address, user_agent, created_at)
+         VALUES (?, 'LOGIN', 'AUTH', ?, ?, ?, NOW())`,
         [user.id, `Đăng nhập thành công vai trò: ${user.role_name}`, ip, userAgent]
       );
     } catch (logErr) {
