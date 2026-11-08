@@ -324,14 +324,14 @@ export default function AdminSettingsTab({
                         </div>
                         <div>
                           <h3 className="font-heading font-black text-sm text-slate-900">Chính Sách & Điều Khoản Pháp Lý</h3>
-                          <p className="text-[11px] text-slate-500">Các cam kết về quyền lợi khách hàng, bảo mật và bao ăn 1 đổi 1</p>
+                          
                         </div>
                       </div>
 
                       <div className="space-y-4 text-xs">
                         <div>
                           <label className="block font-bold text-slate-800 mb-1">
-                            1. Chính sách đổi trả &quot;Bao ăn 1 đổi 1 trong 24 giờ&quot; *
+                            1. Chính sách đổi trả
                           </label>
                           <textarea
                             rows={3}
@@ -343,7 +343,7 @@ export default function AdminSettingsTab({
 
                         <div>
                           <label className="block font-bold text-slate-800 mb-1">
-                            2. Chính sách giao hàng (Siêu tốc 2 giờ nội thành) *
+                            2. Chính sách giao hàng
                           </label>
                           <textarea
                             rows={3}
@@ -355,7 +355,7 @@ export default function AdminSettingsTab({
 
                         <div>
                           <label className="block font-bold text-slate-800 mb-1">
-                            3. Chính sách bảo mật thông tin khách hàng *
+                            3. Chính sách bảo mật thông tin khách hàng
                           </label>
                           <textarea
                             rows={3}
@@ -367,7 +367,7 @@ export default function AdminSettingsTab({
 
                         <div>
                           <label className="block font-bold text-slate-800 mb-1">
-                            4. Điều khoản sử dụng dịch vụ *
+                            4. Điều khoản sử dụng dịch vụ
                           </label>
                           <textarea
                             rows={3}

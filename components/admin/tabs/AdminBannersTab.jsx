@@ -131,7 +131,7 @@ export default function AdminBannersTab({
               className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm space-y-3 p-3 bg-white flex flex-col justify-between hover:shadow-md transition"
             >
               <div className="space-y-3">
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-100 border border-slate-100">
+                <div className="relative aspect-[4/1] rounded-xl overflow-hidden bg-slate-100 border border-slate-100">
                   <img src={bn.image_url} alt={bn.title} className="w-full h-full object-cover" />
                   <div className="absolute top-2 left-2 flex items-center gap-1.5">
                     <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-black/60 text-white backdrop-blur-xs">

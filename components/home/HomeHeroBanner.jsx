@@ -77,7 +77,7 @@ export default function HomeHeroBanner({
   if (!bannersLoaded && total === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 sm:pt-5">
-        <div className="w-full aspect-[2.4/1] sm:aspect-[2.8/1] md:aspect-[3.2/1] lg:aspect-[3.5/1] rounded-2xl sm:rounded-3xl bg-slate-200/80 animate-pulse border border-slate-200" />
+        <div className="w-full aspect-[2.4/1] sm:aspect-[3/1] md:aspect-[3.5/1] lg:aspect-[4/1] rounded-2xl sm:rounded-3xl bg-slate-200/80 animate-pulse border border-slate-200" />
       </div>
     );
   }
@@ -88,7 +88,7 @@ export default function HomeHeroBanner({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 sm:pt-5">
         <div
           onClick={onScrollToProducts}
-          className="relative w-full aspect-[2.4/1] sm:aspect-[2.8/1] md:aspect-[3.2/1] lg:aspect-[3.5/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-gradient-to-r from-emerald-800 via-teal-700 to-emerald-900 text-white flex items-center px-6 sm:px-12 lg:px-16"
+          className="relative w-full aspect-[2.4/1] sm:aspect-[3/1] md:aspect-[3.5/1] lg:aspect-[4/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-gradient-to-r from-emerald-800 via-teal-700 to-emerald-900 text-white flex items-center px-6 sm:px-12 lg:px-16"
         >
           <div className="max-w-xl space-y-2.5 sm:space-y-3 z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-emerald-200 text-xs font-bold backdrop-blur-sm">
@@ -120,7 +120,7 @@ export default function HomeHeroBanner({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 sm:pt-5">
       <div
-        className="relative w-full aspect-[2.4/1] sm:aspect-[2.8/1] md:aspect-[3.2/1] lg:aspect-[3.5/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow select-none bg-slate-900 group"
+        className="relative w-full aspect-[2.4/1] sm:aspect-[3/1] md:aspect-[3.5/1] lg:aspect-[4/1] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow select-none bg-slate-900 group"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
