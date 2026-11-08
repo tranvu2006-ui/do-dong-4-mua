@@ -17,15 +17,14 @@ import {
 } from 'lucide-react';
 
 /**
- * Component Khung Xem Trước & Căn Chỉnh Vị Trí Ảnh Banner (Pan & Zoom & Tỉ lệ 1920x450 / 16:9)
+ * Component Khung Xem Trước & Căn Chỉnh Vị Trí Ảnh Banner (Giữ nguyên toàn bộ ảnh gốc, đặt khung ranh giới 4:1 lên trên y hệt Logo)
  */
 function BannerAdjuster({
   imageUrl,
   onImageChange,
   uploadingImage,
   handleFileUpload,
-  uploadType = 'banner',
-  adjusterRef
+  uploadType = 'banner'
 }) {
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -78,58 +77,20 @@ function BannerAdjuster({
     });
   };
 
-  // Expose hàm xuất ảnh đã crop (nếu người dùng có zoom/pan)
-  useEffect(() => {
-    if (adjusterRef) {
-      adjusterRef.current = {
-        hasAdjustments: () => scale !== 1 || position.x !== 0 || position.y !== 0,
-        getCroppedBlob: async () => {
-          if (!imgRef.current || !frameRef.current) return null;
-          try {
-            const canvas = document.createElement('canvas');
-            const targetW = 1920;
-            const targetH = 480; // Chuẩn tỷ lệ 4:1 (1920 / 4 = 480)
-
-            canvas.width = targetW;
-            canvas.height = targetH;
-            const ctx = canvas.getContext('2d');
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-
-            const imgRect = imgRef.current.getBoundingClientRect();
-            const frameRect = frameRef.current.getBoundingClientRect();
-            const scaleFactor = targetW / frameRect.width;
-
-            const dx = (imgRect.left - frameRect.left) * scaleFactor;
-            const dy = (imgRect.top - frameRect.top) * scaleFactor;
-            const dw = imgRect.width * scaleFactor;
-            const dh = imgRect.height * scaleFactor;
-
-            ctx.drawImage(imgRef.current, dx, dy, dw, dh);
-            return await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92));
-          } catch (err) {
-            console.warn('Canvas crop fallback (cross-origin):', err);
-            return null;
-          }
-        }
-      };
-    }
-  }, [adjusterRef, scale, position]);
-
   return (
     <div className="space-y-2.5">
       {/* Tiêu đề & Nhãn cố định chuẩn 4:1 */}
       <div className="flex items-center justify-between">
         <label className="font-bold text-slate-700 flex items-center gap-1.5 text-xs">
           <Eye className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Khung xem trước & căn chỉnh ảnh *</span>
+          <span>Khung xem trước banner (Tỷ lệ 4:1) *</span>
         </label>
         <span className="px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[11px] border border-emerald-100">
           Tỷ lệ 4:1 (Chuẩn Trang Chủ)
         </span>
       </div>
 
-      {/* Khung căn chỉnh hình ảnh trực quan cố định tỷ lệ 4:1 */}
+      {/* Khung căn chỉnh hình ảnh trực quan (Giữ nguyên toàn bộ ảnh gốc, đặt khung 4:1 lên trên y hệt Logo) */}
       <div
         ref={frameRef}
         onMouseDown={handleMouseDown}
@@ -139,9 +100,7 @@ function BannerAdjuster({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleMouseUp}
-        className={`relative w-full aspect-[4/1] rounded-2xl border-2 border-emerald-500/40 bg-slate-950 overflow-hidden shadow-inner flex items-center justify-center select-none ${
-          imageUrl ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : ''
-        }`}
+        className="relative w-full h-72 bg-slate-950 rounded-2xl overflow-hidden flex items-center justify-center select-none cursor-grab active:cursor-grabbing border border-slate-800"
       >
         {uploadingImage ? (
           <div className="flex flex-col items-center gap-2 text-white">
@@ -157,24 +116,34 @@ function BannerAdjuster({
               style={{
                 transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                 transformOrigin: 'center center',
+                maxHeight: '88%',
+                maxWidth: '88%',
+                objectFit: 'contain',
                 transition: isDragging ? 'none' : 'transform 0.1s ease-out'
               }}
-              className="w-full h-full object-cover pointer-events-none"
+              className="max-w-none pointer-events-none select-none"
               draggable={false}
               crossOrigin="anonymous"
             />
 
+            {/* Khung ranh giới Banner tỷ lệ 4:1 (Spotlight Frame y hệt Logo bên Cấu hình) */}
+            <div
+              className="w-[90%] aspect-[4/1] pointer-events-none rounded-xl border-2 border-emerald-400 shadow-[0_0_0_9999px_rgba(2,6,23,0.76)] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
+            >
+              <div className="w-3 h-3 border-t border-l border-emerald-300/40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+            </div>
+
             {/* Gợi ý kéo chuột căn chỉnh */}
-            <div className="absolute top-2.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-medium flex items-center gap-1.5 shadow-md pointer-events-none whitespace-nowrap">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-slate-900/90 backdrop-blur-md text-white text-[11px] font-medium flex items-center gap-1.5 shadow-lg border border-slate-700 pointer-events-none whitespace-nowrap z-10">
               <Move className="w-3 h-3 text-emerald-400" />
-              <span>Kéo chuột để căn vị trí • Tỷ lệ 4:1</span>
+              <span>Kéo chuột để đặt lại vị trí hình ảnh</span>
             </div>
 
             {/* Nút xóa ảnh để chọn lại */}
             <button
               type="button"
               onClick={() => onImageChange('')}
-              className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-black/60 hover:bg-rose-600/90 text-white backdrop-blur-md transition cursor-pointer"
+              className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-black/60 hover:bg-rose-600/90 text-white backdrop-blur-md transition cursor-pointer z-10"
               title="Xóa ảnh để chọn lại"
             >
               <X className="w-3.5 h-3.5" />
@@ -187,20 +156,20 @@ function BannerAdjuster({
               Khung xem trước banner (Tỷ lệ 4:1)
             </p>
             <p className="text-[10px] text-slate-500 mt-0.5">
-              Tải ảnh lên hoặc dán link URL bên dưới để căn chỉnh vị trí trực tiếp
+              Tải ảnh lên hoặc dán link URL bên dưới để xem vị trí trong khung banner
             </p>
           </div>
         )}
       </div>
 
-      {/* THANH CĂN CHỈNH ZOOM VÀ ĐẶT LẠI (Đúng theo mẫu giao diện người dùng yêu cầu) */}
+      {/* THANH CĂN CHỈNH ZOOM VÀ ĐẶT LẠI */}
       {imageUrl && (
         <div className="flex items-center gap-3 px-3 py-2 bg-slate-50 border border-slate-200/80 rounded-xl">
           <button
             type="button"
             onClick={() => setScale((s) => Math.max(0.5, Number((s - 0.1).toFixed(2))))}
             className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition cursor-pointer shrink-0 shadow-xs"
-            title="Thu nhỏ (-)"
+            title="Thu nhỏ"
           >
             <ZoomOut className="w-4 h-4" />
           </button>
@@ -219,7 +188,7 @@ function BannerAdjuster({
             type="button"
             onClick={() => setScale((s) => Math.min(3, Number((s + 0.1).toFixed(2))))}
             className="w-8 h-8 rounded-full bg-white hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition cursor-pointer shrink-0 shadow-xs"
-            title="Phóng to (+)"
+            title="Phóng to"
           >
             <ZoomIn className="w-4 h-4" />
           </button>
@@ -254,7 +223,7 @@ function BannerAdjuster({
             />
           </label>
           <span className="text-[11px] text-slate-500 font-medium truncate">
-            JPG, PNG, WEBP &le; 5 MB (Khuyến nghị: Tỷ lệ 4:1 — 1920 × 480 px)
+            JPG, PNG, WEBP &le; 5 MB (Lưu ảnh nguyên bản 100%)
           </span>
         </div>
 
@@ -288,60 +257,6 @@ export default function BannerModals({
   setDeletingBanner,
   handleConfirmDeleteBanner
 }) {
-  const addAdjusterRef = useRef(null);
-  const editAdjusterRef = useRef(null);
-  const [isSubmittingCropped, setIsSubmittingCropped] = useState(false);
-
-  // Xử lý gửi form thêm mới (tự động xuất ảnh crop nếu có zoom/pan)
-  const onAddSubmit = async (e) => {
-    e.preventDefault();
-    if (addAdjusterRef.current && addAdjusterRef.current.hasAdjustments()) {
-      setIsSubmittingCropped(true);
-      try {
-        const blob = await addAdjusterRef.current.getCroppedBlob();
-        if (blob) {
-          const formData = new FormData();
-          formData.append('file', blob, `banner-${Date.now()}.jpg`);
-          const res = await fetch('/api/upload', { method: 'POST', body: formData });
-          const data = await res.json();
-          if (data.success && data.url) {
-            newBanner.image_url = data.url;
-          }
-        }
-      } catch (err) {
-        console.warn('Lỗi khi crop banner trước khi lưu:', err);
-      } finally {
-        setIsSubmittingCropped(false);
-      }
-    }
-    handleCreateBanner(e);
-  };
-
-  // Xử lý gửi form chỉnh sửa (tự động xuất ảnh crop nếu có zoom/pan)
-  const onEditSubmit = async (e) => {
-    e.preventDefault();
-    if (editAdjusterRef.current && editAdjusterRef.current.hasAdjustments()) {
-      setIsSubmittingCropped(true);
-      try {
-        const blob = await editAdjusterRef.current.getCroppedBlob();
-        if (blob) {
-          const formData = new FormData();
-          formData.append('file', blob, `banner-edit-${Date.now()}.jpg`);
-          const res = await fetch('/api/upload', { method: 'POST', body: formData });
-          const data = await res.json();
-          if (data.success && data.url) {
-            editingBanner.image_url = data.url;
-          }
-        }
-      } catch (err) {
-        console.warn('Lỗi khi crop banner trước khi lưu:', err);
-      } finally {
-        setIsSubmittingCropped(false);
-      }
-    }
-    handleUpdateBanner(e);
-  };
-
   return (
     <>
       {/* 1. MODAL THÊM BANNER MỚI (FR-042) */}
@@ -362,7 +277,7 @@ export default function BannerModals({
               </button>
             </div>
 
-            <form onSubmit={onAddSubmit} noValidate className="space-y-4 text-xs">
+            <form onSubmit={handleCreateBanner} noValidate className="space-y-4 text-xs">
               {/* Tiêu đề banner */}
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Tiêu đề banner *</label>
@@ -376,22 +291,21 @@ export default function BannerModals({
                 />
               </div>
 
-              {/* KHUNG CĂN CHỈNH BANNER (1920x450 / 16:9 kèm thanh Zoom / Đặt lại) */}
+              {/* KHUNG CĂN CHỈNH BANNER (Giữ nguyên toàn bộ ảnh gốc, đặt khung 4:1 lên trên y hệt Logo) */}
               <BannerAdjuster
                 imageUrl={newBanner.image_url}
                 onImageChange={(url) => setNewBanner({ ...newBanner, image_url: url })}
                 uploadingImage={uploadingImage}
                 handleFileUpload={handleFileUpload}
                 uploadType="banner"
-                adjusterRef={addAdjusterRef}
               />
 
-              {/* Đường dẫn liên kết */}
+              {/* Đường dẫn khi click vào banner */}
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Đường dẫn liên kết khi bấm vào banner</label>
                 <input
                   type="text"
-                  placeholder="Ví dụ: / hoặc /san-pham/1 hoặc /khuyen-mai"
+                  placeholder="Ví dụ: / hoặc /san-pham/1"
                   value={newBanner.link_url}
                   onChange={(e) => setNewBanner({ ...newBanner, link_url: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-brand-500 font-mono text-xs"
@@ -420,10 +334,9 @@ export default function BannerModals({
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmittingCropped}
+                  disabled={uploadingImage}
                   className="px-5 py-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white rounded-xl font-bold transition shadow-md shadow-brand-600/20 cursor-pointer flex items-center gap-1.5"
                 >
-                  {isSubmittingCropped && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>Thêm Banner</span>
                 </button>
               </div>
@@ -450,7 +363,7 @@ export default function BannerModals({
               </button>
             </div>
 
-            <form onSubmit={onEditSubmit} noValidate className="space-y-4 text-xs">
+            <form onSubmit={handleUpdateBanner} noValidate className="space-y-4 text-xs">
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Tiêu đề banner *</label>
                 <input
@@ -463,14 +376,13 @@ export default function BannerModals({
                 />
               </div>
 
-              {/* KHUNG CĂN CHỈNH BANNER (1920x450 / 16:9 kèm thanh Zoom / Đặt lại) */}
+              {/* KHUNG CĂN CHỈNH BANNER (Giữ nguyên toàn bộ ảnh gốc, đặt khung 4:1 lên trên y hệt Logo) */}
               <BannerAdjuster
                 imageUrl={editingBanner.image_url}
                 onImageChange={(url) => setEditingBanner({ ...editingBanner, image_url: url })}
                 uploadingImage={uploadingImage}
                 handleFileUpload={handleFileUpload}
                 uploadType="edit_banner"
-                adjusterRef={editAdjusterRef}
               />
 
               <div>
@@ -517,10 +429,9 @@ export default function BannerModals({
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmittingCropped}
-                  className="px-5 py-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white rounded-xl font-bold transition shadow-md shadow-brand-600/20 cursor-pointer flex items-center gap-1.5"
+                  disabled={uploadingImage}
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl font-bold transition shadow-md shadow-blue-600/20 cursor-pointer flex items-center gap-1.5"
                 >
-                  {isSubmittingCropped && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>Lưu Thay Đổi</span>
                 </button>
               </div>
@@ -543,7 +454,7 @@ export default function BannerModals({
               </div>
             </div>
 
-            <div className="aspect-[1920/450] rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm">
+            <div className="aspect-[4/1] rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm">
               <img src={deletingBanner.image_url} alt={deletingBanner.title} className="w-full h-full object-cover" />
             </div>
 
