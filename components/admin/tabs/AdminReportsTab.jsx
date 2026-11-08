@@ -173,7 +173,7 @@ export default function AdminReportsTab({
                           className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition cursor-pointer"
                         >
                           <Download className="w-4 h-4" />
-                          <span>Xuất Excel / CSV</span>
+                          <span>Xuất File Excel (.xlsx)</span>
                         </button>
                         <button
                           type="button"
@@ -534,7 +534,7 @@ export default function AdminReportsTab({
                               className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/20 transition cursor-pointer"
                             >
                               <Download className="w-4 h-4" />
-                              <span>Xuất Excel / CSV</span>
+                              <span>Xuất File Excel (.xlsx)</span>
                             </button>
                             <button
                               type="button"
@@ -882,7 +882,7 @@ export default function AdminReportsTab({
                               className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-amber-600/20 transition cursor-pointer"
                             >
                               <Download className="w-4 h-4" />
-                              <span>Xuất Excel / CSV</span>
+                              <span>Xuất File Excel (.xlsx)</span>
                             </button>
                             <button
                               type="button"
@@ -1314,7 +1314,7 @@ export default function AdminReportsTab({
                               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition cursor-pointer"
                             >
                               <Download className="w-4 h-4" />
-                              <span>Xuất Excel / CSV</span>
+                              <span>Xuất File Excel (.xlsx)</span>
                             </button>
                             <button
                               type="button"

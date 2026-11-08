@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { generatePdfReport } from '@/lib/pdf-report-generator';
+import { generateRevenueExcelReport, generateInventoryExcelReport, generateOrdersExcelReport } from '@/lib/excel-report-generator';
 
 // API 75 & API 76: Xuất dữ liệu báo cáo (Excel / PDF / JSON Export)
 export async function GET(request) {
@@ -29,16 +30,51 @@ export async function GET(request) {
       ORDER BY p.id ASC
     `);
 
-    // API 75: Xuất file Excel / CSV
-    if (format === 'excel' || format === 'csv') {
-      let csv = 'Ngay,SoDonHang,DoanhThu\n';
-      revenue.forEach(r => {
-        csv += `${r.date},${r.total_orders},${r.revenue}\n`;
-      });
-      return new Response(csv, {
+    // API 75: Xuất file Excel (.xlsx) chuẩn doanh nghiệp Office 365
+    if (format === 'excel' || format === 'xlsx' || format === 'csv') {
+      let xlsxBuffer;
+      let filename = 'Bao_Cao_Do_Dong_4_Mua.xlsx';
+
+      if (type === 'inventory') {
+        xlsxBuffer = await generateInventoryExcelReport({
+          products,
+          categoryStats: [],
+          overall: { total_products: products.length },
+          startDate,
+          endDate
+        });
+        filename = `Bao_Cao_Ton_Kho_${startDate || 'all'}_${endDate || 'now'}.xlsx`;
+      } else if (type === 'orders') {
+        const orders = await query('SELECT id, order_code, receiver_name, phone, address, total_amount, order_status, created_at FROM orders ORDER BY id DESC LIMIT 100');
+        xlsxBuffer = await generateOrdersExcelReport({
+          orders,
+          summary: { total_orders: orders.length },
+          startDate,
+          endDate
+        });
+        filename = `Bao_Cao_Don_Hang_${startDate || 'all'}_${endDate || 'now'}.xlsx`;
+      } else {
+        const orders = await query('SELECT id, order_code, receiver_name, phone, total_amount, order_status, payment_status, created_at FROM orders ORDER BY created_at DESC LIMIT 100');
+        const totalRevenue = revenue.reduce((sum, r) => sum + (parseFloat(r.revenue) || 0), 0);
+        const totalOrders = revenue.reduce((sum, r) => sum + (parseInt(r.total_orders, 10) || 0), 0);
+        xlsxBuffer = await generateRevenueExcelReport({
+          orders,
+          summary: {
+            total_revenue: totalRevenue,
+            total_orders: totalOrders,
+            successful_orders: totalOrders,
+            average_order_value: totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0
+          },
+          startDate,
+          endDate
+        });
+        filename = `Bao_Cao_Doanh_Thu_${startDate || 'all'}_${endDate || 'now'}.xlsx`;
+      }
+
+      return new Response(xlsxBuffer, {
         headers: {
-          'Content-Type': 'text/csv; charset=utf-8',
-          'Content-Disposition': 'attachment; filename="Bao_Cao_Doanh_Thu_Do_Dong_4_Mua.csv"'
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'Content-Disposition': `attachment; filename="${filename}"`
         }
       });
     }

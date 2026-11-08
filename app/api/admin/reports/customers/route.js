@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { formatDate, formatDateTime } from '@/lib/date';
+import { generateCustomersExcelReport } from '@/lib/excel-report-generator';
 
 /**
  * FR-048 – Báo cáo khách hàng (Module Reporting, API 74)
@@ -94,32 +95,26 @@ export async function GET(request) {
     const totalSpentAll = customers.reduce((acc, c) => acc + (parseFloat(c.total_spent) || 0), 0);
     const totalOrdersAll = customers.reduce((acc, c) => acc + (parseInt(c.order_count, 10) || 0), 0);
 
-    // Xuất CSV/Excel nếu có format (TC_REPORT_003)
-    if (format === 'excel' || format === 'csv') {
-      let csv = '\uFEFF'; // BOM UTF-8
-      csv += 'BÁO CÁO KHÁCH HÀNG - ĐỒ ĐỒNG 4 MÙA\n';
-      csv += `Thời gian xuất: ${formatDateTime(new Date(), true)}\n`;
-      csv += `Khoảng thời gian lọc: ${startDate || 'Toàn thời gian'} đến ${endDate || 'Hiện tại'}\n\n`;
-      csv += 'TỔNG HỢP CHỈ SỐ KHÁCH HÀNG\n';
-      csv += `Tổng số khách hàng,${totalCustomers}\n`;
-      csv += `Khách hàng mới,${newCustomers}\n`;
-      csv += `Khách hàng phát sinh đơn hàng,${activeCustomers}\n`;
-      csv += `Khách hàng chưa có đơn,${inactiveCustomers}\n`;
-      csv += `Tổng doanh số tích lũy,${totalSpentAll}\n\n`;
-      csv += 'DANH SÁCH CHI TIẾT TỪNG KHÁCH HÀNG\n';
-      csv += 'Mã KH,Họ và tên,Số điện thoại,Địa chỉ,Số đơn đặt,Đơn thành công,Đơn hủy,Tổng chi tiêu (VNĐ),Lần mua gần nhất,Ngày đăng ký\n';
-
-      customers.forEach((c) => {
-        const lastOrder = c.last_order_date ? formatDate(c.last_order_date) : 'Chưa có';
-        const regDate = formatDate(c.created_at);
-        const cleanAddress = (c.address || '').replace(/,/g, ' - ');
-        csv += `${c.id},"${c.full_name}",${c.phone},"${cleanAddress}",${c.order_count},${c.successful_orders},${c.cancelled_orders},${c.total_spent},${lastOrder},${regDate}\n`;
+    // Xuất file Excel (.xlsx) chuẩn doanh nghiệp Office 365 (TC_REPORT_003)
+    if (format === 'excel' || format === 'xlsx' || format === 'csv') {
+      const xlsxBuffer = await generateCustomersExcelReport({
+        customers,
+        summary: {
+          totalCustomers,
+          newCustomers,
+          activeCustomers,
+          inactiveCustomers,
+          totalSpentAll,
+          totalOrdersAll,
+        },
+        startDate,
+        endDate
       });
 
-      return new Response(csv, {
+      return new Response(xlsxBuffer, {
         headers: {
-          'Content-Type': 'text/csv; charset=utf-8',
-          'Content-Disposition': `attachment; filename="Bao_Cao_Khach_Hang_${startDate || 'all'}_${endDate || 'now'}.csv"`
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'Content-Disposition': `attachment; filename="Bao-cao-khach-hang-${startDate || 'all'}-${endDate || 'now'}.xlsx"`
         }
       });
     }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { formatDate, formatDateTime } from '@/lib/date';
+import { generateInventoryExcelReport } from '@/lib/excel-report-generator';
 
 /**
  * FR-049: Báo cáo hàng tồn kho (Inventory Report)
@@ -148,48 +149,27 @@ export async function GET(request) {
     `;
     const products = await query(productsQuery, params);
 
-    // 6. Xử lý xuất file Excel / CSV (TC_REPORT_003)
-    if (format === 'excel' || format === 'csv') {
-      const nowStr = formatDateTime(new Date(), true);
-      const timeFilterStr = (startDate && endDate)
-        ? `${startDate} đến ${endDate}`
-        : (startDate ? `Từ ${startDate}` : (endDate ? `Đến ${endDate}` : 'Toàn thời gian'));
-
-      let csv = '\uFEFF'; // BOM UTF-8 cho Microsoft Excel hiển thị đúng tiếng Việt có dấu
-
-      csv += `BÁO CÁO HÀNG TỒN KHO - ĐỒ ĐỔNG 4 MÙA\n`;
-      csv += `Thời gian xuất: ${nowStr}\n`;
-      csv += `Khoảng thời gian: ${timeFilterStr}\n`;
-      csv += `Bộ lọc danh mục: ${categoryId || 'Tất cả'}\n`;
-      csv += `Bộ lọc trạng thái kho: ${stockStatus || 'Tất cả'}\n\n`;
-
-      csv += `TỔNG HỢP CHỈ SỐ TỒN KHO TOÀN HỆ THỐNG\n`;
-      csv += `Tổng số mặt hàng,${overall.total_products}\n`;
-      csv += `Tổng số lượng tồn kho (sản phẩm),${overall.total_stock_quantity}\n`;
-      csv += `Tổng giá trị vốn tồn kho (VNĐ),${Math.round(overall.total_inventory_value)}\n`;
-      csv += `Số mặt hàng hết hàng (Tồn = 0),${overall.out_of_stock_count}\n`;
-      csv += `Số mặt hàng sắp hết hàng (Tồn <= 10),${overall.low_stock_count}\n`;
-      csv += `Số mặt hàng còn nhiều (Tồn > 10),${overall.in_stock_count}\n\n`;
-
-      csv += `PHÂN BỔ TỒN KHO THEO DANH MỤC\n`;
-      csv += `Mã danh mục,Tên danh mục,Số mặt hàng,Tổng tồn kho,Giá trị tồn kho (VNĐ),Hết hàng,Sắp hết hàng\n`;
-      categoryStats.forEach(cat => {
-        csv += `${cat.category_id},"${cat.category_name.replace(/"/g, '""')}",${cat.product_count},${cat.total_stock},${Math.round(cat.category_value)},${cat.out_of_stock_count},${cat.low_stock_count}\n`;
-      });
-      csv += `\n`;
-
-      csv += `DANH SÁCH CHI TIẾT SẢN PHẨM TỒN KHO\n`;
-      csv += `Mã SP,Tên sản phẩm,Danh mục,Đơn vị tính,Đơn giá (VNĐ),Tồn kho hiện tại,Trạng thái tồn kho,Giá trị tồn kho (VNĐ),Cập nhật gần nhất\n`;
-      products.forEach(p => {
-        const updatedDateStr = p.updated_at ? formatDate(p.updated_at) : 'Mới';
-        csv += `${p.product_code},"${p.product_name.replace(/"/g, '""')}","${p.category_name.replace(/"/g, '""')}",${p.unit || 'Sản phẩm'},${p.price},${p.stock},"${p.stock_status_label}",${Math.round(p.inventory_value)},${updatedDateStr}\n`;
+    // 6. Xử lý xuất file Excel (.xlsx) chuẩn Office 365 (TC_REPORT_003)
+    if (format === 'excel' || format === 'xlsx' || format === 'csv') {
+      const xlsxBuffer = await generateInventoryExcelReport({
+        products,
+        categoryStats,
+        overall: {
+          total_products: Number(overall.total_products),
+          total_stock_quantity: Number(overall.total_stock_quantity),
+          total_inventory_value: Number(overall.total_inventory_value),
+          out_of_stock_count: Number(overall.out_of_stock_count),
+          low_stock_count: Number(overall.low_stock_count),
+          in_stock_count: Number(overall.in_stock_count)
+        },
+        startDate,
+        endDate
       });
 
-      return new NextResponse(csv, {
-        status: 200,
+      return new Response(xlsxBuffer, {
         headers: {
-          'Content-Type': 'text/csv; charset=utf-8',
-          'Content-Disposition': `attachment; filename="Bao_Cao_Ton_Kho_${Date.now()}.csv"`
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'Content-Disposition': `attachment; filename="Bao-cao-ton-kho-${startDate || 'all'}-${endDate || 'now'}.xlsx"`
         }
       });
     }

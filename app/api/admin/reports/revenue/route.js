@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { formatDate, formatDateTime } from '@/lib/date';
+import { generateRevenueExcelReport } from '@/lib/excel-report-generator';
 
 /**
  * FR-047 – Quản lý báo cáo doanh thu & BR-028
@@ -122,28 +123,25 @@ export async function GET(request) {
     `;
     const orders = await query(ordersSql, dateParams);
 
-    // Xuất CSV/Excel nếu có tham số format (TC_REPORT_003)
-    if (format === 'excel' || format === 'csv') {
-      let csv = '\uFEFF'; // BOM UTF-8 for Excel Vietnamese support
-      csv += 'BÁO CÁO DOANH THU HỆ THỐNG - ĐỒ ĐỒNG 4 MÙA\n';
-      csv += `Thời gian xuất: ${formatDateTime(new Date(), true)}\n`;
-      csv += `Khoảng thời gian: ${startDate || 'Toàn thời gian'} đến ${endDate || 'Hiện tại'}\n\n`;
-      csv += 'CHỈ SỐ CỐT LÕI (Chỉ tính đơn Đã giao)\n';
-      csv += `Tổng doanh thu,${totalRevenue}\n`;
-      csv += `Tổng số đơn hàng,${totalOrders}\n`;
-      csv += `Số đơn thành công (Đã giao),${successfulOrders}\n`;
-      csv += `Số đơn hủy,${cancelledOrders}\n`;
-      csv += `Giá trị trung bình mỗi đơn,${averageOrderValue}\n\n`;
-      csv += 'CHI TIẾT THEO NGÀY\n';
-      csv += 'Ngày,Tổng số đơn,Doanh thu (VNĐ),Số đơn thành công,Số đơn hủy\n';
-      timeline.forEach((r) => {
-        csv += `${r.date},${r.total_orders},${r.revenue},${r.successful_orders},${r.cancelled_orders}\n`;
+    // Xuất file Excel (.xlsx) chuẩn doanh nghiệp Office (TC_REPORT_003)
+    if (format === 'excel' || format === 'xlsx') {
+      const xlsxBuffer = await generateRevenueExcelReport({
+        orders,
+        summary: {
+          total_revenue: totalRevenue,
+          total_orders: totalOrders,
+          successful_orders: successfulOrders,
+          cancelled_orders: cancelledOrders,
+          average_order_value: averageOrderValue,
+        },
+        startDate,
+        endDate
       });
 
-      return new Response(csv, {
+      return new Response(xlsxBuffer, {
         headers: {
-          'Content-Type': 'text/csv; charset=utf-8',
-          'Content-Disposition': `attachment; filename="Bao_Cao_Doanh_Thu_${startDate || 'all'}_${endDate || 'now'}.csv"`
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'Content-Disposition': `attachment; filename="Bao-cao-doanh-thu-${startDate || 'all'}-${endDate || 'now'}.xlsx"`
         }
       });
     }

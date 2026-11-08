@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { formatDate, formatDateTime } from '@/lib/date';
+import { generateOrdersExcelReport } from '@/lib/excel-report-generator';
 
 /**
  * FR-050: Báo cáo đơn hàng (Order Report)
@@ -186,55 +187,29 @@ export async function GET(request) {
     `;
     const ordersList = await query(ordersListQuery, params);
 
-    // 7. Xử lý xuất file Excel / CSV (TC_REPORT_003)
-    if (format === 'excel' || format === 'csv') {
-      const nowStr = formatDateTime(new Date(), true);
-      const timeFilterStr = (startDate && endDate)
-        ? `${startDate} đến ${endDate}`
-        : (startDate ? `Từ ${startDate}` : (endDate ? `Đến ${endDate}` : 'Toàn thời gian'));
-
-      let csv = '\uFEFF'; // BOM UTF-8 cho Microsoft Excel hiển thị đúng tiếng Việt có dấu
-
-      csv += `BÁO CÁO THỐNG KÊ ĐƠN HÀNG - ĐỒ ĐỔNG 4 MÙA\n`;
-      csv += `Thời gian xuất: ${nowStr}\n`;
-      csv += `Khoảng thời gian: ${timeFilterStr}\n`;
-      csv += `Bộ lọc trạng thái đơn: ${orderStatus || 'Tất cả'}\n`;
-      csv += `Bộ lọc trạng thái thanh toán: ${paymentStatus || 'Tất cả'}\n\n`;
-
-      csv += `TỔNG HỢP CHỈ SỐ ĐƠN HÀNG\n`;
-      csv += `Tổng số đơn hàng,${totalOrdersCount}\n`;
-      csv += `Đơn chờ xử lý (Chờ xác nhận / chuẩn bị),${summary.pending_orders}\n`;
-      csv += `Đơn đang giao hàng,${summary.shipping_orders}\n`;
-      csv += `Đơn đã giao thành công,${summary.delivered_orders}\n`;
-      csv += `Đơn tạm dừng xử lý,${summary.on_hold_orders}\n`;
-      csv += `Đơn đã hủy,${summary.cancelled_orders}\n`;
-      csv += `Doanh thu đơn giao thành công,${Math.round(summary.total_revenue)}\n`;
-      csv += `Tỷ lệ giao hàng thành công,${completionRate}%\n\n`;
-
-      csv += `PHÂN BỔ THEO TRẠNG THÁI ĐƠN HÀNG\n`;
-      csv += `Mã trạng thái,Tên trạng thái tiếng Việt,Số lượng đơn,Tổng giá trị (VNĐ)\n`;
-      statusBreakdown.forEach(st => {
-        const label = ORDER_STATUS_LABELS[st.order_status] || st.order_status;
-        csv += `${st.order_status},"${label.replace(/"/g, '""')}",${st.count},${Math.round(st.total_value)}\n`;
-      });
-      csv += `\n`;
-
-      csv += `DANH SÁCH CHI TIẾT ĐƠN HÀNG\n`;
-      csv += `Mã đơn hàng,Ngày đặt,Người nhận,Số điện thoại,Địa chỉ giao hàng,Số món,Tổng tiền (VNĐ),Thanh toán,Trạng thái thanh toán,Trạng thái đơn hàng\n`;
-      ordersList.forEach(ord => {
-        const dateStr = ord.created_at ? formatDateTime(ord.created_at) : '';
-        const statusLabel = ORDER_STATUS_LABELS[ord.order_status] || ord.order_status;
-        const payMethodLabel = ord.payment_method === 'COD' ? 'Tiền mặt COD' : 'VietQR / Chuyển khoản';
-        const payStatusLabel = ord.payment_status === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán';
-
-        csv += `${ord.order_code},"${dateStr}","${(ord.receiver_name || '').replace(/"/g, '""')}",${ord.phone || ''},"${(ord.address || '').replace(/"/g, '""')}",${ord.item_count || 1},${Math.round(ord.total_amount)},"${payMethodLabel}","${payStatusLabel}","${statusLabel}"\n`;
+    // 7. Xử lý xuất file Excel (.xlsx) chuẩn Office 365 (TC_REPORT_003)
+    if (format === 'excel' || format === 'xlsx' || format === 'csv') {
+      const xlsxBuffer = await generateOrdersExcelReport({
+        orders: ordersList,
+        summary: {
+          total_orders: totalOrdersCount,
+          pending_orders: summary.pending_orders,
+          shipping_orders: summary.shipping_orders,
+          delivered_orders: summary.delivered_orders,
+          on_hold_orders: summary.on_hold_orders,
+          cancelled_orders: summary.cancelled_orders,
+          total_revenue: summary.total_revenue,
+          gross_order_value: summary.gross_order_value,
+          paid_orders_count: summary.paid_orders_count,
+        },
+        startDate,
+        endDate
       });
 
-      return new NextResponse(csv, {
-        status: 200,
+      return new Response(xlsxBuffer, {
         headers: {
-          'Content-Type': 'text/csv; charset=utf-8',
-          'Content-Disposition': `attachment; filename="Bao_Cao_Don_Hang_${Date.now()}.csv"`
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'Content-Disposition': `attachment; filename="Bao-cao-don-hang-${startDate || 'all'}-${endDate || 'now'}.xlsx"`
         }
       });
     }
