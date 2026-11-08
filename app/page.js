@@ -104,15 +104,6 @@ function HomeContent() {
     return () => { isMounted = false; };
   }, [currentSearch, currentCategory, currentSeason, inStockFilter, discountedFilter, minPriceParam, maxPriceParam, sort]);
 
-  // Auto rotate banners
-  useEffect(() => {
-    if (banners.length <= 1) return;
-    const interval = setInterval(() => {
-      setActiveBannerIdx((prev) => (prev + 1) % banners.length);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [banners.length]);
-
   const updateFilters = (newParams) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(newParams).forEach(([key, value]) => {
