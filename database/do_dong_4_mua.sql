@@ -11,6 +11,7 @@
 --
 -- Tự động tạo và chọn cơ sở dữ liệu để tránh lỗi No database selected (#1046)
 --
+DROP DATABASE IF EXISTS `do_dong_4_mua`;
 CREATE DATABASE IF NOT EXISTS `do_dong_4_mua` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `do_dong_4_mua`;
 
@@ -672,22 +673,8 @@ CREATE TABLE `shipping_fees` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Cấu hình nấc cước phí vận chuyển theo khoảng cách';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Cấu hình nấc cước phí vận chuyển theo khoảng cách';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `shipping_fees`
---
-
-LOCK TABLES `shipping_fees` WRITE;
-/*!40000 ALTER TABLE `shipping_fees` DISABLE KEYS */;
-INSERT INTO `shipping_fees` VALUES 
-(1,'Nội thành gần (Dưới 5 km)',0.00,5.00,15000.00,1,'2026-11-04 18:38:27','2026-11-04 18:38:27'),
-(2,'Tiêu chuẩn nội thành (5 - 10 km)',5.00,10.00,25000.00,1,'2026-11-04 18:38:27','2026-11-04 18:38:27'),
-(3,'Nội thành xa (10 - 20 km)',10.00,20.00,40000.00,1,'2026-11-04 18:38:27','2026-11-04 18:38:27'),
-(4,'Ngoại thành / Liên quận (Trên 20 km)',20.00,50.00,60000.00,1,'2026-11-04 18:38:27','2026-11-04 18:38:27');
-/*!40000 ALTER TABLE `shipping_fees` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `system_settings`
@@ -704,27 +691,6 @@ CREATE TABLE `system_settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Cấu hình thông số hệ thống website';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `system_settings`
---
-
-LOCK TABLES `system_settings` WRITE;
-/*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
-INSERT INTO `system_settings` (`setting_key`, `setting_value`) VALUES 
-('site_name', 'Đồ Đồng 4 Mùa'),
-('hotline', '0929894248'),
-('contact_email', 'tranvukuroko@gmail.com'),
-('company_address', '53 Võ Văn Ngân, TP. Thủ Đức, TP. Hồ Chí Minh'),
-('default_shipping_fee', '25000'),
-('freeship_threshold', '500000'),
-('shipping_partner', 'GreenSM'),
-('shipping_policy', ''),
-('exchange_policy', ''),
-('terms_of_service', ''),
-('privacy_policy', '')
-ON DUPLICATE KEY UPDATE `setting_value` = VALUES(`setting_value`);
-/*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
