@@ -3816,6 +3816,7 @@ export default function AdminDashboardPage() {
         handleCreateNotification={handleCreateNotification}
         newNotification={newNotification}
         setNewNotification={setNewNotification}
+        sendingNotification={sendingNotification}
         branches={branches}
         userPickerSearch={userPickerSearch}
         setUserPickerSearch={setUserPickerSearch}

@@ -12,6 +12,7 @@ export default function NotificationModals({
   handleCreateNotification,
   newNotification,
   setNewNotification,
+  sendingNotification = false,
   branches,
   userPickerSearch,
   setUserPickerSearch,
