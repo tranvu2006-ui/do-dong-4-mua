@@ -1,11 +1,14 @@
 'use client';
 
 import React from 'react';
-import { User, X, Phone, Mail, MapPin, Calendar, ShoppingBag, Clock } from 'lucide-react';
+import { User, X, Phone, Mail, MapPin, Calendar, ShoppingBag, Clock, Lock, Unlock } from 'lucide-react';
 
 export default function CustomerDetailModal({
   selectedCustomerDetail,
-  setSelectedCustomerDetail
+  setSelectedCustomerDetail,
+  loadingCustomerDetail,
+  openLockModal,
+  openUnlockModal
 }) {
   return (
     <>

@@ -3775,19 +3775,30 @@ export default function AdminDashboardPage() {
         handleDeselectAllPermissions={handleDeselectAllPermissions}
         SRS_FUNCTIONAL_MODULES={SRS_FUNCTIONAL_MODULES}
         handleSavePermissionsSubmit={handleSavePermissionsSubmit}
+        toggleModulePermissions={toggleModulePermissions}
       />
 
       <OrderDetailModals
         orderActionModal={orderActionModal}
         setOrderActionModal={setOrderActionModal}
+        executeOrderActionModal={executeOrderActionModal}
         handleUpdateOrderStatus={handleUpdateOrderStatus}
         selectedOrder={selectedOrder}
         setSelectedOrder={setSelectedOrder}
+        loadingOrderDetail={loadingOrderDetail}
+        requestConfirm={requestConfirm}
+        promptChangeOrderStatus={promptChangeOrderStatus}
+        promptPauseOrder={promptPauseOrder}
+        promptResumeOrder={promptResumeOrder}
+        promptCancelOrder={promptCancelOrder}
       />
 
       <CustomerDetailModal
         selectedCustomerDetail={selectedCustomerDetail}
         setSelectedCustomerDetail={setSelectedCustomerDetail}
+        loadingCustomerDetail={loadingCustomerDetail}
+        openLockModal={openLockModal}
+        openUnlockModal={openUnlockModal}
       />
 
       <UserActionModal

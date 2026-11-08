@@ -589,7 +589,7 @@ CREATE TABLE `system_logs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Mã định danh duy nhất (Khóa chính)',
   `user_id` bigint unsigned DEFAULT NULL COMMENT 'Người thực hiện hành động (NULL nếu là khách vãng lai hoặc hệ thống tự động)',
   `action` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Hành động: CREATE, UPDATE, DELETE, LOGIN, EXPORT...',
-  `module` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Phân hệ: PRODUCT, ORDER, AUTH, BRANCH...',
+  `module` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'SYSTEM' COMMENT 'Phân hệ: PRODUCT, ORDER, AUTH, BRANCH...',
   `description` text COLLATE utf8mb4_unicode_ci COMMENT 'Mô tả chi tiết thao tác',
   `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Địa chỉ IP (hỗ trợ IPv4 & IPv6)',
   `user_agent` text COLLATE utf8mb4_unicode_ci COMMENT 'Thông tin trình duyệt và thiết bị',

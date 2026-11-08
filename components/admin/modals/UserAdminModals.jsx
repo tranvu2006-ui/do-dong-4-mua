@@ -21,7 +21,8 @@ export default function UserAdminModals({
   handleSelectAllPermissions,
   handleDeselectAllPermissions,
   SRS_FUNCTIONAL_MODULES,
-  handleSavePermissionsSubmit
+  handleSavePermissionsSubmit,
+  toggleModulePermissions
 }) {
   return (
     <>

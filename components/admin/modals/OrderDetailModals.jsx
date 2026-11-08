@@ -6,9 +6,16 @@ import { CheckCircle2, Clock, Play, AlertTriangle, User, Truck, X, Phone, MapPin
 export default function OrderDetailModals({
   orderActionModal,
   setOrderActionModal,
+  executeOrderActionModal,
   handleUpdateOrderStatus,
   selectedOrder,
-  setSelectedOrder
+  setSelectedOrder,
+  loadingOrderDetail,
+  requestConfirm,
+  promptChangeOrderStatus,
+  promptPauseOrder,
+  promptResumeOrder,
+  promptCancelOrder
 }) {
   return (
     <>
