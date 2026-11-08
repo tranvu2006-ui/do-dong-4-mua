@@ -98,7 +98,7 @@ export async function GET(request) {
       SELECT 
         p.id, p.name, p.thumbnail, p.price,
         SUM(od.quantity) as total_sold,
-        SUM(od.total_price) as total_revenue
+        SUM(od.subtotal) as total_revenue
       FROM order_details od
       JOIN products p ON od.product_id = p.id
       JOIN orders o ON od.order_id = o.id

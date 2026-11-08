@@ -15,7 +15,7 @@ export async function GET(request) {
 
     let sql = `
       SELECT o.*, 
-             p.payment_method, p.status as payment_detail_status,
+             p.payment_method, p.payment_status as payment_detail_status,
              s.shipping_company, s.tracking_code, s.shipping_status,
              (SELECT u.full_name 
               FROM system_logs sl 
@@ -224,7 +224,7 @@ export async function POST(request) {
     // Insert Order Details and decrement product stock (BR-004, BR-011)
     for (const detail of verifiedDetails) {
       await query(
-        `INSERT INTO order_details (order_id, product_id, quantity, unit_price, total_price)
+        `INSERT INTO order_details (order_id, product_id, quantity, unit_price, subtotal)
          VALUES (?, ?, ?, ?, ?)`,
         [order_id, detail.product_id, detail.quantity, detail.unit_price, detail.subtotal]
       );
@@ -241,15 +241,16 @@ export async function POST(request) {
       : `${payment_method.toUpperCase()}${dateStr}${Math.floor(100000 + Math.random() * 900000)}`;
 
     await query(
-      `INSERT INTO payments (order_id, payment_method, transaction_code, amount, status, payment_time)
-       VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO payments (order_id, payment_method, transaction_code, payment_amount, payment_status, payment_time, note)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         order_id,
         payment_method || 'COD',
         txCode,
         total_amount,
         'PENDING',
-        null
+        null,
+        note || null
       ]
     );
 

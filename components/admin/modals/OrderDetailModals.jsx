@@ -256,7 +256,7 @@ export default function OrderDetailModals({
                             x{item.quantity}
                           </td>
                           <td className="py-2 px-3 text-right font-bold text-slate-900">
-                            {parseFloat(item.total_price || (item.unit_price * item.quantity) || 0).toLocaleString('vi-VN')} đ
+                            {parseFloat(item.subtotal || item.total_price || (item.unit_price * item.quantity) || 0).toLocaleString('vi-VN')} đ
                           </td>
                         </tr>
                       ))}

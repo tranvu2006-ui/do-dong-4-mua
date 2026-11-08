@@ -8,7 +8,7 @@ export async function GET(request, { params }) {
 
     const orders = await query(
       `SELECT o.*, 
-              p.payment_method, p.status as payment_detail_status, p.transaction_code, p.payment_time,
+              p.payment_method, p.payment_status as payment_detail_status, p.transaction_code, p.payment_time,
               s.shipping_company, s.tracking_code, s.shipping_status, s.ship_date, s.delivery_date,
               (SELECT u.full_name 
                FROM system_logs sl 
@@ -168,7 +168,7 @@ export async function PATCH(request, { params }) {
 
     if (payment_status) {
       await query('UPDATE orders SET payment_status = ? WHERE id = ?', [payment_status, orderId]);
-      await query('UPDATE payments SET payment_status = ?, status = ? WHERE order_id = ?', [payment_status, payment_status === 'PAID' ? 'PAID' : 'PENDING', orderId]);
+      await query('UPDATE payments SET payment_status = ? WHERE order_id = ?', [payment_status === 'PAID' ? 'PAID' : 'PENDING', orderId]);
     }
 
     if (shipping_status || order_status === 'DANG_GIAO' || order_status === 'DA_GIAO') {

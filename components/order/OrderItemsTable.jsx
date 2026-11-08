@@ -12,7 +12,7 @@ export default function OrderItemsTable({ items }) {
         {items.map((item) => {
           const unitPrice = parseFloat(item.unit_price) || 0;
           const qty = item.quantity || 1;
-          const totalPrice = parseFloat(item.total_price || (unitPrice * qty) || item.subtotal || 0);
+          const totalPrice = parseFloat(item.subtotal || item.total_price || (unitPrice * qty) || 0);
 
           return (
             <div key={item.id} className="py-3 flex items-center justify-between gap-4 text-xs">

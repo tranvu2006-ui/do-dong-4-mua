@@ -44,16 +44,16 @@ export async function POST(request) {
     const order = orders[0];
     const payAmount = amount || order.total_amount;
     const transCode = `PAY-${Date.now()}`;
-    const initialStatus = payment_method === 'COD' ? 'CHO_THANH_TOAN' : 'CHO_THANH_TOAN';
+    const initialStatus = 'PENDING';
 
     const result = await query(
-      `INSERT INTO payments (order_id, payment_method, transaction_code, amount, status)
+      `INSERT INTO payments (order_id, payment_method, transaction_code, payment_amount, payment_status)
        VALUES (?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE 
          payment_method = VALUES(payment_method),
          transaction_code = VALUES(transaction_code),
-         amount = VALUES(amount),
-         status = VALUES(status)`,
+         payment_amount = VALUES(payment_amount),
+         payment_status = VALUES(payment_status)`,
       [order_id, payment_method, transCode, payAmount, initialStatus]
     );
 
@@ -70,10 +70,12 @@ export async function POST(request) {
         payment_id: paymentId,
         order_code: order.order_code,
         transaction_code: transCode,
+        payment_amount: payAmount,
         amount: payAmount,
         payment_method,
+        payment_status: initialStatus,
         status: initialStatus,
-        qr_url: payment_method === 'BANKING' ? `https://img.vietqr.io/image/MB-0929894248-compact.png?amount=${payAmount}&addInfo=${order.order_code}` : null
+        qr_url: payment_method === 'BANKING' || payment_method === 'VIETQR' ? `https://img.vietqr.io/image/MB-0929894248-compact.png?amount=${payAmount}&addInfo=${order.order_code}` : null
       }
     }, { status: 201 });
   } catch (error) {

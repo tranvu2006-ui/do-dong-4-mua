@@ -45,7 +45,7 @@ export default function OrderHistoryCard({ order, onOpenCancelModal }) {
       {/* Items in order */}
       <div className="divide-y divide-gray-50">
         {order.items?.map((item) => {
-          const lineTotal = parseFloat(item.total_price || (item.unit_price * item.quantity) || 0);
+          const lineTotal = parseFloat(item.subtotal || item.total_price || (item.unit_price * item.quantity) || 0);
           const itemImg = item.thumbnail || item.image;
           return (
             <div key={item.id} className="py-2.5 flex items-center justify-between text-xs">

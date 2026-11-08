@@ -4,7 +4,7 @@ import { query } from '@/lib/db';
 export async function GET() {
   try {
     const orders = await query(`
-      SELECT o.*, p.payment_method, p.status as payment_status_detail,
+      SELECT o.*, p.payment_method, p.payment_status as payment_status_detail,
              s.tracking_code, s.shipping_status
       FROM orders o
       LEFT JOIN payments p ON p.order_id = o.id

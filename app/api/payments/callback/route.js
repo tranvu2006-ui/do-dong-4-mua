@@ -21,13 +21,13 @@ export async function POST(request) {
     // Cập nhật trạng thái thanh toán
     await query(
       `UPDATE payments 
-       SET status = ?, transaction_code = COALESCE(?, transaction_code), payment_time = NOW()
+       SET payment_status = ?, transaction_code = COALESCE(?, transaction_code), payment_time = NOW()
        WHERE order_id = ?`,
-      [isSuccess ? 'DA_THANH_TOAN' : 'THAT_BAI', transaction_code, orderId]
+      [isSuccess ? 'PAID' : 'FAILED', transaction_code, orderId]
     );
 
     if (isSuccess) {
-      await query('UPDATE orders SET payment_status = "DA_THANH_TOAN" WHERE id = ?', [orderId]);
+      await query('UPDATE orders SET payment_status = "PAID" WHERE id = ?', [orderId]);
     }
 
     await query(

@@ -40,16 +40,17 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ success: false, message: 'Thanh toán không tồn tại.' }, { status: 404 });
     }
 
-    const isPaid = status === 'DA_THANH_TOAN';
+    const isPaid = status === 'PAID' || status === 'DA_THANH_TOAN';
+    const payStatus = isPaid ? 'PAID' : (status === 'FAILED' ? 'FAILED' : 'PENDING');
     await query(
       `UPDATE payments 
-       SET status = ?, payment_time = ${isPaid ? 'NOW()' : 'payment_time'}
+       SET payment_status = ?, payment_time = ${isPaid ? 'NOW()' : 'payment_time'}
        WHERE id = ?`,
-      [status, id]
+      [payStatus, id]
     );
 
     if (isPaid) {
-      await query('UPDATE orders SET payment_status = "DA_THANH_TOAN" WHERE id = ?', [rows[0].order_id]);
+      await query('UPDATE orders SET payment_status = "PAID" WHERE id = ?', [rows[0].order_id]);
     }
 
     return NextResponse.json({ success: true, message: 'Cập nhật trạng thái thanh toán thành công!' });
