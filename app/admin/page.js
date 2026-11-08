@@ -2328,9 +2328,16 @@ export default function AdminDashboardPage() {
     showToast('Đang tạo và tải tệp PDF báo cáo đơn hàng...', 'success');
   };
 
+  const getLocalDateString = (d) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleQuickCustomerDateFilter = (days) => {
     const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
+    const todayStr = getLocalDateString(today);
     if (days === 0) {
       setCustomerReportStartDate(todayStr);
       setCustomerReportEndDate(todayStr);
@@ -2342,7 +2349,7 @@ export default function AdminDashboardPage() {
     } else {
       const past = new Date();
       past.setDate(past.getDate() - days);
-      const pastStr = past.toISOString().split('T')[0];
+      const pastStr = getLocalDateString(past);
       setCustomerReportStartDate(pastStr);
       setCustomerReportEndDate(todayStr);
       loadCustomerReport(pastStr, todayStr, customerReportSearch);
@@ -2351,7 +2358,7 @@ export default function AdminDashboardPage() {
 
   const handleQuickDateFilter = (days) => {
     const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
+    const todayStr = getLocalDateString(today);
     if (days === 0) {
       setRevenueStartDate(todayStr);
       setRevenueEndDate(todayStr);
@@ -2363,10 +2370,52 @@ export default function AdminDashboardPage() {
     } else {
       const past = new Date();
       past.setDate(past.getDate() - days);
-      const pastStr = past.toISOString().split('T')[0];
+      const pastStr = getLocalDateString(past);
       setRevenueStartDate(pastStr);
       setRevenueEndDate(todayStr);
       loadRevenueReport(pastStr, todayStr);
+    }
+  };
+
+  const handleQuickOrderDateFilter = (days) => {
+    const today = new Date();
+    const todayStr = getLocalDateString(today);
+    if (days === 0) {
+      setOrderReportStartDate(todayStr);
+      setOrderReportEndDate(todayStr);
+      loadOrderReport(orderReportStatus, orderReportPaymentStatus, orderReportSearch, todayStr, todayStr);
+    } else if (days === -1) {
+      setOrderReportStartDate('');
+      setOrderReportEndDate('');
+      loadOrderReport(orderReportStatus, orderReportPaymentStatus, orderReportSearch, '', '');
+    } else {
+      const past = new Date();
+      past.setDate(past.getDate() - days);
+      const pastStr = getLocalDateString(past);
+      setOrderReportStartDate(pastStr);
+      setOrderReportEndDate(todayStr);
+      loadOrderReport(orderReportStatus, orderReportPaymentStatus, orderReportSearch, pastStr, todayStr);
+    }
+  };
+
+  const handleQuickInventoryDateFilter = (days) => {
+    const today = new Date();
+    const todayStr = getLocalDateString(today);
+    if (days === 0) {
+      setInventoryReportStartDate(todayStr);
+      setInventoryReportEndDate(todayStr);
+      loadInventoryReport(inventoryReportCategory, inventoryReportStockStatus, inventoryReportSearch, todayStr, todayStr);
+    } else if (days === -1) {
+      setInventoryReportStartDate('');
+      setInventoryReportEndDate('');
+      loadInventoryReport(inventoryReportCategory, inventoryReportStockStatus, inventoryReportSearch, '', '');
+    } else {
+      const past = new Date();
+      past.setDate(past.getDate() - days);
+      const pastStr = getLocalDateString(past);
+      setInventoryReportStartDate(pastStr);
+      setInventoryReportEndDate(todayStr);
+      loadInventoryReport(inventoryReportCategory, inventoryReportStockStatus, inventoryReportSearch, pastStr, todayStr);
     }
   };
 
@@ -3677,6 +3726,7 @@ export default function AdminDashboardPage() {
                       exportInventoryReportCsv={exportInventoryReportCsv}
                       exportInventoryReportPdf={exportInventoryReportPdf}
                       loadInventoryReport={loadInventoryReport}
+                      handleQuickInventoryDateFilter={handleQuickInventoryDateFilter}
                       orderReportData={orderReportData}
                       orderReportLoading={orderReportLoading}
                       orderReportSearch={orderReportSearch}
@@ -3696,6 +3746,7 @@ export default function AdminDashboardPage() {
                       exportOrderReportCsv={exportOrderReportCsv}
                       exportOrderReportPdf={exportOrderReportPdf}
                       loadOrderReport={loadOrderReport}
+                      handleQuickOrderDateFilter={handleQuickOrderDateFilter}
                       categories={categories}
                     />
                   )}

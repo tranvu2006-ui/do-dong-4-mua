@@ -76,8 +76,51 @@ export default function AdminReportsTab({
   exportOrderReportCsv,
   exportOrderReportPdf,
   loadOrderReport,
+  handleQuickInventoryDateFilter,
+  handleQuickOrderDateFilter,
   categories
 }) {
+  // Chuẩn hóa tính toán ngày địa phương (YYYY-MM-DD)
+  const formatYMD = (d) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const todayDateStr = formatYMD(new Date());
+  const past7Date = new Date();
+  past7Date.setDate(past7Date.getDate() - 7);
+  const past7DateStr = formatYMD(past7Date);
+
+  const past30Date = new Date();
+  past30Date.setDate(past30Date.getDate() - 30);
+  const past30DateStr = formatYMD(past30Date);
+
+  // Trạng thái nút chọn nhanh Doanh thu
+  const isRevToday = revenueStartDate === todayDateStr && revenueEndDate === todayDateStr;
+  const isRev7Days = revenueStartDate === past7DateStr && revenueEndDate === todayDateStr;
+  const isRev30Days = revenueStartDate === past30DateStr && revenueEndDate === todayDateStr;
+  const isRevAll = !revenueStartDate && !revenueEndDate;
+
+  // Trạng thái nút chọn nhanh Khách hàng
+  const isCustToday = customerReportStartDate === todayDateStr && customerReportEndDate === todayDateStr;
+  const isCust7Days = customerReportStartDate === past7DateStr && customerReportEndDate === todayDateStr;
+  const isCust30Days = customerReportStartDate === past30DateStr && customerReportEndDate === todayDateStr;
+  const isCustAll = !customerReportStartDate && !customerReportEndDate;
+
+  // Trạng thái nút chọn nhanh Tồn kho
+  const isInvToday = inventoryReportStartDate === todayDateStr && inventoryReportEndDate === todayDateStr;
+  const isInv7Days = inventoryReportStartDate === past7DateStr && inventoryReportEndDate === todayDateStr;
+  const isInv30Days = inventoryReportStartDate === past30DateStr && inventoryReportEndDate === todayDateStr;
+  const isInvAll = !inventoryReportStartDate && !inventoryReportEndDate;
+
+  // Trạng thái nút chọn nhanh Đơn hàng
+  const isOrdToday = orderReportStartDate === todayDateStr && orderReportEndDate === todayDateStr;
+  const isOrd7Days = orderReportStartDate === past7DateStr && orderReportEndDate === todayDateStr;
+  const isOrd30Days = orderReportStartDate === past30DateStr && orderReportEndDate === todayDateStr;
+  const isOrdAll = !orderReportStartDate && !orderReportEndDate;
+
   // Phân trang danh sách khách hàng trong báo cáo
   const custReportList = customerReportData?.customers || [];
   const paginatedCustReport = custReportList.slice(
@@ -245,28 +288,44 @@ export default function AdminReportsTab({
                           <button
                             type="button"
                             onClick={() => handleQuickDateFilter(0)}
-                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 transition cursor-pointer whitespace-nowrap"
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isRevToday
+                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-emerald-500 hover:text-emerald-700'
+                            }`}
                           >
                             Hôm nay
                           </button>
                           <button
                             type="button"
                             onClick={() => handleQuickDateFilter(7)}
-                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 transition cursor-pointer whitespace-nowrap"
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isRev7Days
+                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-emerald-500 hover:text-emerald-700'
+                            }`}
                           >
                             7 ngày qua
                           </button>
                           <button
                             type="button"
                             onClick={() => handleQuickDateFilter(30)}
-                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 transition cursor-pointer whitespace-nowrap"
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isRev30Days
+                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-emerald-500 hover:text-emerald-700'
+                            }`}
                           >
                             30 ngày qua
                           </button>
                           <button
                             type="button"
                             onClick={() => handleQuickDateFilter(-1)}
-                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 transition cursor-pointer whitespace-nowrap"
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isRevAll
+                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-emerald-500 hover:text-emerald-700'
+                            }`}
                           >
                             Toàn thời gian
                           </button>
@@ -620,28 +679,44 @@ export default function AdminReportsTab({
                               <button
                                 type="button"
                                 onClick={() => handleQuickCustomerDateFilter(0)}
-                                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-700 transition cursor-pointer whitespace-nowrap"
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                                  isCustToday
+                                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                    : 'bg-white border-slate-200 text-slate-700 hover:border-indigo-500 hover:text-indigo-700'
+                                }`}
                               >
                                 Hôm nay
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleQuickCustomerDateFilter(7)}
-                                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-700 transition cursor-pointer whitespace-nowrap"
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                                  isCust7Days
+                                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                    : 'bg-white border-slate-200 text-slate-700 hover:border-indigo-500 hover:text-indigo-700'
+                                }`}
                               >
                                 7 ngày qua
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleQuickCustomerDateFilter(30)}
-                                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-700 transition cursor-pointer whitespace-nowrap"
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                                  isCust30Days
+                                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                    : 'bg-white border-slate-200 text-slate-700 hover:border-indigo-500 hover:text-indigo-700'
+                                }`}
                               >
                                 30 ngày qua
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleQuickCustomerDateFilter(-1)}
-                                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-indigo-50 border border-indigo-200 text-indigo-800 hover:bg-indigo-100 transition cursor-pointer whitespace-nowrap"
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                                  isCustAll
+                                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                    : 'bg-white border-slate-200 text-slate-700 hover:border-indigo-500 hover:text-indigo-700'
+                                }`}
                               >
                                 Toàn thời gian
                               </button>
@@ -999,6 +1074,54 @@ export default function AdminReportsTab({
                               <RotateCcw className="w-3.5 h-3.5" />
                             </button>
                           </div>
+                        </div>
+
+                        {/* Phím tắt chọn nhanh ngày cho kho hàng */}
+                        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => handleQuickInventoryDateFilter && handleQuickInventoryDateFilter(0)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isInvToday
+                                ? 'bg-amber-600 text-white border-amber-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-amber-500 hover:text-amber-700'
+                            }`}
+                          >
+                            Hôm nay
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickInventoryDateFilter && handleQuickInventoryDateFilter(7)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isInv7Days
+                                ? 'bg-amber-600 text-white border-amber-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-amber-500 hover:text-amber-700'
+                            }`}
+                          >
+                            7 ngày qua
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickInventoryDateFilter && handleQuickInventoryDateFilter(30)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isInv30Days
+                                ? 'bg-amber-600 text-white border-amber-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-amber-500 hover:text-amber-700'
+                            }`}
+                          >
+                            30 ngày qua
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickInventoryDateFilter && handleQuickInventoryDateFilter(-1)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isInvAll
+                                ? 'bg-amber-600 text-white border-amber-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-amber-500 hover:text-amber-700'
+                            }`}
+                          >
+                            Toàn thời gian
+                          </button>
                         </div>
                       </div>
 
@@ -1436,6 +1559,54 @@ export default function AdminReportsTab({
                               <RotateCcw className="w-3.5 h-3.5" />
                             </button>
                           </div>
+                        </div>
+
+                        {/* Phím tắt chọn nhanh ngày cho đơn hàng */}
+                        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => handleQuickOrderDateFilter && handleQuickOrderDateFilter(0)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isOrdToday
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-blue-500 hover:text-blue-700'
+                            }`}
+                          >
+                            Hôm nay
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickOrderDateFilter && handleQuickOrderDateFilter(7)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isOrd7Days
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-blue-500 hover:text-blue-700'
+                            }`}
+                          >
+                            7 ngày qua
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickOrderDateFilter && handleQuickOrderDateFilter(30)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isOrd30Days
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-blue-500 hover:text-blue-700'
+                            }`}
+                          >
+                            30 ngày qua
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickOrderDateFilter && handleQuickOrderDateFilter(-1)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer whitespace-nowrap ${
+                              isOrdAll
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-blue-500 hover:text-blue-700'
+                            }`}
+                          >
+                            Toàn thời gian
+                          </button>
                         </div>
                       </div>
 

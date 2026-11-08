@@ -86,10 +86,10 @@ export default function UserAdminModals({
                 <div className="text-[10px] font-bold text-slate-500 uppercase">Cấp bậc vai trò</div>
                 <div className="text-xs font-black text-slate-800 flex items-center gap-1.5 mt-0.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  <span>Admin Chi nhánh (role_id: 2)</span>
+                  <span>Admin Chi nhánh</span>
                 </div>
                 <p className="text-[10px] text-slate-400 mt-1 leading-tight">
-                  * Hệ thống chỉ có 1 Admin Tổng duy nhất (Trần Vũ). Admin Tổng chỉ tạo và phân quyền cho Quản trị viên Chi nhánh.
+                  * Hệ thống chỉ có 1 Admin Tổng duy nhất. Admin Tổng tạo và phân quyền cho Quản trị viên Chi nhánh.
                 </p>
               </div>
 
