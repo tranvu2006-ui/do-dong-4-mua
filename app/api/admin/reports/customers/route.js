@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { formatDate, formatDateTime } from '@/lib/date';
 
 /**
  * FR-048 – Báo cáo khách hàng (Module Reporting, API 74)
@@ -97,7 +98,7 @@ export async function GET(request) {
     if (format === 'excel' || format === 'csv') {
       let csv = '\uFEFF'; // BOM UTF-8
       csv += 'BÁO CÁO KHÁCH HÀNG - ĐỒ ĐỒNG 4 MÙA\n';
-      csv += `Thời gian xuất: ${new Date().toLocaleString('vi-VN')}\n`;
+      csv += `Thời gian xuất: ${formatDateTime(new Date(), true)}\n`;
       csv += `Khoảng thời gian lọc: ${startDate || 'Toàn thời gian'} đến ${endDate || 'Hiện tại'}\n\n`;
       csv += 'TỔNG HỢP CHỈ SỐ KHÁCH HÀNG\n';
       csv += `Tổng số khách hàng,${totalCustomers}\n`;
@@ -109,8 +110,8 @@ export async function GET(request) {
       csv += 'Mã KH,Họ và tên,Số điện thoại,Địa chỉ,Số đơn đặt,Đơn thành công,Đơn hủy,Tổng chi tiêu (VNĐ),Lần mua gần nhất,Ngày đăng ký\n';
 
       customers.forEach((c) => {
-        const lastOrder = c.last_order_date ? new Date(c.last_order_date).toLocaleDateString('vi-VN') : 'Chưa có';
-        const regDate = new Date(c.created_at).toLocaleDateString('vi-VN');
+        const lastOrder = c.last_order_date ? formatDate(c.last_order_date) : 'Chưa có';
+        const regDate = formatDate(c.created_at);
         const cleanAddress = (c.address || '').replace(/,/g, ' - ');
         csv += `${c.id},"${c.full_name}",${c.phone},"${cleanAddress}",${c.order_count},${c.successful_orders},${c.cancelled_orders},${c.total_spent},${lastOrder},${regDate}\n`;
       });

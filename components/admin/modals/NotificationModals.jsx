@@ -5,6 +5,7 @@ import {
   Send, Users, User, ShieldCheck, UserPlus, Search,
   RefreshCw, Bell, Trash2, X
 } from 'lucide-react';
+import { formatDateTime } from '@/lib/date';
 
 export default function NotificationModals({
   showCreateNotificationModal,
@@ -332,7 +333,7 @@ export default function NotificationModals({
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Thời gian gửi:</span>
                   <div className="font-mono font-bold text-slate-700 text-[11px]">
-                    {new Date(selectedNotificationDetail.created_at).toLocaleString('vi-VN')}
+                    {formatDateTime(selectedNotificationDetail.created_at)}
                   </div>
                 </div>
 

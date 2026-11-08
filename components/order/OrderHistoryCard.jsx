@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { formatDateTime } from '@/lib/date';
 
 export default function OrderHistoryCard({ order, onOpenCancelModal }) {
   const getStatusBadge = (st) => {
@@ -38,7 +39,7 @@ export default function OrderHistoryCard({ order, onOpenCancelModal }) {
           {getStatusBadge(order.order_status)}
         </div>
         <div className="text-[11px] text-gray-400">
-          Ngày đặt: {new Date(order.created_at).toLocaleString('vi-VN')}
+          Ngày đặt: {formatDateTime(order.created_at)}
         </div>
       </div>
 

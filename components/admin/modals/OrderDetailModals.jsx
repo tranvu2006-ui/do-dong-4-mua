@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { CheckCircle2, Clock, Play, AlertTriangle, User, Truck, X, Phone, MapPin, CreditCard, DollarSign } from 'lucide-react';
+import { formatDateTime } from '@/lib/date';
 
 export default function OrderDetailModals({
   orderActionModal,
@@ -118,7 +119,7 @@ export default function OrderDetailModals({
                     <span className="font-mono text-brand-700 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-200/60">{selectedOrder.order_code}</span>
                   </h3>
                   <div className="text-xs text-slate-500 mt-0.5">
-                    Thời gian đặt: {selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleString('vi-VN') : '—'} • Xử lý: <strong className="text-slate-700">
+                    Thời gian đặt: {formatDateTime(selectedOrder.created_at) || '—'} • Xử lý: <strong className="text-slate-700">
                       {['CHO_XAC_NHAN', 'CHO_THANH_TOAN'].includes(selectedOrder.order_status) && !selectedOrder.processor_name ? (
                         <span className="text-slate-400 italic font-normal">Chưa tiếp nhận</span>
                       ) : selectedOrder.order_status === 'DA_HUY' && (!selectedOrder.processor_name || selectedOrder.processor_name === selectedOrder.receiver_name) ? (
@@ -308,7 +309,7 @@ export default function OrderDetailModals({
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                           <strong className="text-slate-900 font-bold">{log.title || log.action}</strong>
                           <span className="text-[10px] text-slate-400 font-mono">
-                            {new Date(log.created_at).toLocaleString('vi-VN')}
+                            {formatDateTime(log.created_at)}
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-600 mt-0.5">{log.description}</p>
@@ -324,7 +325,7 @@ export default function OrderDetailModals({
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                         <strong className="text-slate-900 font-bold">Khách hàng đặt hàng</strong>
                         <span className="text-[10px] text-slate-400 font-mono">
-                          {selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleString('vi-VN') : '—'}
+                          {formatDateTime(selectedOrder.created_at) || '—'}
                         </span>
                       </div>
                       <p className="text-[11px] text-slate-600 mt-0.5">

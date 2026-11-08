@@ -173,6 +173,23 @@ export default function AdminSettingsTab({
                           </div>
                         </div>
                       </div>
+
+                      {/* Cấu hình Định dạng Ngày tháng (dd/mm/yyyy) */}
+                      <div className="pt-2">
+                        <label className="block font-bold text-slate-700 mb-1.5 text-xs">Định dạng ngày tháng toàn hệ thống</label>
+                        <div className="p-3 bg-white rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <div className="font-mono font-bold text-emerald-700 text-xs flex items-center gap-2">
+                              <span className="px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200">dd/mm/yyyy</span>
+                              <span className="text-slate-500 font-sans font-normal">(Ngày / Tháng / Năm - Tiêu chuẩn Việt Nam)</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400 mt-0.5">Áp dụng đồng bộ cho tất cả các bảng dữ liệu đơn hàng, lịch sử mua hàng, log kiểm toán và xuất báo cáo</p>
+                          </div>
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 self-start sm:self-auto shrink-0">
+                            Đang áp dụng
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Khối 2: Cài đặt giao vận & Đơn hàng */}

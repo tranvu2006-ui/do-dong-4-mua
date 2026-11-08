@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { User, ShieldCheck, CheckCircle2, ChevronRight, KeyRound } from 'lucide-react';
+import { formatDate } from '@/lib/date';
 
 export default function ProfileSidebarCard({
   currentUser,
@@ -37,7 +38,7 @@ export default function ProfileSidebarCard({
         {createdAt && (
           <div className="flex items-center justify-between">
             <span className="text-gray-400">Tham gia:</span>
-            <span className="font-medium text-gray-700">{new Date(createdAt).toLocaleDateString('vi-VN')}</span>
+            <span className="font-medium text-gray-700">{formatDate(createdAt)}</span>
           </div>
         )}
         <div className="flex items-center justify-between">

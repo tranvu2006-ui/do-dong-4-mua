@@ -13,6 +13,7 @@ import {
 import Pagination from '@/components/Pagination';
 import LogoCropperModal from '@/components/common/LogoCropperModal';
 import { getAuthSession, saveAuthSession, clearAuthSession } from '@/lib/auth-session';
+import { formatDate, formatDateTime } from '@/lib/date';
 
 // ADMIN TABS (Modularized JSX)
 import AdminOrdersTab from '@/components/admin/tabs/AdminOrdersTab';
@@ -3230,7 +3231,7 @@ export default function AdminDashboardPage() {
                             <p className="text-[11px] text-slate-500 line-clamp-2 mt-0.5 leading-relaxed">{n.content}</p>
                             <div className="flex items-center justify-between text-[10px] text-slate-400 mt-1.5">
                               <span>Gửi tới: {n.recipient_type}</span>
-                              <span>{new Date(n.created_at).toLocaleDateString('vi-VN')}</span>
+                              <span>{formatDate(n.created_at)}</span>
                             </div>
                           </div>
                         </div>

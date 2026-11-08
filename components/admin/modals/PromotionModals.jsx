@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Percent, Edit3, Tag, AlertTriangle, Plus, RefreshCw, Package, Trash2 } from 'lucide-react';
+import { formatDate } from '@/lib/date';
 
 export default function PromotionModals({
   showAddPromotionModal,
@@ -230,7 +231,7 @@ export default function PromotionModals({
                   <span>Sản Phẩm Áp Dụng: {assignProductsModal.promotion.title}</span>
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Mức giảm: <strong className="text-rose-600 font-black">-{parseFloat(assignProductsModal.promotion.discount_percent)}%</strong> | Thời gian: {new Date(assignProductsModal.promotion.start_date).toLocaleDateString('vi-VN')} → {new Date(assignProductsModal.promotion.end_date).toLocaleDateString('vi-VN')}
+                  Mức giảm: <strong className="text-rose-600 font-black">-{parseFloat(assignProductsModal.promotion.discount_percent)}%</strong> | Thời gian: {formatDate(assignProductsModal.promotion.start_date)} → {formatDate(assignProductsModal.promotion.end_date)}
                 </p>
               </div>
               <button

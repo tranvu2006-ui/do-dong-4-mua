@@ -3,6 +3,7 @@
 import React from 'react';
 import { Bell, Plus, Users, User, ShieldCheck, UserPlus, Search, Eye, Trash2 } from 'lucide-react';
 import Pagination from '@/components/Pagination';
+import { formatDateTime } from '@/lib/date';
 
 export default function AdminNotificationsTab({
   notifications,
@@ -222,14 +223,7 @@ export default function AdminNotificationsTab({
                     )}
                   </td>
                   <td className="py-3.5 px-4 whitespace-nowrap text-slate-600 font-mono text-[11px]">
-                    {new Date(n.created_at).toLocaleString('vi-VN', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                    })}
+                    {formatDateTime(n.created_at, true)}
                   </td>
                   <td className="py-3.5 px-4 text-right whitespace-nowrap">
                     <div className="flex items-center justify-end gap-1.5">

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { formatDate, formatDateTime } from '@/lib/date';
 
 /**
  * FR-050: Báo cáo đơn hàng (Order Report)
@@ -187,7 +188,7 @@ export async function GET(request) {
 
     // 7. Xử lý xuất file Excel / CSV (TC_REPORT_003)
     if (format === 'excel' || format === 'csv') {
-      const nowStr = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+      const nowStr = formatDateTime(new Date(), true);
       const timeFilterStr = (startDate && endDate)
         ? `${startDate} đến ${endDate}`
         : (startDate ? `Từ ${startDate}` : (endDate ? `Đến ${endDate}` : 'Toàn thời gian'));
@@ -221,7 +222,7 @@ export async function GET(request) {
       csv += `DANH SÁCH CHI TIẾT ĐƠN HÀNG\n`;
       csv += `Mã đơn hàng,Ngày đặt,Người nhận,Số điện thoại,Địa chỉ giao hàng,Số món,Tổng tiền (VNĐ),Thanh toán,Trạng thái thanh toán,Trạng thái đơn hàng\n`;
       ordersList.forEach(ord => {
-        const dateStr = ord.created_at ? new Date(ord.created_at).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '';
+        const dateStr = ord.created_at ? formatDateTime(ord.created_at) : '';
         const statusLabel = ORDER_STATUS_LABELS[ord.order_status] || ord.order_status;
         const payMethodLabel = ord.payment_method === 'COD' ? 'Tiền mặt COD' : 'VietQR / Chuyển khoản';
         const payStatusLabel = ord.payment_status === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán';

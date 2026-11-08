@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useCart } from './CartContext';
 import { getAuthSession, clearAuthSession } from '@/lib/auth-session';
+import { formatDate, formatDateTime } from '@/lib/date';
 
 export default function Navbar() {
   const router = useRouter();
@@ -415,7 +416,7 @@ export default function Navbar() {
                               </p>
                               <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1.5">
                                 <span>{n.sender_name || 'Hệ thống Đồ Đồng 4 Mùa'}</span>
-                                <span>{new Date(n.created_at).toLocaleDateString('vi-VN')}</span>
+                                <span>{formatDate(n.created_at)}</span>
                               </div>
                             </div>
                           </div>
@@ -571,7 +572,7 @@ export default function Navbar() {
                 <div>
                   <h3 className="font-heading font-black text-base text-gray-900">Chi Tiết Thông Báo</h3>
                   <p className="text-[11px] text-gray-400">
-                    Gửi lúc {new Date(selectedNotif.created_at).toLocaleString('vi-VN')}
+                    Gửi lúc {formatDateTime(selectedNotif.created_at)}
                   </p>
                 </div>
               </div>

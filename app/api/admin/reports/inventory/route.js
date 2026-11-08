@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { formatDate, formatDateTime } from '@/lib/date';
 
 /**
  * FR-049: Báo cáo hàng tồn kho (Inventory Report)
@@ -149,7 +150,7 @@ export async function GET(request) {
 
     // 6. Xử lý xuất file Excel / CSV (TC_REPORT_003)
     if (format === 'excel' || format === 'csv') {
-      const nowStr = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+      const nowStr = formatDateTime(new Date(), true);
       const timeFilterStr = (startDate && endDate)
         ? `${startDate} đến ${endDate}`
         : (startDate ? `Từ ${startDate}` : (endDate ? `Đến ${endDate}` : 'Toàn thời gian'));
@@ -180,7 +181,7 @@ export async function GET(request) {
       csv += `DANH SÁCH CHI TIẾT SẢN PHẨM TỒN KHO\n`;
       csv += `Mã SP,Tên sản phẩm,Danh mục,Đơn vị tính,Đơn giá (VNĐ),Tồn kho hiện tại,Trạng thái tồn kho,Giá trị tồn kho (VNĐ),Cập nhật gần nhất\n`;
       products.forEach(p => {
-        const updatedDateStr = p.updated_at ? new Date(p.updated_at).toLocaleDateString('vi-VN') : 'Mới';
+        const updatedDateStr = p.updated_at ? formatDate(p.updated_at) : 'Mới';
         csv += `${p.product_code},"${p.product_name.replace(/"/g, '""')}","${p.category_name.replace(/"/g, '""')}",${p.unit || 'Sản phẩm'},${p.price},${p.stock},"${p.stock_status_label}",${Math.round(p.inventory_value)},${updatedDateStr}\n`;
       });
 

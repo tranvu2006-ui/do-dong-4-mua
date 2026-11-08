@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { formatDate, formatDateTime } from '@/lib/date';
 
 /**
  * FR-047 – Quản lý báo cáo doanh thu & BR-028
@@ -125,7 +126,7 @@ export async function GET(request) {
     if (format === 'excel' || format === 'csv') {
       let csv = '\uFEFF'; // BOM UTF-8 for Excel Vietnamese support
       csv += 'BÁO CÁO DOANH THU HỆ THỐNG - ĐỒ ĐỒNG 4 MÙA\n';
-      csv += `Thời gian xuất: ${new Date().toLocaleString('vi-VN')}\n`;
+      csv += `Thời gian xuất: ${formatDateTime(new Date(), true)}\n`;
       csv += `Khoảng thời gian: ${startDate || 'Toàn thời gian'} đến ${endDate || 'Hiện tại'}\n\n`;
       csv += 'CHỈ SỐ CỐT LÕI (Chỉ tính đơn Đã giao)\n';
       csv += `Tổng doanh thu,${totalRevenue}\n`;

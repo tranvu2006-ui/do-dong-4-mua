@@ -3,6 +3,7 @@
 import React from 'react';
 import { Percent, Plus, Search, Calendar, Package, Tag, Edit3, EyeOff, Eye, Trash2 } from 'lucide-react';
 import Pagination from '@/components/Pagination';
+import { formatDate } from '@/lib/date';
 
 export default function AdminPromotionsTab({
   promotions,
@@ -137,9 +138,9 @@ export default function AdminPromotionsTab({
                       <td className="py-3 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-1.5 text-slate-600 font-medium">
                           <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                          <span>{new Date(pr.start_date).toLocaleDateString('vi-VN')}</span>
+                          <span>{formatDate(pr.start_date)}</span>
                           <span className="text-slate-400">→</span>
-                          <span>{new Date(pr.end_date).toLocaleDateString('vi-VN')}</span>
+                          <span>{formatDate(pr.end_date)}</span>
                         </div>
                         <div className="mt-1">
                           {isExpired ? (

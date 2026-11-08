@@ -7,6 +7,7 @@ import {
   User, Sparkles, FileText, AlertTriangle, Clock, Layers, Truck, Pause, Tag
 } from 'lucide-react';
 import Pagination from '@/components/Pagination';
+import { formatDate, formatDateTime } from '@/lib/date';
 
 export default function AdminReportsTab({
   reportSubTab,
@@ -671,7 +672,7 @@ export default function AdminReportsTab({
                               {customerReportData?.total_customers ?? 0} khách
                             </div>
                             <div className="text-[10px] text-indigo-700 font-semibold mt-1">
-                              Tài khoản người dùng (role_id = 3)
+                              Tài khoản người dùng
                             </div>
                           </div>
 
@@ -804,7 +805,7 @@ export default function AdminReportsTab({
                                     <td className="py-3 px-4 font-bold text-slate-900">
                                       <div>{c.full_name}</div>
                                       <div className="text-[10px] text-slate-400 font-normal">
-                                        Đăng ký: {new Date(c.created_at).toLocaleDateString('vi-VN')}
+                                        Đăng ký: {formatDate(c.created_at)}
                                       </div>
                                     </td>
                                     <td className="py-3 px-4 font-mono font-bold text-slate-700">
@@ -833,7 +834,7 @@ export default function AdminReportsTab({
                                     </td>
                                     <td className="py-3 px-4 text-right text-slate-500 font-mono text-[11px]">
                                       {c.last_order_date
-                                        ? new Date(c.last_order_date).toLocaleDateString('vi-VN')
+                                        ? formatDate(c.last_order_date)
                                         : 'Chưa có'}
                                     </td>
                                   </tr>
@@ -1264,7 +1265,7 @@ export default function AdminReportsTab({
                                           {Math.round(prod.inventory_value).toLocaleString('vi-VN')} đ
                                         </td>
                                         <td className="py-3 px-3 text-center text-slate-400 text-[11px]">
-                                          {prod.updated_at ? new Date(prod.updated_at).toLocaleDateString('vi-VN') : '—'}
+                                          {prod.updated_at ? formatDate(prod.updated_at) : '—'}
                                         </td>
                                       </tr>
                                     );
@@ -1672,7 +1673,7 @@ export default function AdminReportsTab({
                                           </span>
                                         </td>
                                         <td className="py-3 px-3 text-slate-500 text-[11px]">
-                                          {ord.created_at ? new Date(ord.created_at).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '—'}
+                                          {ord.created_at ? formatDateTime(ord.created_at) : '—'}
                                         </td>
                                         <td className="py-3 px-3">
                                           <p className="font-bold text-slate-900">{ord.receiver_name || 'Khách vãng lai'}</p>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { User, X, Phone, Mail, MapPin, Calendar, ShoppingBag, Clock, Lock, Unlock } from 'lucide-react';
+import { formatDateTime } from '@/lib/date';
 
 export default function CustomerDetailModal({
   selectedCustomerDetail,
@@ -90,7 +91,7 @@ export default function CustomerDetailModal({
                         <tr key={o.id} className="hover:bg-slate-50/70 transition">
                           <td className="py-2.5 px-3 font-mono font-bold text-brand-700">#{o.order_code}</td>
                           <td className="py-2.5 px-3 text-slate-600 font-mono text-[11px]">
-                            {new Date(o.created_at).toLocaleString('vi-VN')}
+                            {formatDateTime(o.created_at)}
                           </td>
                           <td className="py-2.5 px-3">
                             <span className="text-[11px] font-bold text-slate-700">{o.payment_method || 'COD'}</span>

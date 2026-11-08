@@ -3,6 +3,7 @@
 import React from 'react';
 import { FileText, ShieldCheck, RefreshCw, Clock, MapPin, Search, Lock } from 'lucide-react';
 import Pagination from '@/components/Pagination';
+import { formatDateTime } from '@/lib/date';
 
 const LOG_ACTION_LABELS = {
   LOGIN: 'Đăng nhập',
@@ -257,7 +258,7 @@ export default function AdminLogsTab({
               {paginatedLogs.map((l) => (
                 <tr key={l.id} className="hover:bg-slate-50/80 transition">
                   <td className="py-3 px-3.5 text-slate-500 font-mono text-[11px] whitespace-nowrap">
-                    {new Date(l.created_at).toLocaleString('vi-VN')}
+                    {formatDateTime(l.created_at, true)}
                   </td>
                   <td className="py-3 px-3.5 whitespace-nowrap">
                     <div className="font-bold text-slate-900">{l.user_name}</div>

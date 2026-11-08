@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ShoppingCart, Search, PackageOpen, ExternalLink, Eye } from 'lucide-react';
 import Pagination from '@/components/Pagination';
+import { formatDateTime } from '@/lib/date';
 
 export default function AdminOrdersTab({
   orders,
@@ -148,7 +149,7 @@ export default function AdminOrdersTab({
 
                   {/* Thời gian */}
                   <td className="py-3 px-3 whitespace-nowrap text-slate-600 font-mono text-[11px]">
-                    {new Date(o.created_at).toLocaleString('vi-VN')}
+                    {formatDateTime(o.created_at)}
                   </td>
 
                   {/* Tên khách hàng */}
