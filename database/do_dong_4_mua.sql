@@ -1,3 +1,21 @@
+-- ============================================================================
+-- DỰ ÁN: ĐỔ ĐỐNG 4 MÙA - WEBSITE BÁN TRÁI CÂY TƯƠI ĐẶC SẢN 4 MÙA
+-- CƠ SỞ DỮ LIỆU CHUẨN ĐẶC TẢ SRS (SOFTWARE REQUIREMENTS SPECIFICATION)
+-- 
+-- 1. Cấu trúc CSDL: Bao gồm đúng 22 bảng phân chuẩn theo các chức năng SRS.
+-- 2. Quy định dữ liệu mẫu:
+--    - Dữ liệu cấu hình bắt buộc theo SRS:
+--      + roles (3 vai trò: Admin Tổng, Admin Chi nhánh, Khách hàng)
+--      + permissions (18 quyền hạn hệ thống theo SRS)
+--      + role_permissions (21 quyền hạn phân theo vai trò)
+--      + categories (3 danh mục trái cây gốc chuẩn SRS)
+--    - Đúng duy nhất 1 tài khoản mẫu:
+--      + users: Trần Vũ (Admin Tổng) - SĐT: 0929894248
+--    - Không hardcode dữ liệu giả (mock data):
+--      + branches, products, banners, promotions, shipping_fees, system_settings:
+--        Để trống hoàn toàn, Quản trị viên tự thêm/cấu hình động 100% qua Admin Studio.
+-- ============================================================================
+
 -- MySQL dump 10.13  Distrib 8.4.7, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: do_dong_4_mua
@@ -23,9 +41,12 @@ USE `do_dong_4_mua`;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `banners`
---
+-- ============================================================================
+-- BẢNG 01/22: `banners` (FR-012: Quản lý banner quảng cáo)
+-- Mục đích: Lưu trữ danh sách banner chạy trên trang chủ, chiến dịch marketing.
+-- Nghiệp vụ: Admin tự thêm, sửa, đổi ảnh, liên kết và bật/tắt hiển thị qua UI.
+-- Dữ liệu: Để trống (Không nạp mock data, Admin tự cấu hình qua Admin Studio).
+-- ============================================================================
 
 DROP TABLE IF EXISTS `banners`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -52,9 +73,12 @@ LOCK TABLES `banners` WRITE;
 /*!40000 ALTER TABLE `banners` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `branches`
---
+-- ============================================================================
+-- BẢNG 02/22: `branches` (FR-008: Quản lý chi nhánh)
+-- Mục đích: Danh sách các điểm bán / chi nhánh của hệ thống cửa hàng.
+-- Nghiệp vụ: Cung cấp địa chỉ xuất kho và phục vụ đo khoảng cách giao hàng.
+-- Dữ liệu: Để trống (Admin tự bấm "Thêm Chi Nhánh" trên giao diện Quản trị).
+-- ============================================================================
 
 DROP TABLE IF EXISTS `branches`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -81,9 +105,11 @@ LOCK TABLES `branches` WRITE;
 /*!40000 ALTER TABLE `branches` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `cart_items`
---
+-- ============================================================================
+-- BẢNG 03/22: `cart_items` (FR-004: Giỏ hàng trực tuyến)
+-- Mục đích: Chi tiết các món hàng và số lượng mà khách hàng thêm vào giỏ.
+-- Quan hệ: cart_id -> carts(id), product_id -> products(id).
+-- ============================================================================
 
 DROP TABLE IF EXISTS `cart_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -114,9 +140,10 @@ LOCK TABLES `cart_items` WRITE;
 /*!40000 ALTER TABLE `cart_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `carts`
---
+-- ============================================================================
+-- BẢNG 04/22: `carts` (FR-004: Quản lý giỏ hàng)
+-- Mục đích: Lưu giỏ hàng của khách hàng theo user_id hoặc session khách vãng lai.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `carts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -142,9 +169,11 @@ LOCK TABLES `carts` WRITE;
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `categories`
---
+-- ============================================================================
+-- BẢNG 05/22: `categories` (FR-003, BR-004: Quản lý danh mục mùa vụ)
+-- Mục đích: Phân loại sản phẩm (Trái cây tươi, Combo gia đình, Giỏ quà biếu).
+-- Dữ liệu khởi tạo: Nạp sẵn 3 nhóm danh mục chuẩn quy định bởi SRS.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -173,9 +202,11 @@ INSERT INTO `categories` VALUES (1,'Trái cây tươi','trai-cay-tuoi','Các lo�
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `order_details`
---
+-- ============================================================================
+-- BẢNG 06/22: `order_details` (FR-005, BR-010: Chi tiết đơn hàng)
+-- Mục đích: Lưu từng dòng sản phẩm, đơn giá tại thời điểm mua, số lượng và thành tiền.
+-- Quan hệ: order_id -> orders(id), product_id -> products(id).
+-- ============================================================================
 
 DROP TABLE IF EXISTS `order_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -207,9 +238,11 @@ LOCK TABLES `order_details` WRITE;
 /*!40000 ALTER TABLE `order_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `orders`
---
+-- ============================================================================
+-- BẢNG 07/22: `orders` (FR-005, FR-006, BR-009: Quản lý đơn hàng)
+-- Mục đích: Quản lý đơn đặt hàng, thông tin giao nhận, tiền hàng, cước phí và trạng thái.
+-- Trạng thái: CHO_XAC_NHAN, DANG_XU_LY, DANG_GIAO, HOAN_THANH, DA_HUY, TAM_DUNG.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -246,9 +279,10 @@ LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `payments`
---
+-- ============================================================================
+-- BẢNG 08/22: `payments` (FR-007, BR-015: Quản lý thanh toán & Đối soát)
+-- Mục đích: Ghi nhận giao dịch thanh toán COD, MoMo hoặc VietQR kèm mã giao dịch ngân hàng.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `payments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -283,9 +317,11 @@ LOCK TABLES `payments` WRITE;
 /*!40000 ALTER TABLE `payments` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `permissions`
---
+-- ============================================================================
+-- BẢNG 09/22: `permissions` (FR-039, BR-026: Danh mục quyền hạn hệ thống)
+-- Mục đích: Định nghĩa 18 quyền hạn chức năng cụ thể theo tài liệu SRS.
+-- Dữ liệu khởi tạo: Nạp sẵn 18 quyền hạn chuẩn của hệ thống.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -311,9 +347,10 @@ INSERT INTO `permissions` VALUES (1,'product.view','Xem danh sách sản phẩm'
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `product_images`
---
+-- ============================================================================
+-- BẢNG 10/22: `product_images` (FR-002: Thư viện ảnh sản phẩm)
+-- Mục đích: Lưu các góc ảnh chụp thực tế chi tiết của từng loại trái cây.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `product_images`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -341,9 +378,11 @@ LOCK TABLES `product_images` WRITE;
 /*!40000 ALTER TABLE `product_images` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `products`
---
+-- ============================================================================
+-- BẢNG 11/22: `products` (FR-002, BR-001: Quản lý sản phẩm trái cây)
+-- Mục đích: Thông tin tên, đường dẫn tĩnh SEO, giá bán, giá khuyến mãi, số lượng tồn kho.
+-- Dữ liệu: Để trống (Không nạp mock data, Admin tự đăng sản phẩm qua UI).
+-- ============================================================================
 
 DROP TABLE IF EXISTS `products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -381,9 +420,10 @@ LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `promotion_products`
---
+-- ============================================================================
+-- BẢNG 12/22: `promotion_products` (FR-010, BR-018: Sản phẩm áp dụng khuyến mãi)
+-- Mục đích: Bảng liên kết giữa chương trình khuyến mãi và sản phẩm áp dụng.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `promotion_products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -409,9 +449,11 @@ LOCK TABLES `promotion_products` WRITE;
 /*!40000 ALTER TABLE `promotion_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `promotions`
---
+-- ============================================================================
+-- BẢNG 13/22: `promotions` (FR-010, BR-017: Quản lý chương trình khuyến mãi)
+-- Mục đích: Lưu các đợt giảm giá theo %, thời gian bắt đầu - kết thúc.
+-- Dữ liệu: Để trống (Admin tự tạo chiến dịch khuyến mãi từ giao diện Quản trị).
+-- ============================================================================
 
 DROP TABLE IF EXISTS `promotions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -440,9 +482,11 @@ LOCK TABLES `promotions` WRITE;
 /*!40000 ALTER TABLE `promotions` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `role_permissions`
---
+-- ============================================================================
+-- BẢNG 14/22: `role_permissions` (FR-039: Ma trận quyền hạn theo vai trò)
+-- Mục đích: Gán quyền hạn mặc định cho từng vai trò theo quy định SRS.
+-- Dữ liệu khởi tạo: Nạp sẵn ma trận quyền cho Admin Tổng và Admin Chi nhánh.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `role_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -470,9 +514,11 @@ INSERT INTO `role_permissions` VALUES (1,1,12,'2026-10-30 19:08:32'),(2,1,11,'20
 /*!40000 ALTER TABLE `role_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `roles`
---
+-- ============================================================================
+-- BẢNG 15/22: `roles` (FR-001, FR-039: Danh mục vai trò người dùng)
+-- Mục đích: 3 nhóm người dùng gồm: Admin Tổng (1), Admin Chi nhánh (2), Khách hàng (3).
+-- Dữ liệu khởi tạo: Nạp sẵn 3 vai trò chuẩn quy định bởi SRS.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -498,9 +544,11 @@ INSERT INTO `roles` VALUES (1,'Admin Tổng','Quản trị viên toàn quyền h
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `shipments`
---
+-- ============================================================================
+-- BẢNG 16/22: `shipments` (FR-009, BR-014: Quản lý vận đơn GreenSM Logistics)
+-- Mục đích: Theo dõi mã vận đơn GSM, thông tin tài xế, phí ship và trạng thái giao hàng.
+-- Trạng thái: CHO_GIAO, DANG_GIAO, GIAO_THANH_CONG, GIAO_THAT_BAI.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `shipments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -532,9 +580,11 @@ LOCK TABLES `shipments` WRITE;
 /*!40000 ALTER TABLE `shipments` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `system_logs`
---
+-- ============================================================================
+-- BẢNG 17/22: `system_logs` (FR-045, BR-027: Nhật ký kiểm toán hệ thống)
+-- Mục đích: Ghi nhận lịch sử thao tác của quản trị viên (thời gian, IP, hành động).
+-- Nghiệp vụ: Bất biến, không cho phép chỉnh sửa hoặc xóa theo SRS.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `system_logs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -564,9 +614,10 @@ LOCK TABLES `system_logs` WRITE;
 /*!40000 ALTER TABLE `system_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `user_permissions`
---
+-- ============================================================================
+-- BẢNG 18/22: `user_permissions` (FR-039: Phân quyền riêng cho từng tài khoản)
+-- Mục đích: Cấp hoặc thu hồi quyền chuyên biệt cho từng Admin Chi nhánh.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `user_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -593,9 +644,13 @@ LOCK TABLES `user_permissions` WRITE;
 /*!40000 ALTER TABLE `user_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `users`
---
+-- ============================================================================
+-- BẢNG 19/22: `users` (FR-001, FR-038: Quản lý tài khoản người dùng)
+-- Mục đích: Lưu thông tin tài khoản đăng nhập (SĐT, mật khẩu mã hóa bcrypt, họ tên, vai trò).
+-- Dữ liệu khởi tạo: CHỈ NẠP ĐÚNG 1 TÀI KHOẢN MẪU DUY NHẤT:
+--   -> Tài khoản: Trần Vũ (Admin Tổng) | SĐT: 0929894248 | Mật khẩu hash chuẩn SRS
+--   -> Khách hàng và Admin Chi nhánh sẽ do hệ thống tạo động hoặc khách tự đăng ký.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -627,13 +682,14 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1,NULL,'Trần Vũ (Admin Tổng)','0929894248','$2a$10$6Wq6V7Zc9S9jG4rWJc9H2eF5qJ3kL7mN9pQ1rS3tU5vW7xY9zA1bC','53 Võ Văn Ngân, Thủ Đức',1,'2026-10-28 06:30:18','2026-10-30 21:50:46',NULL);
+INSERT INTO `users` VALUES (1,1,NULL,'Trần Vũ (Admin Tổng)','0929894248','$2b$10$2m8T5gwndtV1blYG2f2CbeDX2mNye3Y88G5psYUv.8Zo0H.6jZqTC','53 Võ Văn Ngân, Thủ Đức',1,'2026-10-28 06:30:18','2026-10-30 21:50:46',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `notifications`
---
+-- ============================================================================
+-- BẢNG 20/22: `notifications` (FR-046: Hệ thống thông báo đẩy quản trị)
+-- Mục đích: Quản trị viên phát thông báo cho toàn hệ thống, chi nhánh hoặc đích danh người nhận.
+-- ============================================================================
 
 DROP TABLE IF EXISTS `notifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -656,9 +712,11 @@ CREATE TABLE `notifications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Hệ thống thông báo đẩy quản trị (FR-046)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `shipping_fees`
---
+-- ============================================================================
+-- BẢNG 21/22: `shipping_fees` (FR-044, BR-023: Quản lý cước phí vận chuyển)
+-- Mục đích: Thiết lập mức cước phí giao hàng tự động theo cự ly khoảng cách (km).
+-- Dữ liệu: Để trống (Không nạp mock data, Admin tự thêm các nấc phí qua UI).
+-- ============================================================================
 
 DROP TABLE IF EXISTS `shipping_fees`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -676,9 +734,12 @@ CREATE TABLE `shipping_fees` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Cấu hình nấc cước phí vận chuyển theo khoảng cách';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `system_settings`
---
+-- ============================================================================
+-- BẢNG 22/22: `system_settings` (FR-043: Quản lý cấu hình chung website)
+-- Mục đích: Lưu nhận diện thương hiệu (tên, logo, hotline, email, địa chỉ) và 4 chính sách.
+-- Quy tắc: Chỉ Admin Tổng có quyền chỉnh sửa. Thay đổi có hiệu lực ngay sau khi lưu.
+-- Dữ liệu: Để trống (Không nạp mock data, Admin tự cấu hình và lưu trực tiếp từ UI).
+-- ============================================================================
 
 DROP TABLE IF EXISTS `system_settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
