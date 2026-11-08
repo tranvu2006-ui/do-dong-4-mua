@@ -29,7 +29,6 @@ function BannerAdjuster({
 }) {
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [aspectRatio, setAspectRatio] = useState('4/1'); // '4/1' | '1920/450' | '16/9'
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
@@ -89,10 +88,7 @@ function BannerAdjuster({
           try {
             const canvas = document.createElement('canvas');
             const targetW = 1920;
-            let targetH = 480; // 4:1 chuẩn trang chủ (1920 / 4 = 480)
-            if (aspectRatio === '1920/450') targetH = 450;
-            else if (aspectRatio === '16/9') targetH = 1080;
-            else targetH = 480;
+            const targetH = 480; // Chuẩn tỷ lệ 4:1 (1920 / 4 = 480)
 
             canvas.width = targetW;
             canvas.height = targetH;
@@ -118,57 +114,22 @@ function BannerAdjuster({
         }
       };
     }
-  }, [adjusterRef, scale, position, aspectRatio]);
+  }, [adjusterRef, scale, position]);
 
   return (
     <div className="space-y-2.5">
-      {/* Thanh chuyển đổi tỷ lệ & nhãn */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      {/* Tiêu đề & Nhãn cố định chuẩn 4:1 */}
+      <div className="flex items-center justify-between">
         <label className="font-bold text-slate-700 flex items-center gap-1.5 text-xs">
           <Eye className="w-3.5 h-3.5 text-emerald-600" />
           <span>Khung xem trước & căn chỉnh ảnh *</span>
         </label>
-        <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl text-[11px] font-bold">
-          <button
-            type="button"
-            onClick={() => setAspectRatio('4/1')}
-            className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
-              aspectRatio === '4/1'
-                ? 'bg-white text-emerald-700 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-            title="Tỉ lệ chuẩn 4:1 đồng bộ tuyệt đối với trang chủ khách hàng"
-          >
-            4:1 (Trang Chủ)
-          </button>
-          <button
-            type="button"
-            onClick={() => setAspectRatio('1920/450')}
-            className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
-              aspectRatio === '1920/450'
-                ? 'bg-white text-emerald-700 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-            title="Tỉ lệ siêu rộng 1920 x 450 px"
-          >
-            1920 x 450
-          </button>
-          <button
-            type="button"
-            onClick={() => setAspectRatio('16/9')}
-            className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
-              aspectRatio === '16/9'
-                ? 'bg-white text-emerald-700 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-            title="Tỉ lệ chuẩn 16:9 (1920 x 1080)"
-          >
-            16:9
-          </button>
-        </div>
+        <span className="px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[11px] border border-emerald-100">
+          Tỷ lệ 4:1 (Chuẩn Trang Chủ)
+        </span>
       </div>
 
-      {/* Khung căn chỉnh hình ảnh trực quan */}
+      {/* Khung căn chỉnh hình ảnh trực quan cố định tỷ lệ 4:1 */}
       <div
         ref={frameRef}
         onMouseDown={handleMouseDown}
@@ -178,13 +139,7 @@ function BannerAdjuster({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleMouseUp}
-        className={`relative w-full ${
-          aspectRatio === '4/1'
-            ? 'aspect-[4/1]'
-            : aspectRatio === '1920/450'
-            ? 'aspect-[1920/450]'
-            : 'aspect-video'
-        } rounded-2xl border-2 border-emerald-500/40 bg-slate-950 overflow-hidden shadow-inner flex items-center justify-center select-none ${
+        className={`relative w-full aspect-[4/1] rounded-2xl border-2 border-emerald-500/40 bg-slate-950 overflow-hidden shadow-inner flex items-center justify-center select-none ${
           imageUrl ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : ''
         }`}
       >
@@ -212,9 +167,7 @@ function BannerAdjuster({
             {/* Gợi ý kéo chuột căn chỉnh */}
             <div className="absolute top-2.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-medium flex items-center gap-1.5 shadow-md pointer-events-none whitespace-nowrap">
               <Move className="w-3 h-3 text-emerald-400" />
-              <span>
-                Kéo chuột để căn vị trí • {aspectRatio === '4/1' ? 'Tỉ lệ 4:1' : aspectRatio === '1920/450' ? '1920 x 450 px' : '16:9'}
-              </span>
+              <span>Kéo chuột để căn vị trí • Tỷ lệ 4:1</span>
             </div>
 
             {/* Nút xóa ảnh để chọn lại */}
@@ -231,7 +184,7 @@ function BannerAdjuster({
           <div className="text-center p-4 text-slate-400">
             <ImageIcon className="w-8 h-8 mx-auto mb-1 text-slate-500/80" />
             <p className="font-bold text-xs text-slate-300">
-              Khung xem trước {aspectRatio === '4/1' ? 'Tỉ lệ 4:1' : aspectRatio === '1920/450' ? '1920 x 450 px' : '16:9'}
+              Khung xem trước banner (Tỷ lệ 4:1)
             </p>
             <p className="text-[10px] text-slate-500 mt-0.5">
               Tải ảnh lên hoặc dán link URL bên dưới để căn chỉnh vị trí trực tiếp
@@ -301,7 +254,7 @@ function BannerAdjuster({
             />
           </label>
           <span className="text-[11px] text-slate-500 font-medium truncate">
-            JPG, PNG, WEBP &le; 5 MB (Khuyến nghị: 1920 x 450 px hoặc 16:9)
+            JPG, PNG, WEBP &le; 5 MB (Khuyến nghị: Tỷ lệ 4:1 — 1920 × 480 px)
           </span>
         </div>
 
