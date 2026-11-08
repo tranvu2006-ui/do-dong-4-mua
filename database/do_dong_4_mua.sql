@@ -1,4 +1,4 @@
-﻿-- MySQL dump 10.13  Distrib 8.4.7, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.4.7, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: do_dong_4_mua
 -- ------------------------------------------------------
@@ -78,8 +78,6 @@ CREATE TABLE `branches` (
 
 LOCK TABLES `branches` WRITE;
 /*!40000 ALTER TABLE `branches` DISABLE KEYS */;
-INSERT INTO `branches` (`id`, `branch_name`, `phone`, `address`, `status`) VALUES 
-(1, 'Chi nhánh Thủ Đức', '0929894248', '53 Võ Văn Ngân, TP. Thủ Đức, TP. Hồ Chí Minh', 1);
 /*!40000 ALTER TABLE `branches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -679,20 +677,6 @@ CREATE TABLE `shipping_fees` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `shipping_fees`
---
-
-LOCK TABLES `shipping_fees` WRITE;
-/*!40000 ALTER TABLE `shipping_fees` DISABLE KEYS */;
-INSERT INTO `shipping_fees` (`id`, `name`, `min_km`, `max_km`, `fee`, `status`, `created_at`, `updated_at`) VALUES 
-(1, 'Nội thành gần (Dưới 5 km)', 0.00, 5.00, 15000.00, 1, '2026-11-04 18:38:27', '2026-11-04 18:38:27'),
-(2, 'Tiêu chuẩn nội thành (5 - 10 km)', 5.00, 10.00, 25000.00, 1, '2026-11-04 18:38:27', '2026-11-04 18:38:27'),
-(3, 'Nội thành xa (10 - 20 km)', 10.00, 20.00, 40000.00, 1, '2026-11-04 18:38:27', '2026-11-04 18:38:27'),
-(4, 'Ngoại thành / Liên quận (Trên 20 km)', 20.00, 50.00, 60000.00, 1, '2026-11-04 18:38:27', '2026-11-04 18:38:27');
-/*!40000 ALTER TABLE `shipping_fees` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `system_settings`
 --
 
@@ -706,25 +690,6 @@ CREATE TABLE `system_settings` (
   PRIMARY KEY (`setting_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Cấu hình thông số hệ thống website';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `system_settings`
---
-
-LOCK TABLES `system_settings` WRITE;
-/*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
-INSERT INTO `system_settings` (`setting_key`, `setting_value`) VALUES 
-('site_name', 'Đồ Đồng 4 Mùa'),
-('logo_url', '/uploads/1794111874238-88700-brand-logo-1794111874203.png'),
-('hotline', '0929894248'),
-('contact_email', 'tranvukuroko@gmail.com'),
-('company_address', '53 Võ Văn Ngân, TP. Thủ Đức, TP. Hồ Chí Minh'),
-('shipping_policy', 'Đồ Đồng 4 Mùa cam kết giao hàng nhanh chóng, đảm bảo chất lượng trái cây tươi ngon tận tay khách hàng. Đơn hàng được đóng gói cẩn thận và vận chuyển qua dịch vụ giao hàng chuyên nghiệp.'),
-('exchange_policy', 'Chính sách bao ăn 1 đổi 1 trong vòng 24 giờ kể từ thời điểm nhận hàng nếu sản phẩm có lỗi dập nát, hư hỏng hoặc không đúng chất lượng cam kết.'),
-('terms_of_service', 'Khách hàng sử dụng dịch vụ tại website Đồ Đồng 4 Mùa cam kết cung cấp đúng thông tin liên lạc và địa chỉ nhận hàng để đảm bảo giao nhận chính xác.'),
-('privacy_policy', 'Hệ thống cam kết bảo mật tuyệt đối mọi thông tin cá nhân và số điện thoại của khách hàng, tuân thủ đúng quy định pháp luật về an toàn thông tin.');
-/*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
-UNLOCK TABLES;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
